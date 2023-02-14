@@ -27,6 +27,7 @@ class RegistrationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $user_new = new User();
             //$user_new->setImg($user->getImg());
+            $user_new->setPseudo($user->getPseudo());
             $user_new->setNom($user->getNom());
             $user_new->setPrenom($user->getPrenom());
             $user_new->setTelephone($user->getTelephone());
