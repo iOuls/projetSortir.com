@@ -5,11 +5,16 @@
         <title>{% block title %}Welcome!{% endblock %}</title>
     </head>
     <body>
-    <div class="container">
-        <h1>
-            <a href="{{ path('main_acceuil') }}">Acceuil </a>
-
-        </h1>
+    <header>
+        <a href="{{ path('main_acceuil') }}">Acceuil </a>
+        {%  if app.user %}
+            <li> Bienvenue {{ app.user.username }}</li>
+            <a href="{{ path('app_logout') }}">Logout</a>
+        {% else %}
+            <a href="{{ path('app_login') }}">Login</a>
+            <a href="{{ path('app_register') }}">Register</a>
+        {% endif %}
+    </header>
     </div>
         {% block body %}{% endblock %}
     </body>

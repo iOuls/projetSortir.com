@@ -23,9 +23,9 @@ class SortieType extends AbstractType
             ->add('nbInscriptionsMax', null , ['label'=>'Nombre de place : '])
             ->add('duree', null , ['label'=>'Durée : '])
             ->add('InfosSortie', null , ['label'=>'Description et infos : '])
-            //->add('ville', LieuType::class, [
-             //   'class'=> Ville::class])
-            ->add('lieu', null , ['label'=>'Lieu : '])
+            ->add('lieu')
+               // TODO, LieuType::class)
+
 
             ->add("Enregistrer", SubmitType::class);
 

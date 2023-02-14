@@ -13,7 +13,7 @@ class MainController extends AbstractController
     public function acceuil() : Response
     {
         $date = new \DateTime();
-        return $this->render('main/acceuil.html.twig',
+        return $this->render('sortie/list.html.twig',
             [
                 'today' => $date
             ]);

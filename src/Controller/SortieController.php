@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Sortie;
 use App\Form\SortieType;
+use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,6 +13,19 @@ use Symfony\Component\Routing\Annotation\Route;
 class SortieController extends AbstractController
 
 {
+    #[Route('/list', name: '_list')]
+    public function list(
+        SortieRepository $sortieRepository
+    ): \Symfony\Component\HttpFoundation\Response
+    {
+        $sorties = $sortieRepository->findAll();
+        return $this->render('sortie/list.html.twig',
+            [
+                "sorties" => $sorties
+
+            ]);
+    }
+
 
     #[Route('/create', name: '_create')]
     public function create(
@@ -24,8 +38,7 @@ class SortieController extends AbstractController
         $sortieForm->handleRequest($request);
         if ($sortieForm->isSubmitted()) {
             try {
-                $sortie->setIsPublished(true);
-                $sortie->setDateCreated(new \DateTime());
+
                 if ($sortieForm->isValid()) {
                     $em->persist($sortie);
                 }
