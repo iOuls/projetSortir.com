@@ -6,6 +6,7 @@ use App\Repository\LieuRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: LieuRepository::class)]
 class Lieu
@@ -15,15 +16,25 @@ class Lieu
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\Length(max: 255, maxMessage: 'Le champ nom n\'accepte que 255 caractères maximum.')]
+    #[Assert\Type('string')]
+    #[Assert\NotBlank]
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
+    #[Assert\Length(max: 255, maxMessage: 'Le champ rue n\'accepte que 255 caractères maximum.')]
+    #[Assert\Type('string')]
+    #[Assert\NotBlank]
     #[ORM\Column(length: 255)]
     private ?string $rue = null;
 
+    #[Assert\Type('float')]
+    #[Assert\NotBlank]
     #[ORM\Column]
     private ?float $latitude = null;
 
+    #[Assert\Type('float')]
+    #[Assert\NotBlank]
     #[ORM\Column]
     private ?float $longitude = null;
 
