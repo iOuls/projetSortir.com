@@ -21,6 +21,9 @@ class Site
     #[ORM\OneToMany(mappedBy: 'site', targetEntity: Sortie::class)]
     private Collection $sorties;
 
+    #[ORM\ManyToOne(inversedBy: 'Site')]
+    private ?Filtre $filtre = null;
+
     public function __construct()
     {
         $this->sorties = new ArrayCollection();
@@ -69,6 +72,18 @@ class Site
                 $sorty->setSite(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getFiltre(): ?Filtre
+    {
+        return $this->filtre;
+    }
+
+    public function setFiltre(?Filtre $filtre): self
+    {
+        $this->filtre = $filtre;
 
         return $this;
     }

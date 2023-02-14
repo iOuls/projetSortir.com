@@ -8,14 +8,14 @@
 <header>
     <a href="{{ path('sortie_list') }}">Acceuil </a>
     {% if app.user %}
-        <li> Bienvenue {{ app.user.pseudo }}</li>
         <a href="{{ path('app_logout') }}">Logout</a>
     {% else %}
         <a href="{{ path('app_login') }}">Login</a>
         <a href="{{ path('app_register') }}">Register</a>
     {% endif %}
 </header>
-</div>
+
+
 {% block body %}{% endblock %}
 {% block footer %}{% endblock %}
 </body>

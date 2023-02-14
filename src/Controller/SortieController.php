@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Etat;
 use App\Entity\Sortie;
 use App\Form\SortieType;
 use App\Repository\SortieRepository;
@@ -36,11 +37,14 @@ class SortieController extends AbstractController
     )
     {
         $sortie = new Sortie();
+
+
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
         if ($sortieForm->isSubmitted()) {
-            try {
 
+            try {
+                $sortie->setEtat($sortie->getEtat()->setLibelle('Créée'));
                 if ($sortieForm->isValid()) {
                     $em->persist($sortie);
                 }

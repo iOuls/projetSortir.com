@@ -1,24 +1,34 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+
+    <div>
+        <p>Date du jour : </p>
+        {% if app.user %}
+            <p>Participant :  {{ app.user.pseudo }}</p>
+        {% endif %}
+    </div>
     <section>
-            <article>
-                {% for sortie in sorties %}
-                    <p>
-                        {{ sortie.nom }}
-                        {{ sortie.dateHeureDebut }}
-                        {{ sortie.dateLimiteInscription }}
-                        {{ sortie.nbInscriptionsMax }}
-                        {{ sortie.etat }}
-                        TODO : inscrit?
-                        {{ sortie.organisateur }}
-                        TODO : actions?
 
-                    </p>
-                {% endfor %}
+        {% for sortie in sorties %}
+            <p>
+                {{ sortie.nom }}
+                {{ sortie.dateHeureDebut | date('d/m/Y') }}
+                {{ sortie.dateLimitInscription | date('d/m/Y')}}
+                {{ sortie.nbInscriptionsMax }}
+                {{ sortie.etat.libelle }}
+                {% if app.user in sortie.participant %}
+                    x
+                {% endif %}
+                {{ sortie.organisateur.pseudo }}
+                TODO : actions?
+            </p>
+        {% endfor %}
 
+        {% if app.user %}
+            <a href={{ path('sortie_create') }}>Créer une sortie</a>
+        {% endif %}
 
-            </article>
     </section>
 
 {% endblock %}
