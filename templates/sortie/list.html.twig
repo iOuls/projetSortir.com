@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <section>
+            <article>
+                {% for sortie in sorties %}
+                    <p>
+                        {{ sortie.nom }}
+                        {{ sortie.dateHeureDebut }}
+                        {{ sortie.dateLimiteInscription }}
+                        {{ sortie.nbInscriptionsMax }}
+                        {{ sortie.etat }}
+                        TODO : inscrit?
+                        {{ sortie.organisateur }}
+                        TODO : actions?
+
+                    </p>
+                {% endfor %}
+
+
+            </article>
+    </section>
+
+{% endblock %}
+
+{% block title %}
+
+{% endblock %}
+
