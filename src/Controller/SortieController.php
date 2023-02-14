@@ -10,24 +10,26 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
+
 class SortieController extends AbstractController
 
 {
-    #[Route('/list', name: '_list')]
+    #[Route('/', name: 'sortie_list')]
     public function list(
         SortieRepository $sortieRepository
     ): \Symfony\Component\HttpFoundation\Response
     {
         $sorties = $sortieRepository->findAll();
+
         return $this->render('sortie/list.html.twig',
             [
-                "sorties" => $sorties
+                'sorties' => $sorties
 
             ]);
     }
 
 
-    #[Route('/create', name: '_create')]
+    #[Route('/create', name: 'sortie_create')]
     public function create(
         EntityManagerInterface $em,
         Request                $request
