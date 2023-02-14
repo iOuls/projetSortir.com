@@ -13,6 +13,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use function PHPUnit\Framework\assertFalse;
 
 class RegistrationController extends AbstractController
 {
@@ -24,20 +25,28 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $user_new = new User();
+            //$user_new->setImg($user->getImg());
+            $user_new->setNom($user->getNom());
+            $user_new->setPrenom($user->getPrenom());
+            $user_new->setTelephone($user->getTelephone());
+            $user_new->setEmail($user->getEmail());
+            $user_new->setAdministrateur(false);
+            $user_new->setActif(true);
             // encode the plain password
-            $user->setPassword(
+            $user_new->setPassword(
                 $userPasswordHasher->hashPassword(
                     $user,
                     $form->get('plainPassword')->getData()
                 )
             );
 
-            $entityManager->persist($user);
+            $entityManager->persist($user_new);
             $entityManager->flush();
             // do anything else you need here, like send an email
 
             return $userAuthenticator->authenticateUser(
-                $user,
+                $user_new,
                 $authenticator,
                 $request
             );
