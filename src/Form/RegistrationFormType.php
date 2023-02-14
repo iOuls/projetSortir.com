@@ -19,7 +19,7 @@ class RegistrationFormType extends AbstractType
     {
         $builder
             ->add('Pseudo')
-            ->add('photo',filetype::class)
+            //->add('photo',filetype::class)
             ->add('Prenom')
             ->add('Nom')
             ->add('Telephone')
