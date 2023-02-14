@@ -6,7 +6,7 @@
 </head>
 <body>
 <header>
-    <a href="{{ path('main_acceuil') }}">Acceuil </a>
+    <a href="{{ path('sortie_list') }}">Acceuil </a>
     {% if app.user %}
         <li> Bienvenue {{ app.user.email }}</li>
         <a href="{{ path('app_logout') }}">Logout</a>
