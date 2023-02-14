@@ -21,9 +21,7 @@ class ProfilController extends AbstractController
 //        ]);
 //    }
 
-    /**
-     * @Route("/profil", name="users")
-     */
+    #[Route('/profil', name: 'app_profil')]
     public function users(Request $request, EntityManagerInterface $em)
     {
         $user = new User();
