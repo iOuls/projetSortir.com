@@ -35,7 +35,7 @@ class ProfilController extends AbstractController
             $user_id = $form['id']->getData();
             $user = $em->getRepository(User::class)->findOneById($user_id);
 
-            $user_new = new User();
+
             $user_new = $form->getData();
 
             $user->setPseudo($user_new->getPseudo());

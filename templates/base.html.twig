@@ -6,10 +6,11 @@
 </head>
 <body>
 <header>
-    <a href="{{ path('sortie_list') }}">Acceuil </a>
+    <a href="{{ path('app_profil') }}">Profil </a><br>
+    <a href="{{ path('sortie_list') }}">Acceuil </a><br>
     {% if app.user %}
-        <li> Bienvenue {{ app.user.pseudo }}</li>
         <a href="{{ path('app_logout') }}">Logout</a>
+        <li> Bienvenue {{ app.user.pseudo }}</li>
     {% else %}
         <a href="{{ path('app_login') }}">Login</a>
         <a href="{{ path('app_register') }}">Register</a>

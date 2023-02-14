@@ -9,12 +9,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ProfilFormType extends AbstractType
 {
-    /**
-     * @Route("/profil", name="users")
-     */
+    #[Route('/profil', name: 'app_profil')]
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('Pseudo')
             ->add('email')
 //            ->add('roles')
             ->add('password')
