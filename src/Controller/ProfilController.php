@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\ProfilFormType;
 use Cassandra\Type\UserType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,25 +13,26 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ProfilController extends AbstractController
 {
-    #[Route('/profil', name: 'app_profil')]
-    public function index(): Response
-    {
-        return $this->render('profil/index.html.twig', [
-            'controller_name' => 'ProfilController',
-        ]);
-    }
+//    #[Route('/profil', name: 'app_profil')]
+//    public function index(): Response
+//    {
+//        return $this->render('profil/index.html.twig', [
+//            'controller_name' => 'ProfilController',
+//        ]);
+//    }
+
     /**
      * @Route("/profil", name="users")
      */
     public function users(Request $request, EntityManagerInterface $em)
     {
         $user = new User();
-        $form = $this->createForm(UserType::class, $user);
+        $form = $this->createForm(ProfilFormType::class, $user);
 
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             $user_id = $form['id']->getData();
             $user = $em->getRepository(User::class)->findOneById($user_id);
 
@@ -47,14 +49,14 @@ class ProfilController extends AbstractController
 
             $em->persist($user);
             $em->flush();
-            $this->addFlash('success','L\'utilisateur ' . $user->getPseudo() . ' a été été mis à jour !');
+            $this->addFlash('success', 'L\'utilisateur ' . $user->getPseudo() . ' a été été mis à jour !');
         }
 
         $users = $em->getRepository(User::class)->findAll();
 
-            return $this->render('profil/index.html.twig', [
-                'profilForm' => $form->createView(),
-                'users' => $users
+        return $this->render('profil/index.html.twig', [
+            'profilForm' => $form->createView(),
+            'users' => $users
         ]);
     }
 }
