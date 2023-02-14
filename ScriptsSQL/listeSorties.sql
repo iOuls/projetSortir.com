@@ -8,4 +8,4 @@ INSERT INTO sortie (etat_id,
                     date_limit_inscription,
                     nb_inscriptions_max,
                     infos_sortie)
-VALUES (1, 1, 1, 2, 'Sortie de Thomas',
+VALUES (1, 1, 1, 2, 'Sortie de Thomas', now(), '04:00:00', date(now()), 5, 'Description de la sortie.')
