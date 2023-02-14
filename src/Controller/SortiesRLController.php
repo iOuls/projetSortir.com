@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class SortiesRLController extends AbstractController
 {
@@ -21,6 +22,7 @@ class SortiesRLController extends AbstractController
      * @param Sortie $sortie
      * @return Response
      */
+    #[IsGranted('ROLE_USER')]
     #[Route('/sorties/sedesister/{id}', name: 'sorties_desister')]
     public function desister(
         EntityManagerInterface $em,
@@ -64,6 +66,7 @@ class SortiesRLController extends AbstractController
      * @param Sortie $sortie
      * @return Response
      */
+    #[IsGranted('ROLE_USER')]
     #[Route('/sorties/cloture/{id}', name: 'sorties_cloture')]
     public function cloture(
         EntityManagerInterface $em,
@@ -104,6 +107,7 @@ class SortiesRLController extends AbstractController
      * @param Sortie $sortie
      * @return Response
      */
+    #[IsGranted('ROLE_USER')]
     #[Route('/sorties/annuler/{id}', name: 'sorties_annuler')]
     public function annuler(
         EntityManagerInterface $em,
