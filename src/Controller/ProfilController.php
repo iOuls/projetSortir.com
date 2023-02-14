@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\ProfilFormType;
+use App\Repository\UserRepository;
 use Cassandra\Type\UserType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -55,6 +56,20 @@ class ProfilController extends AbstractController
         return $this->render('profil/index.html.twig', [
             'profilForm' => $form->createView(),
             'users' => $users
+        ]);
+    }
+
+    #[Route('/profil/{id}', name: 'profil_afficher')]
+    public function afficherProfil(
+        UserRepository $userRepository,
+        int            $id
+    ): Response
+    {
+        $user = new User();
+        $user = $userRepository->findOneBy(['id' => $id]);
+
+        return $this->render('', [
+            'user' => $user
         ]);
     }
 }
