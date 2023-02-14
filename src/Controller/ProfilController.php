@@ -22,7 +22,7 @@ class ProfilController extends AbstractController
 //        ]);
 //    }
 
-    #[Route('/profil', name: 'app_profil')]
+    #[Route('/profil', name: 'profil_users')]
     public function users(Request $request, EntityManagerInterface $em)
     {
         $user = new User();
@@ -63,7 +63,7 @@ class ProfilController extends AbstractController
         ]);
     }
 
-    #[Route('/profil/{id}', name: 'profil_afficher')]
+    #[Route('/sonprofil/{id}', name: 'profil_afficher')]
     public function afficherProfil(
         UserRepository $userRepository,
         int            $id
