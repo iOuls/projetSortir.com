@@ -113,10 +113,10 @@ class SortiesRLController extends AbstractController
     {
         $sortie = $sR->findOneBy(['id' => $id]);
 
-        if ($sortie->getOrganisateur()->getUserIdentifier() == $this->getUser()->getUserIdentifier() ||
-            in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
+        if (in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
 
             $sortie->setEtat($eR->findOneBy(['libelle' => 'Annulée']));
+            $sortie->setMotifAnnulation('Annulée par l\'administrateur.');
             try {
                 $em->persist($sortie);
                 $em->flush();

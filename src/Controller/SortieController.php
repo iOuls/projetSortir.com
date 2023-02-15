@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Etat;
 use App\Entity\Sortie;
+use App\Form\AnnulerSortieType;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
 use App\Repository\SiteRepository;
@@ -47,6 +48,43 @@ class SortieController extends AbstractController
             ]);
     }
 
+    #[Route('/sortie/annuler/{id}', name: '_annuler')]
+    public function annuler(
+        SortieRepository       $sortieRepository,
+        int                    $id,
+        Request                $request,
+        EtatRepository         $etatRepository,
+        EntityManagerInterface $em
+    ): Response
+    {
+        $sortie = new Sortie();
+        $sortie = $sortieRepository->findOneBy(['id' => $id]);
+        $sortieForm = $this->createForm(AnnulerSortieType::class, $sortie);
+        $sortieForm->handleRequest($request);
+
+        if ($sortieForm->isSubmitted()) {
+            try {
+                // Je récupère en base de donnée l'état créé
+                $etatAnn = $etatRepository->findOneBy(['libelle' => 'Annulée']);
+                if ($etatAnn) {
+                    $sortie->setEtat($etatAnn);
+                    if ($sortieForm->isValid()) {
+                        $em->persist($sortie);
+                    }
+                }
+            } catch (Exception $exception) {
+                dd($exception->getMessage());
+            }
+            $em->flush();
+            $this->addFlash('Sortie annulée', 'Sortie annulée avec succès.');
+            return $this->redirectToRoute('sortie_list');
+        }
+        return $this->render('sortie/annuler.html.twig',
+            compact('sortieForm', 'sortie')
+        );
+
+    }
+
 
     #[Route('/create', name: '_create')]
     public function create(
@@ -56,8 +94,6 @@ class SortieController extends AbstractController
     )
     {
         $sortie = new Sortie();
-
-
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
         if ($sortieForm->isSubmitted()) {
