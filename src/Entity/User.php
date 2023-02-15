@@ -10,9 +10,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+#[UniqueEntity(fields: ['email'], message: 'Il y a déjà un compte créé avec cette adresse mail.')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -20,6 +21,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\Email(
+        message: 'L\'email saisi n\'est pas valide.',
+    )]
+    #[Assert\NotBlank]
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
@@ -29,32 +34,55 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      */
+    #[Assert\NotBlank]
     #[ORM\Column]
     private ?string $password = null;
 
+    #[Assert\Length(max: 255, maxMessage: 'Le champ nom n\'accepte que 255 caractères maximum.')]
+    #[Assert\Type('string')]
+    #[Assert\NotBlank]
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
+    #[Assert\Length(max: 255, maxMessage: 'Le champ prénom n\'accepte que 255 caractères maximum.')]
+    #[Assert\Type('string')]
+    #[Assert\NotBlank]
     #[ORM\Column(length: 255)]
     private ?string $prenom = null;
 
+    #[Assert\Range(min: 100000000, max: 900000000, notInRangeMessage: 'Le numéro de téléphone est incorrect.')]
+    #[Assert\Type('integer')]
+    #[Assert\NotBlank]
     #[ORM\Column(nullable: true)]
     private ?int $telephone = null;
 
+    #[Assert\Type('boolean')]
+    #[Assert\NotBlank]
     #[ORM\Column]
     private ?bool $administrateur = null;
 
+    #[Assert\Type('boolean')]
+    #[Assert\NotBlank]
     #[ORM\Column]
     private ?bool $actif = null;
 
     #[ORM\OneToMany(mappedBy: 'organisateur', targetEntity: Sortie::class)]
-    private Collection $sorties;
+    private Collection $sortiesO;
+
+    #[ORM\ManyToMany(mappedBy: 'participant', targetEntity: Sortie::class)]
+    private Collection $sortiesP;
 
     #[ORM\Column(type: Types::BLOB, nullable: true)]
     private $photo = null;
 
+    #[Assert\Length(max: 255, maxMessage: 'Le champ pseudo n\'accepte que 255 caractères maximum.')]
+    #[Assert\Type('string')]
+    #[Assert\NotBlank]
     #[ORM\Column(length: 255)]
     private ?string $Pseudo = null;
+
+    #[ORM\ManyToOne(inversedBy: 'user')]
+    private ?Site $site = null;
 
     public function __construct()
     {
@@ -85,7 +113,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
@@ -194,27 +222,57 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Sortie>
      */
-    public function getSorties(): Collection
+    public function getSortiesO(): Collection
     {
-        return $this->sorties;
+        return $this->sortiesO;
     }
 
-    public function addSorty(Sortie $sorty): self
+    public function addSortieO(Sortie $sortie): self
     {
-        if (!$this->sorties->contains($sorty)) {
-            $this->sorties->add($sorty);
-            $sorty->setOrganisateur($this);
+        if (!$this->sortiesO->contains($sortie)) {
+            $this->sortiesO->add($sortie);
+            $sortie->setOrganisateur($this);
         }
 
         return $this;
     }
 
-    public function removeSorty(Sortie $sorty): self
+    public function removeSortieO(Sortie $sortie): self
     {
-        if ($this->sorties->removeElement($sorty)) {
+        if ($this->sortiesO->removeElement($sortie)) {
             // set the owning side to null (unless already changed)
-            if ($sorty->getOrganisateur() === $this) {
-                $sorty->setOrganisateur(null);
+            if ($sortie->getOrganisateur() === $this) {
+                $sortie->setOrganisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Sortie>
+     */
+    public function getSortiesP(): Collection
+    {
+        return $this->sortiesP;
+    }
+
+    public function addSortieP(Sortie $sortie): self
+    {
+        if (!$this->sortiesP->contains($sortie)) {
+            $this->sortiesP->add($sortie);
+            $sortie->setOrganisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSortieP(Sortie $sortie): self
+    {
+        if ($this->sortiesP->removeElement($sortie)) {
+            // set the owning side to null (unless already changed)
+            if ($sortie->getOrganisateur() === $this) {
+                $sortie->setOrganisateur(null);
             }
         }
 
@@ -241,6 +299,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPseudo(string $Pseudo): self
     {
         $this->Pseudo = $Pseudo;
+
+        return $this;
+    }
+
+    public function getSite(): ?Site
+    {
+        return $this->site;
+    }
+
+    public function setSite(?Site $site): self
+    {
+        $this->site = $site;
 
         return $this;
     }

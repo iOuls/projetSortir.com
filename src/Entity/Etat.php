@@ -6,6 +6,7 @@ use App\Repository\EtatRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EtatRepository::class)]
 class Etat
@@ -15,6 +16,10 @@ class Etat
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\Choice('Créée', 'Ouverte', 'Clôturée',
+        'Activité en cours', 'Passée', 'Annulée')]
+    #[Assert\Type('string')]
+    #[Assert\NotBlank]
     #[ORM\Column(length: 255)]
     private ?string $libelle = null;
 

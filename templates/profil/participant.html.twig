@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <img src="{{ user.photo }}" alt="Photo de {{ user.pseudo }}">
+
+    <h1>{{ user.pseudo }}</h1>
+    <ul>
+        <li>Prénom : {{ user.prenom }}</li>
+        <li>Nom : {{ user.nom }}</li>
+        <li>Téléphone : {{ user.telephone }}</li>
+        <li>Email : {{ user.email }}</li>
+        <li>Ville de rattachement : {{ user.site.nom }}</li>
+    </ul>
+
+    <a href="{{ path('sortie_list') }}">
+        <button>Retour</button>
+    </a>
+{% endblock %}
+
+{% block title %}
+    {{ parent() }} Profil de {{ user.pseudo }}
+{% endblock %}
+

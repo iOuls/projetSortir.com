@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
 class Sortie
@@ -16,21 +17,33 @@ class Sortie
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\Length(max: 255, maxMessage: 'Le champ nom de sortie n\'accepte que 255 caractères maximum.')]
+    #[Assert\Type('string')]
+    #[Assert\NotBlank]
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
+    #[Assert\NotBlank]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $dateHeureDebut = null;
 
+    #[Assert\NotBlank]
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $duree = null;
 
+    #[Assert\NotBlank]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateLimitInscription = null;
 
+    #[Assert\PositiveOrZero]
+    #[Assert\Type('integer')]
+    #[Assert\NotBlank]
     #[ORM\Column(nullable: true)]
     private ?int $nbInscriptionsMax = null;
 
+    #[Assert\Length(max: 255, maxMessage: 'Le champ infos sortie n\'accepte que 255 caractères maximum.')]
+    #[Assert\Type('string')]
+    #[Assert\NotBlank]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $InfosSortie = null;
 

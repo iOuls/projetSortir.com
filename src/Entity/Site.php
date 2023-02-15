@@ -6,6 +6,7 @@ use App\Repository\SiteRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SiteRepository::class)]
 class Site
@@ -15,15 +16,21 @@ class Site
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\Type('string')]
+    #[Assert\NotBlank]
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
     #[ORM\OneToMany(mappedBy: 'site', targetEntity: Sortie::class)]
     private Collection $sorties;
 
+    #[ORM\OneToMany(mappedBy: 'site', targetEntity: User::class)]
+    private Collection $user;
+
     public function __construct()
     {
         $this->sorties = new ArrayCollection();
+        $this->user = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -73,14 +80,32 @@ class Site
         return $this;
     }
 
-    public function getFiltre(): ?Filtre
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUser(): Collection
     {
-        return $this->filtre;
+        return $this->user;
     }
 
-    public function setFiltre(?Filtre $filtre): self
+    public function addUser(User $user): self
     {
-        $this->filtre = $filtre;
+        if (!$this->user->contains($user)) {
+            $this->user->add($user);
+            $user->setSite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->user->removeElement($user)) {
+            // set the owning side to null (unless already changed)
+            if ($user->getSite() === $this) {
+                $user->setSite(null);
+            }
+        }
 
         return $this;
     }
