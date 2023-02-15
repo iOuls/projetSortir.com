@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Liste des sorties</h1>
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alter-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <ul>
+        {% for sortie in sorties %}
+            <li><b>{{ sortie.nom }}</b>
+                <ul>
+                    <li>Lieu : {{ sortie.lieu.nom }}</li>
+                    <li>Site : {{ sortie.site.nom }}</li>
+                    <li>Organisateur : {{ sortie.organisateur.pseudo }}</li>
+                    <li><a href="{{ path('administration_supprimer', {id : sortie.id}) }}">Supprimer</a></li>
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+
+{% block title %}
+    {{ parent() }}Administration - Liste des sorties
+{% endblock %}
+
