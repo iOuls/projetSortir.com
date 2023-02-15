@@ -11,18 +11,34 @@
     <section>
 
         {% for sortie in sorties %}
-            <p>
-                {{ sortie.nom }}
-                {{ sortie.dateHeureDebut | date('d/m/Y') }}
-                {{ sortie.dateLimitInscription | date('d/m/Y')}}
-                {{ sortie.nbInscriptionsMax }}
-                {{ sortie.etat.libelle }}
-                {% if app.user in sortie.participant %}
-                    x
+
+            {{ sortie.nom }}
+            {{ sortie.dateHeureDebut | date('d/m/Y') }}
+            {{ sortie.dateLimitInscription | date('d/m/Y')}}
+            {{ sortie.nbInscriptionsMax }}
+            {{ sortie.etat.libelle }}
+            {% if app.user in sortie.participant %}
+                x
+            {% endif %}
+            {{ sortie.organisateur.pseudo }}
+            {% if sortie.etat.libelle == 'Créée'%}
+               {% if sortie.organisateur == app.user  %}
+                  <a>Modifier</a>
+                  <p> - Publier</p>
+               {% endif %}
+            {% elseif sortie.etat.libelle == 'Ouvert' %}
+                {% if sortie.organisateur == app.user %}
+                    <a>Afficher</a>
+                    <a> - Annuler</a>
+                {%  else %}
+                    <a>Afficher</a>
+                    <a> - Se désister</a>
                 {% endif %}
-                {{ sortie.organisateur.pseudo }}
-                TODO : actions?
-            </p>
+            {% else %}
+                <a>Afficher</a>
+            {% endif %}
+
+
         {% endfor %}
 
         {% if app.user %}
