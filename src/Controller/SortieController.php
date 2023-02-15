@@ -15,11 +15,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-
+#[Route('/', name: 'sortie')]
 class SortieController extends AbstractController
 
 {
-    #[Route('/', name: 'sortie_list')]
+    #[Route('', name: '_list')]
     public function list(
         SortieRepository $sortieRepository,
         SiteRepository   $siteRepository
@@ -34,8 +34,21 @@ class SortieController extends AbstractController
             ]);
     }
 
+    #[Route('/sortie/{id}', name: '_afficher')]
+    public function afficher(
+        SortieRepository $sortieRepository,
+        int              $id
+    ): Response
+    {
+        $sortie = $sortieRepository->findOneBy(['id' => $id]);
+        return $this->render('sortie/afficher.html.twig',
+            [
+                'sortie' => $sortie
+            ]);
+    }
 
-    #[Route('/create', name: 'sortie_create')]
+
+    #[Route('/create', name: '_create')]
     public function create(
         EntityManagerInterface $em,
         Request                $request,
