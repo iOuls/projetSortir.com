@@ -67,7 +67,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?bool $actif = null;
 
     #[ORM\OneToMany(mappedBy: 'organisateur', targetEntity: Sortie::class)]
-    private Collection $sorties;
+    private Collection $sortiesO;
+
+    #[ORM\ManyToMany(mappedBy: 'participant', targetEntity: Sortie::class)]
+    private Collection $sortiesP;
 
     #[ORM\Column(type: Types::BLOB, nullable: true)]
     private $photo = null;
@@ -219,27 +222,57 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Sortie>
      */
-    public function getSorties(): Collection
+    public function getSortiesO(): Collection
     {
-        return $this->sorties;
+        return $this->sortiesO;
     }
 
-    public function addSorty(Sortie $sorty): self
+    public function addSortieO(Sortie $sortie): self
     {
-        if (!$this->sorties->contains($sorty)) {
-            $this->sorties->add($sorty);
-            $sorty->setOrganisateur($this);
+        if (!$this->sortiesO->contains($sortie)) {
+            $this->sortiesO->add($sortie);
+            $sortie->setOrganisateur($this);
         }
 
         return $this;
     }
 
-    public function removeSorty(Sortie $sorty): self
+    public function removeSortieO(Sortie $sortie): self
     {
-        if ($this->sorties->removeElement($sorty)) {
+        if ($this->sortiesO->removeElement($sortie)) {
             // set the owning side to null (unless already changed)
-            if ($sorty->getOrganisateur() === $this) {
-                $sorty->setOrganisateur(null);
+            if ($sortie->getOrganisateur() === $this) {
+                $sortie->setOrganisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Sortie>
+     */
+    public function getSortiesP(): Collection
+    {
+        return $this->sortiesP;
+    }
+
+    public function addSortieP(Sortie $sortie): self
+    {
+        if (!$this->sortiesP->contains($sortie)) {
+            $this->sortiesP->add($sortie);
+            $sortie->setOrganisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSortieP(Sortie $sortie): self
+    {
+        if ($this->sortiesP->removeElement($sortie)) {
+            // set the owning side to null (unless already changed)
+            if ($sortie->getOrganisateur() === $this) {
+                $sortie->setOrganisateur(null);
             }
         }
 
