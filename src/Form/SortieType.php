@@ -23,8 +23,11 @@ class SortieType extends AbstractType
             ->add('nbInscriptionsMax', null , ['label'=>'Nombre de place : '])
             ->add('duree', null , ['label'=>'Durée : '])
             ->add('InfosSortie', null , ['label'=>'Description et infos : '])
-            ->add('lieu')
-               // TODO, LieuType::class)
+            ->add('lieu', EntityType::class,[
+                "class"=>Lieu::class,
+                "choice_label"=>"nom"
+            ])
+
 
 
             ->add("Enregistrer", SubmitType::class);

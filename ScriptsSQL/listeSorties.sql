@@ -1,3 +1,4 @@
+
 INSERT INTO sortie (etat_id,
                     lieu_id,
                     site_id,

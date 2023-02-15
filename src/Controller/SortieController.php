@@ -2,12 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\Etat;
 use App\Entity\Sortie;
 use App\Form\SortieType;
+use App\Repository\EtatRepository;
+use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 
@@ -16,15 +21,16 @@ class SortieController extends AbstractController
 {
     #[Route('/', name: 'sortie_list')]
     public function list(
-        SortieRepository $sortieRepository
-    ): \Symfony\Component\HttpFoundation\Response
+        SortieRepository $sortieRepository,
+        SiteRepository   $siteRepository
+    ): Response
     {
         $sorties = $sortieRepository->findAll();
-
+        $sites = $siteRepository->findAll();
         return $this->render('sortie/list.html.twig',
             [
-                'sorties' => $sorties
-
+                'sorties' => $sorties,
+                'sites' => $sites
             ]);
     }
 
@@ -32,30 +38,36 @@ class SortieController extends AbstractController
     #[Route('/create', name: 'sortie_create')]
     public function create(
         EntityManagerInterface $em,
-        Request                $request
+        Request                $request,
+        EtatRepository         $etatRepository
     )
     {
         $sortie = new Sortie();
+
+
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
         if ($sortieForm->isSubmitted()) {
             try {
-
-                if ($sortieForm->isValid()) {
-                    $em->persist($sortie);
+                // Je récupère en base de donnée l'état créé
+                $etatCree = $etatRepository->findOneBy(['libelle' => 'Créée']);
+                if ($etatCree) {
+                    $sortie->setEtat($etatCree);
+                    if ($sortieForm->isValid()) {
+                        $em->persist($sortie);
+                    }
                 }
             } catch (Exception $exception) {
                 dd($exception->getMessage());
             }
             $em->flush();
-            $this->addFlash('bravo', 'Sortie ajouter.');
+            $this->addFlash('bravo', 'Sortie ajoutée.');
             return $this->redirectToRoute('sortie_create');
         }
         return $this->render('sortie/create.html.twig',
             compact('sortieForm')
         );
     }
-
 
 
 }
