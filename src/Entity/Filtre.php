@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\FiltreRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: FiltreRepository::class)]
@@ -16,14 +17,33 @@ class Filtre
     private ?int $id = null;
 
     #[ORM\OneToMany(mappedBy: 'filtre', targetEntity: Site::class)]
-    private Collection $Site;
+    #[ORM\Column]
+    private Collection $site;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $nomSortieContient = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $DateFiltreDebut = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $dateFiltreFin = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $organisateur = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $inscrit = null;
+
+    #[ORM\Column]
+    private ?bool $PasInscrit = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $boolean = null;
 
     public function __construct()
     {
-        $this->Site = new ArrayCollection();
+        $this->site = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -36,13 +56,13 @@ class Filtre
      */
     public function getSite(): Collection
     {
-        return $this->Site;
+        return $this->site;
     }
 
     public function addSite(Site $site): self
     {
-        if (!$this->Site->contains($site)) {
-            $this->Site->add($site);
+        if (!$this->site->contains($site)) {
+            $this->site->add($site);
             $site->setFiltre($this);
         }
 
@@ -51,7 +71,7 @@ class Filtre
 
     public function removeSite(Site $site): self
     {
-        if ($this->Site->removeElement($site)) {
+        if ($this->site->removeElement($site)) {
             // set the owning side to null (unless already changed)
             if ($site->getFiltre() === $this) {
                 $site->setFiltre(null);
@@ -69,6 +89,78 @@ class Filtre
     public function setNomSortieContient(string $nomSortieContient): self
     {
         $this->nomSortieContient = $nomSortieContient;
+
+        return $this;
+    }
+
+    public function getDateFiltreDebut(): ?\DateTimeInterface
+    {
+        return $this->DateFiltreDebut;
+    }
+
+    public function setDateFiltreDebut(?\DateTimeInterface $DateFiltreDebut): self
+    {
+        $this->DateFiltreDebut = $DateFiltreDebut;
+
+        return $this;
+    }
+
+    public function getDateFiltreFin(): ?\DateTimeInterface
+    {
+        return $this->dateFiltreFin;
+    }
+
+    public function setDateFiltreFin(?\DateTimeInterface $dateFiltreFin): self
+    {
+        $this->dateFiltreFin = $dateFiltreFin;
+
+        return $this;
+    }
+
+    public function isOrganisateur(): ?bool
+    {
+        return $this->organisateur;
+    }
+
+    public function setOrganisateur(?bool $organisateur): self
+    {
+        $this->organisateur = $organisateur;
+
+        return $this;
+    }
+
+    public function isInscrit(): ?bool
+    {
+        return $this->inscrit;
+    }
+
+    public function setInscrit(?bool $inscrit): self
+    {
+        $this->inscrit = $inscrit;
+
+        return $this;
+    }
+
+    public function isPasInscrit(): ?bool
+    {
+        return $this->PasInscrit;
+    }
+
+    public function setPasInscrit(bool $PasInscrit): self
+    {
+        $this->PasInscrit = $PasInscrit;
+
+        return $this;
+    }
+
+    public function isBoolean(): ?bool
+    {
+        return $this->boolean;
+    }
+
+    public function setBoolean(?bool $boolean): self
+    {
+        $this->boolean = $boolean;
 
         return $this;
     }
