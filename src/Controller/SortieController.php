@@ -6,11 +6,13 @@ use App\Entity\Etat;
 use App\Entity\Sortie;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
+use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 
@@ -19,15 +21,16 @@ class SortieController extends AbstractController
 {
     #[Route('/', name: 'sortie_list')]
     public function list(
-        SortieRepository $sortieRepository
-    ): \Symfony\Component\HttpFoundation\Response
+        SortieRepository $sortieRepository,
+        SiteRepository   $siteRepository
+    ): Response
     {
         $sorties = $sortieRepository->findAll();
-
+        $sites = $siteRepository->findAll();
         return $this->render('sortie/list.html.twig',
             [
-                'sorties' => $sorties
-
+                'sorties' => $sorties,
+                'sites' => $sites
             ]);
     }
 

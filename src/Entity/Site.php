@@ -21,9 +21,6 @@ class Site
     #[ORM\OneToMany(mappedBy: 'site', targetEntity: Sortie::class)]
     private Collection $sorties;
 
-    #[ORM\ManyToOne(inversedBy: 'Site')]
-    private ?Filtre $filtre = null;
-
     public function __construct()
     {
         $this->sorties = new ArrayCollection();
