@@ -3,10 +3,17 @@
 {% block body %}
 
     <div>
-        <p>Date du jour : </p>
+        <p>Date du jour : {{maDate|date('d/m/Y')  }}</p>
         {% if app.user %}
             <p>Participant :  {{ app.user.pseudo }}</p>
         {% endif %}
+    </div>
+
+    <div>
+        <p>Filtrer les sorties</p>
+        {{ form_start(filtreForm) }}
+        {{ form_widget(filtreForm) }}
+        {{ form_end(filtreForm) }}
     </div>
     <section>
 

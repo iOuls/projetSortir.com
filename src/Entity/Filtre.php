@@ -16,9 +16,6 @@ class Filtre
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToMany(mappedBy: 'filtre', targetEntity: Site::class)]
-    #[ORM\Column]
-    private Collection $site;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $nomSortieContient = null;
@@ -35,11 +32,11 @@ class Filtre
     #[ORM\Column(nullable: true)]
     private ?bool $inscrit = null;
 
-    #[ORM\Column]
-    private ?bool $PasInscrit = null;
+    #[ORM\Column(nullable: true)]
+    private ?bool $pasInscrit = null;
 
     #[ORM\Column(nullable: true)]
-    private ?bool $boolean = null;
+    private ?bool $sortiesPassees = null;
 
     public function __construct()
     {
@@ -51,35 +48,6 @@ class Filtre
         return $this->id;
     }
 
-    /**
-     * @return Collection<int, Site>
-     */
-    public function getSite(): Collection
-    {
-        return $this->site;
-    }
-
-    public function addSite(Site $site): self
-    {
-        if (!$this->site->contains($site)) {
-            $this->site->add($site);
-            $site->setFiltre($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSite(Site $site): self
-    {
-        if ($this->site->removeElement($site)) {
-            // set the owning side to null (unless already changed)
-            if ($site->getFiltre() === $this) {
-                $site->setFiltre(null);
-            }
-        }
-
-        return $this;
-    }
 
     public function getNomSortieContient(): ?string
     {
@@ -143,24 +111,24 @@ class Filtre
 
     public function isPasInscrit(): ?bool
     {
-        return $this->PasInscrit;
+        return $this->pasInscrit;
     }
 
-    public function setPasInscrit(bool $PasInscrit): self
+    public function setPasInscrit(bool $pasInscrit): self
     {
-        $this->PasInscrit = $PasInscrit;
+        $this->pasInscrit = $pasInscrit;
 
         return $this;
     }
 
-    public function isBoolean(): ?bool
+    public function isSortiesPassees(): ?bool
     {
-        return $this->boolean;
+        return $this->sortiesPassees;
     }
 
-    public function setBoolean(?bool $boolean): self
+    public function SetSortiesPassees(?bool $sortiesPassees): self
     {
-        $this->boolean = $boolean;
+        $this->sortiesPassees = $sortiesPassees;
 
         return $this;
     }
