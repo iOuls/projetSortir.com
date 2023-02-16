@@ -9,8 +9,46 @@
 
     <div>
         {{ form_start(sortieForm) }}
-        {{ form_widget(sortieForm) }}
+
+        <label>{{ field_label(sortieForm.nom) }} :</label>
+        <div>{{ form_widget(sortieForm.nom) }}</div><br>
+
+        <label>{{ field_label(sortieForm.dateHeureDebut) }} :</label>
+        <div>{{ form_widget(sortieForm.dateHeureDebut) }}</div><br>
+
+        <label>{{ field_label(sortieForm.dateLimitInscription) }} :</label>
+        <div>{{ form_widget(sortieForm.dateLimitInscription) }}</div><br>
+
+        <label>{{ field_label(sortieForm.nbInscriptionsMax) }} :</label>
+        <div>{{ form_widget(sortieForm.nbInscriptionsMax) }}</div><br>
+
+        <label>{{ field_label(sortieForm.duree) }} :</label>
+        <div>{{ form_widget(sortieForm.duree) }}</div><br>
+
+        <label>{{ field_label(sortieForm.InfosSortie) }} :</label>
+        <div>{{ form_widget(sortieForm.InfosSortie) }}</div><br>
+
+        <label>{{ field_label(sortieForm.site) }} :</label>
+        <div>{{ form_widget(sortieForm.site) }}</div><br>
+
+      {#   <label>{{ field_label(sortieForm.lieu.ville) }} :</label>
+        <div>{{ form_widget(sortieForm.lieu.ville) }}</div><br>
+
+        <label>{{ field_label(sortieForm.lieu.nom) }} :</label>
+        <div>{{ form_widget(sortieForm.lieu.nom) }}</div><br>
+
+        <label>{{ field_label(sortieForm.lieu.rue) }} :</label>
+        <div>{{ form_widget(sortieForm.lieu.rue) }}</div><br>
+
+        <label>{{ field_label(sortieForm.lieu.latitude) }} :</label>
+        <div>{{ form_widget(sortieForm.lieu.latitude) }}</div><br>
+
+        <label>{{ field_label(sortieForm.lieu.longitude) }} :</label>
+        <div>{{ form_widget(sortieForm.lieu.longitude) }}</div><br>#}
+
+
         {{ form_end(sortieForm) }}
+
         <a href={{ path('sortie_list') }}>Annuler</a>
     </div>
 {% endblock %}

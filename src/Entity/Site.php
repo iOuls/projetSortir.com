@@ -24,6 +24,7 @@ class Site
     #[ORM\OneToMany(mappedBy: 'site', targetEntity: Sortie::class)]
     private Collection $sorties;
 
+
     #[ORM\OneToMany(mappedBy: 'site', targetEntity: User::class)]
     private Collection $user;
 
