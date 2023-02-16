@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }}Annuler la sortie {{ sortie.nom }}
+{% endblock %}
+
+{% block body %}
+    <h1>Annuler une sortie</h1>
+    <ul>
+        <li>Nom de la sortie : {{ sortie.nom }}</li>
+        <li>Date de la sortie : {{ sortie.dateHeureDebut | date('d/m/Y') }}</li>
+        <li>Ville organisatrice : {{ sortie.site.nom }}</li>
+        <li>Lieu
+            : {{ sortie.lieu.nom }} {{ sortie.lieu.rue }} {{ sortie.lieu.ville.codePostal }} {{ sortie.lieu.ville.nom }}
+        <li>{{ form(sortieForm) }} <a href="{{ path('sortie_list') }}">
+                <button>Annuler</button>
+            </a></li>
+    </ul>
+
+{% endblock %}
+

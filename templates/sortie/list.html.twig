@@ -9,7 +9,6 @@
         {% endif %}
     </div>
 
-    <!-- Filtres -->
     <h2>Filtrer les sorties</h2>
     <div class="container">
         <div class="box">
@@ -45,6 +44,14 @@
         </div>
     </div>
 
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alter-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
     <table>
         <tr>
             <th>Nom de la sortie</th>
@@ -61,25 +68,32 @@
             <td>{{ sortie.nom }}</td>
             <td>{{ sortie.dateHeureDebut | date('d/m/Y') }}</td>
             <td>{{ sortie.dateLimitInscription | date('d/m/Y') }}</td>
-            <td>{{ sortie.nbInscriptionsMax }}</td>
+            <td>{{ sortie.participant |length }} / {{ sortie.nbInscriptionsMax }}</td>
             <td>{{ sortie.etat.libelle }}</td>
             <td>{{ (app.user in sortie.participant) ? 'X' : '' }}</td>
             <td>{{ sortie.organisateur.pseudo }}</td>
+
             <td>{% if sortie.etat.libelle == 'Créée' %}
                     {% if sortie.organisateur == app.user %}
-                        <a>Modifier</a>
-                        <p> - Publier</p>
-                    {% endif %}
-                {% elseif sortie.etat.libelle == 'Ouvert' %}
-                    {% if sortie.organisateur == app.user %}
-                        <a>Afficher</a>
-                        <a> - Annuler</a>
-                    {% else %}
-                        <a>Afficher</a>
-                        <a> - Se désister</a>
+                        {# TODO liens #}
+                        <a href="">Modifier</a> -
+                        <a href="{{ path('sortie_publier', {id : sortie.id}) }}">Publier</a>
                     {% endif %}
                 {% else %}
-                    <a>Afficher</a>
+                    <a href="{{ path('sortie_afficher', {id : sortie.id}) }}">Afficher</a>
+                    {% if (sortie.etat.libelle == 'Ouverte') %}
+                        {% if sortie.organisateur == app.user %}
+                            - <a href="{{ path('sortie_annuler', {id : sortie.id}) }}">Annuler</a>
+                        {% else %}
+                            {% if app.user.email in sortie.participant %}
+                                {# TODO liens #}
+                                - <a href="{{ path('sorties_sinscrire', {id : sortie.id}) }}">S'inscrire</a>
+                            {% else %}
+                                {# TODO liens #}
+                                - <a href="{{ path('sorties_desister', {id : sortie.id}) }}">Se désister</a>
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
                 {% endif %}
             </td>
             {% endfor %}

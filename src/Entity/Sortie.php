@@ -66,6 +66,9 @@ class Sortie
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'sorties')]
     private Collection $participant;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $motifAnnulation = null;
+
     public function __construct()
     {
         $this->participant = new ArrayCollection();
@@ -216,6 +219,18 @@ class Sortie
     public function removeParticipant(User $participant): self
     {
         $this->participant->removeElement($participant);
+
+        return $this;
+    }
+
+    public function getMotifAnnulation(): ?string
+    {
+        return $this->motifAnnulation;
+    }
+
+    public function setMotifAnnulation(?string $motifAnnulation): self
+    {
+        $this->motifAnnulation = $motifAnnulation;
 
         return $this;
     }
