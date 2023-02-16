@@ -3,7 +3,7 @@
 {% block body %}
 
     <div>
-        <p>Date du jour : {{maDate|date('d/m/Y')  }}</p>
+        <p>Date du jour : {{date|date('d/m/Y')  }}</p>
         {% if app.user %}
             <p>Participant :  {{ app.user.pseudo }}</p>
         {% endif %}
@@ -49,7 +49,7 @@
         {% endfor %}
 
         {% if app.user %}
-            <a href={{ path('sortie_create') }}>Créer une sortie</a>
+            <a href="{{ path('sortie_create')}}">Créer une sortie</a>
         {% endif %}
 
     </section>

@@ -28,11 +28,19 @@ class SortieType extends AbstractType
                 "class"=>Site::class,
                 "choice_label"=>"nom"
             ])
-            ->add('lieu', LieuType::class)
+            ->add('lieu', EntityType::class,[
+                "class"=>Lieu::class,
+                "choice_label"=>"nom"
+            ])
+            ->add('Enregistrer',SubmitType::class,['label'=>'Enregistrer'])
+            ->add('Publier',SubmitType::class,['label'=>'Publier'])
+
+            ;
 
 
 
-            ->add("Enregistrer", SubmitType::class);
+          //  ->add("Enregistrer", SubmitType::class)
+           // ->add("Publier", SubmitType::class);
 
 
     }

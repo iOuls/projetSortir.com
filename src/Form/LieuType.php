@@ -19,10 +19,8 @@ class LieuType extends AbstractType
                     "class" => Ville::class,
                     "choice_label"=>"nom"
                 ])
-            ->add('nom', EntityType::class,[
-                'class'=>Lieu::class,
-                'choice_label'=>'nom'
-            ])
+            ->add('nom')
+
             ->add('rue', options: [
                 'disabled' => true,
                 'attr' => [
