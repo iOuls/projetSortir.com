@@ -46,11 +46,17 @@ class RegistrationController extends AbstractController
             $entityManager->flush();
             // do anything else you need here, like send an email
 
-            return $userAuthenticator->authenticateUser(
-                $user_new,
-                $authenticator,
-                $request
-            );
+            if (in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
+                $this->addFlash('Enregistrement effectué', 'Le nouvel utilisateur a bien été créé.');
+                return $this->redirectToRoute('administration_listeUsers');
+            } else {
+                return $userAuthenticator->authenticateUser(
+                    $user_new,
+                    $authenticator,
+                    $request
+                );
+            }
+
         }
 
         return $this->render('registration/register.html.twig', [

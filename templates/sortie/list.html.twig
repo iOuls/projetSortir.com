@@ -3,60 +3,98 @@
 {% block body %}
 
     <div>
-        <p>Date du jour : {{date|date('d/m/Y')  }}</p>
+        <p>Date du jour : {{ date|date('d/m/Y') }}</p>
         {% if app.user %}
-            <p>Participant :  {{ app.user.pseudo }}</p>
+            <p>Participant : {{ app.user.pseudo }}</p>
         {% endif %}
     </div>
 
-    <div>
-        <p>Filtrer les sorties</p>
-        {{ form_start(filtreForm) }}
-        {{ form_widget(filtreForm) }}
-        {{ form_end(filtreForm) }}
-    </div>
-    <section>
+    <!-- Filtres -->
+    <h2>Filtrer les sorties</h2>
+    <div class="container">
+        <div class="box">
+            <label for="site">Site :</label>
+            <select name="site" id="site">
+                {% for site in sites %}
+                    <option value="{{ site.id }}">{{ site.nom }}</option>
+                {% endfor %}
+            </select>
+            <label for="motsclefs">Le nom de la sortie contient :</label>
+            <input type="text" name="motsclefs" id="motsclefs">
+            <label for="datedebut">Entre </label>
+            <input type="date" name="datedebut" id="datedebut">
+            <label for="datefin"> et </label>
+            <input type="date" name="datefin" id="datefin">
+        </div>
+        <div class="box">
+            <input type="checkbox" name="organisateur" id="organisateur">
+            <label for="organisateur">Sorties dont je suis l'organisateur/trice</label>
 
+            <input type="checkbox" name="incrit" id="incrit">
+            <label for="incrit">Sorties auxquelles je suis inscrit/e</label>
+
+            <input type="checkbox" name="noninscrit" id="noninscrit">
+            <label for="noninscrit">Sorties auxquelles je ne suis pas inscrit/e</label>
+
+            <input type="checkbox" name="passees" id="passees">
+            <label for="passees">Sorties passées</label>
+        </div>
+
+        <div class="box">
+            <button>Rechercher</button>
+        </div>
+    </div>
+
+    <table>
+        <tr>
+            <th>Nom de la sortie</th>
+            <th>Date de la sortie</th>
+            <th>Clôture</th>
+            <th>Inscrits/Places</th>
+            <th>Etat</th>
+            <th>Inscrit</th>
+            <th>Organisateur</th>
+            <th>Actions</th>
+        </tr>
         {% for sortie in sorties %}
-
-            {{ sortie.nom }}
-            {{ sortie.dateHeureDebut | date('d/m/Y') }}
-            {{ sortie.dateLimitInscription | date('d/m/Y')}}
-            {{ sortie.nbInscriptionsMax }}
-            {{ sortie.etat.libelle }}
-            {% if app.user in sortie.participant %}
-                x
-            {% endif %}
-            {{ sortie.organisateur.pseudo }}
-            {% if sortie.etat.libelle == 'Créée'%}
-               {% if sortie.organisateur == app.user  %}
-                  <a>Modifier</a>
-                  <p> - Publier</p>
-               {% endif %}
-            {% elseif sortie.etat.libelle == 'Ouvert' %}
-                {% if sortie.organisateur == app.user %}
+        <tr>
+            <td>{{ sortie.nom }}</td>
+            <td>{{ sortie.dateHeureDebut | date('d/m/Y') }}</td>
+            <td>{{ sortie.dateLimitInscription | date('d/m/Y') }}</td>
+            <td>{{ sortie.nbInscriptionsMax }}</td>
+            <td>{{ sortie.etat.libelle }}</td>
+            <td>{{ (app.user in sortie.participant) ? 'X' : '' }}</td>
+            <td>{{ sortie.organisateur.pseudo }}</td>
+            <td>{% if sortie.etat.libelle == 'Créée' %}
+                    {% if sortie.organisateur == app.user %}
+                        <a>Modifier</a>
+                        <p> - Publier</p>
+                    {% endif %}
+                {% elseif sortie.etat.libelle == 'Ouvert' %}
+                    {% if sortie.organisateur == app.user %}
+                        <a>Afficher</a>
+                        <a> - Annuler</a>
+                    {% else %}
+                        <a>Afficher</a>
+                        <a> - Se désister</a>
+                    {% endif %}
+                {% else %}
                     <a>Afficher</a>
-                    <a> - Annuler</a>
-                {%  else %}
-                    <a>Afficher</a>
-                    <a> - Se désister</a>
                 {% endif %}
-            {% else %}
-                <a>Afficher</a>
-            {% endif %}
+            </td>
+            {% endfor %}
+        </tr>
+    </table>
 
-
-        {% endfor %}
-
-        {% if app.user %}
-            <a href="{{ path('sortie_create')}}">Créer une sortie</a>
-        {% endif %}
-
-    </section>
+    {% if app.user %}
+        <a href={{ path('sortie_create') }}>
+            <button>Créer une sortie</button>
+        </a>
+    {% endif %}
 
 {% endblock %}
 
 {% block title %}
-
+    {{ parent() }}Liste des sorties
 {% endblock %}
 
