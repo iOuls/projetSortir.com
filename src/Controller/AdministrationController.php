@@ -115,7 +115,7 @@ class AdministrationController extends AbstractController
         $sites = $siteRepository->findAll();
 
         if ($motsclefs != null){
-            $sites=$siteRepository->findByLettre('nom');
+            $sites=$siteRepository->findByLettre($motsclefs);
         }
 
 
@@ -157,8 +157,12 @@ class AdministrationController extends AbstractController
         $ville = new Ville();
         $villeForm = $this->createForm(VilleType::class, $ville);
         $villeForm->handleRequest($request);
-
+        $motsclefs = $request->query->get('motsclefs');
         $villes = $villeRepository->findAll();
+
+        if ($motsclefs != null){
+            $villes=$villeRepository->findByLettre($motsclefs);
+        }
 
         if ($villeForm->isSubmitted() && $villeForm->isValid()) {
             $villeForm = $this->createForm(VilleType::class, $ville);
@@ -170,7 +174,8 @@ class AdministrationController extends AbstractController
 
         return $this->render('administration/gererVilles.html.twig', [
             'villes' => $villes,
-            'villeForm' => $villeForm
+            'villeForm' => $villeForm,
+            'motsclefs'=>$motsclefs
         ]);
     }
 

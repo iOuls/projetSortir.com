@@ -7,7 +7,7 @@
     <form method="GET" action="{{ path('administration_gererVilles') }}">
         <div class="box">
             <label for="motsclefs">Le nom de la ville contient :</label>
-            <input type="text" name="motsclefs" id="motsclefs">
+            <input type="text" name="motsclefs" id="motsclefs" value="{{ motsclefs }}">
         </div>
         <div class="box">
             <input class="btn" type="submit" value="Rechercher">
