@@ -48,6 +48,26 @@ class SortieController extends AbstractController
             ]);
     }
 
+    #[Route('/sortie/publier/{id}', name: '_publier')]
+    public function publier(
+        SortieRepository       $sortieRepository,
+        EtatRepository         $etatRepository,
+        EntityManagerInterface $em,
+        int                    $id
+    ): Response
+    {
+        $sortie = $sortieRepository->findOneBy(['id' => $id]);
+        $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Ouverte']));
+        try {
+            $em->persist($sortie);
+            $em->flush();
+            $this->addFlash('Sortie publiée', 'Sortie publiée avec succès.');
+        } catch (Exception $exception) {
+            $this->addFlash('Sortie non publiée', 'Détail de l\'erreur : ' . $exception->getMessage() . '.');
+        }
+        return $this->redirectToRoute('sortie_list');
+    }
+
     #[Route('/sortie/annuler/{id}', name: '_annuler')]
     public function annuler(
         SortieRepository       $sortieRepository,
