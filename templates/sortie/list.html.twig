@@ -76,7 +76,7 @@
             <td>{% if sortie.etat.libelle == 'Créée' %}
                     {% if sortie.organisateur == app.user %}
                         {# TODO liens #}
-                        <a href="">Modifier</a> -
+                        <a href="{{ path('sortie_modifier', {id : sortie.id}) }}">Modifier</a> -
                         <a href="{{ path('sortie_publier', {id : sortie.id}) }}">Publier</a>
                     {% endif %}
                 {% else %}
@@ -85,12 +85,12 @@
                         {% if sortie.organisateur == app.user %}
                             - <a href="{{ path('sortie_annuler', {id : sortie.id}) }}">Annuler</a>
                         {% else %}
-                            {% if app.user.email in sortie.participant %}
-                                {# TODO liens #}
-                                - <a href="{{ path('sorties_sinscrire', {id : sortie.id}) }}">S'inscrire</a>
-                            {% else %}
-                                {# TODO liens #}
-                                - <a href="{{ path('sorties_desister', {id : sortie.id}) }}">Se désister</a>
+                            {% if (app.user) %}
+                                {% if app.user.email in sortie.participant %}
+                                    {# TODO liens #}
+                                    - <a href="{{ path('sorties_sinscrire', {id : sortie.id}) }}">S'inscrire</a>                                {% else %}
+                                    {# TODO liens #}
+                                    - <a href="{{ path('sorties_desister', {id : sortie.id}) }}">Se désister</a>                                {% endif %}
                             {% endif %}
                         {% endif %}
                     {% endif %}

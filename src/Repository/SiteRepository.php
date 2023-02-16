@@ -39,6 +39,19 @@ class SiteRepository extends ServiceEntityRepository
         }
     }
 
+    public function findByLettre()
+    {
+        $queryBuilder = $this->createQueryBuilder('site');
+        $query = $queryBuilder->getQuery();
+
+        if ($motsclefs = !'') {
+            $queryBuilder->andWhere('site.nom LIKE :motsclefs')
+                ->setParameter(':motsclefs', '%' . $motsclefs . '%');
+        }
+
+        return $query->getResult();
+    }
+
 //    /**
 //     * @return Site[] Returns an array of Site objects
 //     */
