@@ -29,16 +29,15 @@ class SortiesRLController extends AbstractController
         EntityManagerInterface $em,
         SortieRepository       $sR,
         Sortie                 $sortie,
+        UserRepository         $userRepository,
         int                    $id
     ): Response
     {
         // vérification si User connecté
         if ($this->getUser() != null) {
             // récupération user connecté pour retrait de la sortie
-            $user = new User();
-            $user->setEmail($this->getUser()->getUserIdentifier());
             $sortie = $sR->findOneBy(['id' => $id]);
-            $sortie->removeParticipant($user);
+            $sortie->removeParticipant($userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()]));
             try {
                 // mise à jour BDD
                 $em->persist($sortie);
@@ -54,7 +53,6 @@ class SortiesRLController extends AbstractController
             }
         } else {
             // redirection connexion
-            $this->addFlash('Désistement non effectué', 'Détail de l\'erreur : ' . $e->getMessage());
             return $this->redirectToRoute('app_login');
         }
     }

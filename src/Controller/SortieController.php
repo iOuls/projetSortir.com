@@ -8,26 +8,86 @@ use App\Form\SortieType;
 use App\Repository\EtatRepository;
 use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_USER')]
 #[Route('/', name: 'sortie')]
 class SortieController extends AbstractController
-
 {
     #[Route('', name: '_list')]
     public function list(
         SortieRepository $sortieRepository,
-        SiteRepository   $siteRepository
+        SiteRepository   $siteRepository,
+        UserRepository   $userRepository,
+        Request          $request
     ): Response
     {
+        // récupération des variables communes pour le return
         $date = new \DateTime();
-        $sorties = $sortieRepository->findAll();
         $sites = $siteRepository->findAll();
+
+        // traitement si filtres activés
+        if (
+            $request->query->get('site') != null ||
+            $request->query->get('motsclefs') != null ||
+            $request->query->get('datedebut') != null ||
+            $request->query->get('datefin') != null ||
+            $request->query->get('organisateur') != false ||
+            $request->query->get('incrit') != false ||
+            $request->query->get('noninscrit') != false ||
+            $request->query->get('passees') != false
+        ) {
+
+            $site = $request->query->get('site'); // filtre ok
+            $motsclefs = $request->query->get('motsclefs'); // filtre ok
+            $datedebut = $request->query->get('datedebut'); // TODO filtre ko
+            $datefin = $request->query->get('datefin'); // TODO filtre ko
+            $organisateur = ($request->query->get('organisateur') == 'on') ? true : false; // filtre ok
+            $inscrit = ($request->query->get('incrit') == 'on') ? true : false; // filtre ok
+            $noninscrit = ($request->query->get('noninscrit') == 'on') ? true : false; // filtre ok
+            $passees = ($request->query->get('passees') == 'on') ? true : false;
+            $criteres = [
+                'site' => $site,
+                'motsclefs' => $motsclefs,
+                'datedebut' => $datedebut,
+                'datefin' => $datefin,
+                'organisateur' => $organisateur,
+                'inscrit' => $inscrit,
+                'noninscrit' => $noninscrit,
+                'passees' => $passees
+            ];
+
+            $sorties = $sortieRepository->filtreSorties(
+                $site,
+                $motsclefs,
+                $datedebut,
+                $datefin,
+                $userRepository->findOneBy([
+                    'id' => $this->getUser()]),
+                $organisateur,
+                $inscrit,
+                $noninscrit,
+                $passees);
+
+            return $this->render('sortie/list.html.twig',
+                [
+                    'sorties' => $sorties,
+                    'sites' => $sites,
+                    'date' => $date,
+                    'criteres' => $criteres
+                ]);
+        }
+
+        // traitement si aucun filtre = findall
+        $sorties = $sortieRepository->findAll();
+
         return $this->render('sortie/list.html.twig',
             [
                 'sorties' => $sorties,

@@ -2,8 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\Site;
 use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -38,6 +40,72 @@ class SortieRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
+    public function filtreSorties($site,
+                                  $motsclefs,
+                                  $datedebut,
+                                  $datefin,
+                                  $user,
+                                  $organisateur,
+                                  $inscrit,
+                                  $noninscrit,
+                                  $passe)
+    {
+        // mise en place des jointures
+        $queryBuilder =
+            $this->createQueryBuilder('sortie')
+                ->innerJoin(Site::class, 'site', Join::WITH, 'sortie.site = site.id')
+
+                // ajout du site
+                ->andWhere('site.id = :site')
+                ->setParameter(':site', $site);
+
+        // mots clefs
+        if ($motsclefs != '') {
+            $queryBuilder->andWhere('sortie.nom LIKE :motsclefs')
+                ->setParameter(':motsclefs', '%' . $motsclefs . '%');
+        }
+
+        // date début
+        if ($datedebut != null) {
+            $queryBuilder->andWhere('sortie.dateHeureDebut >= :datedebut')
+                ->setParameter(':datedebut', $datedebut);
+        }
+
+        // date fin
+        if ($datefin != null) {
+            $queryBuilder->andWhere('sortie.dateHeureDebut <= :datefin')
+                ->setParameter(':datefin', $datefin);
+        }
+
+        // organisateur
+        if ($organisateur) {
+            $queryBuilder->andWhere('sortie.organisateur = :user')
+                ->setParameter(':user', $user);
+        }
+
+        // inscription
+        if ($inscrit) {
+            $queryBuilder->andWhere(':user MEMBER OF sortie.participant')
+                ->setParameter(':user', $user);
+        }
+
+        // non inscrit
+        if ($noninscrit) {
+            $queryBuilder->andWhere(':user NOT MEMBER OF sortie.participant')
+                ->setParameter(':user', $user);
+        }
+
+        // passées
+        if ($passe) {
+            $queryBuilder->andWhere('sortie.dateHeureDebut < :date')
+                ->setParameter(':date', new \DateTime());
+        }
+
+        $query = $queryBuilder->getQuery();
+        return $query->getResult();
+    }
+
 
 //    /**
 //     * @return Sortie[] Returns an array of Sortie objects
