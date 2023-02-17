@@ -4,11 +4,13 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Vich\UploaderBundle\Form\Type\VichFileType;
 
 class ProfilFormType extends AbstractType
 {
@@ -32,6 +34,7 @@ class ProfilFormType extends AbstractType
             ->add('telephone')
             ->add('administrateur')
             ->add('actif')
+            ->add('imageFile',FileType::class)
             ->add('save', SubmitType::class, [
                 'label' => 'Enregistrer les modifications',
                 'attr' => [

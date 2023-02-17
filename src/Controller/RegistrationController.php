@@ -34,6 +34,8 @@ class RegistrationController extends AbstractController
             $user_new->setEmail($user->getEmail());
             $user_new->setAdministrateur(false);
             $user_new->setActif(true);
+            $user_new->setImageFile($user->getImageFile());
+
             // encode the plain password
             $user_new->setPassword(
                 $userPasswordHasher->hashPassword(

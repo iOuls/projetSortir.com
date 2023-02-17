@@ -4,7 +4,16 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    app.path.product_images: /uploads/images/products
+# ..
 
+# config/packages/vich_uploader.yaml
+vich_uploader:
+    # ...
+    mappings:
+        product_images:
+            uri_prefix:         '%app.path.product_images%'
+            upload_destination: '%kernel.project_dir%/public%app.path.product_images%'
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -22,3 +31,4 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
