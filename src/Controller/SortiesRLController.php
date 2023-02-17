@@ -6,6 +6,7 @@ use App\Entity\Sortie;
 use App\Entity\User;
 use App\Repository\EtatRepository;
 use App\Repository\SortieRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,34 +29,30 @@ class SortiesRLController extends AbstractController
         EntityManagerInterface $em,
         SortieRepository       $sR,
         Sortie                 $sortie,
+        UserRepository         $userRepository,
         int                    $id
     ): Response
     {
         // vérification si User connecté
         if ($this->getUser() != null) {
             // récupération user connecté pour retrait de la sortie
-            $user = new User();
-            $user->setEmail($this->getUser()->getUserIdentifier());
             $sortie = $sR->findOneBy(['id' => $id]);
-            $sortie->removeParticipant($user);
+            $sortie->removeParticipant($userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()]));
             try {
                 // mise à jour BDD
                 $em->persist($sortie);
                 $em->flush();
                 $this->addFlash('Désistement effectué', 'Votre désistement a été pris en compte.');
 
-                // TODO : vérifier la route
-                return $this->redirectToRoute('sorties_list');
+                return $this->redirectToRoute('sortie_list');
 
             } catch (\Exception $e) {
                 // redirection avec message KO
-                $this->addFlash('Désistement non effectué', 'Détail de l\'erreur : ' . $e->getMessage());
-                // TODO : vérifier la route
-                return $this->redirectToRoute('sorties_list');
+                $this->addFlash('Désistement non effectué', 'Vous devez être connecté pour pouvoir vous désister d\'une sortie.');
+                return $this->redirectToRoute('sortie_list');
             }
         } else {
             // redirection connexion
-            // TODO : vérifier la route
             return $this->redirectToRoute('app_login');
         }
     }
@@ -85,18 +82,14 @@ class SortiesRLController extends AbstractController
             } catch (\Exception $e) {
                 // redirection avec message KO
                 $this->addFlash('Clôture non effectué', 'Détail de l\'erreur : ' . $e->getMessage());
-                // TODO : vérifier la route
-                return $this->redirectToRoute('sorties_list');
+                return $this->redirectToRoute('sortie_list');
             }
         } else {
             // redirection user != organisateur
             $this->addFlash('Clôture non effectué', 'Vous n\'êtes pas l\'organisateur de l\'évènement.');
-            // TODO : vérifier la route
-            return $this->redirectToRoute('sorties_list');
+            return $this->redirectToRoute('sortie_list');
         }
-
-
-        // TODO : vérifier la route
+        $this->addFlash('Clôture effectuée', 'La clôture de l\'évènement a été enregistrée.');
         return $this->redirect('/sorties/' . $sortie->getId());
     }
 
@@ -118,27 +111,63 @@ class SortiesRLController extends AbstractController
     {
         $sortie = $sR->findOneBy(['id' => $id]);
 
-        if ($sortie->getOrganisateur()->getUserIdentifier() == $this->getUser()->getUserIdentifier() ||
-            in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
+        if (in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
 
             $sortie->setEtat($eR->findOneBy(['libelle' => 'Annulée']));
+            $sortie->setMotifAnnulation('Annulée par l\'administrateur.');
             try {
                 $em->persist($sortie);
                 $em->flush();
             } catch (\Exception $e) {
                 // redirection avec message KO
                 $this->addFlash('Annulation non effectué', 'Détail de l\'erreur : ' . $e->getMessage());
-                // TODO : vérifier la route
                 return $this->redirectToRoute('/sorties/' . $sortie->getId());
             }
         } else {
             // redirection user != organisateur
             $this->addFlash('Annulation non effectué', 'Vous n\'êtes pas l\'organisateur de l\'évènement.');
-            // TODO : vérifier la route
-            return $this->redirectToRoute('sorties_list');
+            return $this->redirectToRoute('sortie_list');
+        }
+        $this->addFlash('Annulation effectuée', 'L\'annulation de l\'évènement a été enregistrée.');
+        return $this->redirect('/sorties/' . $sortie->getId());
+    }
+
+    /**
+     * S'inscrire à une sortie
+     * @param int $id
+     * @param SortieRepository $sortieRepository
+     * @param UserRepository $userRepository
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     */
+    #[IsGranted('ROLE_USER')]
+    #[Route('/sinscrire/{id}', name: 'sorties_sinscrire')]
+    public function sinscrire(
+        int                    $id,
+        SortieRepository       $sortieRepository,
+        UserRepository         $userRepository,
+        EntityManagerInterface $entityManager
+    ): Response
+    {
+        $sortie = $sortieRepository->findOneBy(['id' => $id]);
+
+        // vérification si inscription = max
+        if ($sortie->getNbInscriptionsMax() == $sortie->getParticipant()->count()) {
+            $this->addFlash('Inscription non effectuée', 'Inscription non effectuée, la sortie est complète.');
+            return $this->redirectToRoute('sortie_list');
         }
 
-        // TODO : vérifier la route
-        return $this->redirect('/sorties/' . $sortie->getId());
+        $user = $userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
+        $sortie->addParticipant($user);
+        try {
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+        } catch (\Exception $e) {
+            // redirection avec message KO
+            $this->addFlash('Inscription non effectué', 'Détail de l\'erreur : ' . $e->getMessage());
+            return $this->redirectToRoute('sortie_list');
+        }
+        $this->addFlash('Inscription effectué', 'Vous avez été inscrit à la sortie : ' . $sortie->getNom() . '.');
+        return $this->redirectToRoute('sortie_list');
     }
 }

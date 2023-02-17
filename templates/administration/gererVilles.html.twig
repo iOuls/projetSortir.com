@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Gérer les villes</h1>
+    <h2>Filtrer les villes</h2>
+
+    <form method="GET" action="{{ path('administration_gererVilles') }}">
+        <div class="box">
+            <label for="motsclefs">Le nom de la ville contient :</label>
+            <input type="text" name="motsclefs" id="motsclefs" value="{{ motsclefs }}">
+        </div>
+        <div class="box">
+            <input class="btn" type="submit" value="Rechercher">
+        </div>
+    </form>
+
+    <table>
+        <tr>
+            <th>Ville</th>
+            <th>Code postal</th>
+            <th>Actions</th>
+        </tr>
+        {% for ville in villes %}
+        <tr>
+            <td>{{ ville.nom }}</td>
+            <td>{{ ville.codePostal }}</td>
+            <td>
+                <a href="{{ path('administration_supprimerVille', {id : ville.id}) }}">Supprimer</a>
+            </td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td>
+                {{ form_start(villeForm) }}
+                {{ form_widget(villeForm.nom) }}
+            </td>
+            <td>{{ form_widget(villeForm.codePostal) }}</td>
+            <td>
+                {#  <a href="">Ajouter</a>#}
+                {{ form_end(villeForm) }}
+            </td>
+        </tr>
+    </table>
+
+{% endblock %}
+
+{% block title %}
+    {{ parent() }}Administration - Gérer les villes
+{% endblock %}

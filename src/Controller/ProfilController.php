@@ -72,7 +72,7 @@ class ProfilController extends AbstractController
         $user = new User();
         $user = $userRepository->findOneBy(['id' => $id]);
 
-        return $this->render('', [
+        return $this->render('profil/participant.html.twig', [
             'user' => $user
         ]);
     }
