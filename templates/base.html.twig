@@ -6,6 +6,7 @@
 </head>
 <body>
 <header>
+    
     {% if app.user %}
         {% if 'ROLE_ADMIN' in app.user.roles %}
             <a href="{{ path('administration_index') }}">Administration</a>
@@ -16,6 +17,7 @@
     <a href="{{ path('sortie_list') }}">Acceuil </a>
     {% if app.user %}
         <a href="{{ path('app_logout') }}">Logout</a>
+        <a href="{{ path('profil_users') }}">Profil</a><br>
         <p>Bienvenue {{ app.user.pseudo }}</p>
     {% else %}
         <a href="{{ path('app_login') }}">Login</a>

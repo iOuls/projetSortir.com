@@ -5,5 +5,6 @@
 {% block body %}
     <h1>Profil</h1>
     {{ form(profilForm) }}
+    <img src="{{ asset("images/products/" ~ user.image) }}" alt="">
 
 {% endblock %}

@@ -10,8 +10,11 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
 
+#[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'Il y a déjà un compte créé avec cette adresse mail.')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -30,6 +33,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private array $roles = [];
+
 
     /**
      * @var string The hashed password
@@ -72,8 +76,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(mappedBy: 'participant', targetEntity: Sortie::class)]
     private Collection $sortiesP;
 
-    #[ORM\Column(type: Types::BLOB, nullable: true)]
-    private $photo = null;
 
     #[Assert\Length(max: 255, maxMessage: 'Le champ pseudo n\'accepte que 255 caractères maximum.')]
     #[Assert\Type('string')]
@@ -279,17 +281,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPhoto()
-    {
-        return $this->photo;
-    }
-
-    public function setPhoto($photo): self
-    {
-        $this->photo = $photo;
-
-        return $this;
-    }
 
     public function getPseudo(): ?string
     {
@@ -299,6 +290,80 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPseudo(string $Pseudo): self
     {
         $this->Pseudo = $Pseudo;
+
+        return $this;
+    }
+
+
+     #[ORM\Column(nullable: true)]
+    private $image;
+
+
+     #[Vich\UploadableField(mapping:"image", fileNameProperty:"image")]
+    private $imageFile;
+
+
+    #[ORM\Column(nullable: true)]private ?\DateTime $updatedAt;
+
+
+    public function setImageFile(File $image = null)
+    {
+        $this->imageFile = $image;
+
+        // VERY IMPORTANT:
+        // It is required that at least one field changes if you are using Doctrine,
+        // otherwise the event listeners won't be called and the file is lost
+        if ($image) {
+            // if 'updatedAt' is not defined in your entity, use another property
+            $this->updatedAt = new \DateTime('now');
+        }
+    }
+
+    public function getImageFile()
+    {
+        return $this->imageFile;
+    }
+
+    public function setImage($image)
+    {
+        $this->image = $image;
+    }
+
+    public function getImage()
+    {
+        return $this->image;
+    }
+    public function __serialize(): array
+    {
+        return [
+            'id' => $this->id,
+            'email' => $this->email,
+            'imageFile' => base64_encode($this->imageFile),
+            'password' => $this->password,
+            ];
+    }
+    public function __unserialize(array $serialized)
+    {
+        $this->imageFile = base64_decode($serialized['imageFile']);
+        $this->email = $serialized['email'];
+        $this->id = $serialized['id'];
+        $this->password = $serialized['password'];
+        return $this;}
+
+    // Reset password
+    #[ORM\Column(type: 'string', length: 100)]
+    private $resetToken;
+
+// ...
+
+    public function getResetToken(): ?string
+    {
+        return $this->resetToken;
+    }
+
+    public function setResetToken(?string $resetToken): self
+    {
+        $this->resetToken = $resetToken;
 
         return $this;
     }

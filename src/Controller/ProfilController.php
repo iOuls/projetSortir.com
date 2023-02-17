@@ -22,12 +22,16 @@ class ProfilController extends AbstractController
 //        ]);
 //    }
 
-    #[Route('/profil', name: 'app_profil')]
+    #[Route('/profil', name: 'profil_users')]
     public function users(Request $request, EntityManagerInterface $em)
     {
         $user = new User();
-        $form = $this->createForm(ProfilFormType::class, $user);
 
+        if ($this->getUser()) {
+            $user=$this->getUser();
+        }
+
+        $form = $this->createForm(ProfilFormType::class, $user);
 
         $form->handleRequest($request);
 
@@ -35,7 +39,6 @@ class ProfilController extends AbstractController
             $user_id = $form['id']->getData();
             $user = $em->getRepository(User::class)->findOneById($user_id);
 
-            $user_new = new User();
             $user_new = $form->getData();
 
             $user->setPseudo($user_new->getPseudo());
@@ -45,21 +48,22 @@ class ProfilController extends AbstractController
             $user->setMail($user_new->getMail());
             $user->setCampus($user_new->getCampus());
             $user->setActif($user_new->isActif());
+            $user->setImageFile($user_new->getImageFile());
+
 
             $em->persist($user);
             $em->flush();
             $this->addFlash('success', 'L\'utilisateur ' . $user->getPseudo() . ' a été été mis à jour !');
         }
 
-        $users = $em->getRepository(User::class)->findAll();
 
         return $this->render('profil/index.html.twig', [
             'profilForm' => $form->createView(),
-            'users' => $users
+            'user' => $user
         ]);
     }
 
-    #[Route('/profil/{id}', name: 'profil_afficher')]
+    #[Route('/sonprofil/{id}', name: 'profil_afficher')]
     public function afficherProfil(
         UserRepository $userRepository,
         int            $id
