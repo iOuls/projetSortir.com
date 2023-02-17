@@ -24,34 +24,28 @@ class ProfilController extends AbstractController
 
     #[Route('/profil', name: 'profil_users')]
     public function users(Request $request, EntityManagerInterface $em)
-    {
-        $user = new User();
-
-        if ($this->getUser()) {
-            $user=$this->getUser();
-        }
+    {$userBDD = $em->getRepository(User::class)->findOneBy(['email'=>$this->getUser()->getUserIdentifier()]);
+        $user = $userBDD;
 
         $form = $this->createForm(ProfilFormType::class, $user);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user_id = $form['id']->getData();
-            $user = $em->getRepository(User::class)->findOneById($user_id);
+
 
             $user_new = $form->getData();
 
-            $user->setPseudo($user_new->getPseudo());
-            $user->setNom($user_new->getNom());
-            $user->setPrenom($user_new->getPrenom());
-            $user->setTelephone($user_new->getTelephone());
-            $user->setMail($user_new->getMail());
-            $user->setCampus($user_new->getCampus());
-            $user->setActif($user_new->isActif());
-            $user->setImageFile($user_new->getImageFile());
+            $userBDD->setPseudo($user_new->getPseudo());
+            $userBDD->setNom($user_new->getNom());
+            $userBDD->setPrenom($user_new->getPrenom());
+            $userBDD->setTelephone($user_new->getTelephone());
+            // $userBDD->setMail($this->getUser()->getUserIdentifier());
+            $userBDD->setActif($user_new->isActif());
+            $userBDD->setImageFile($user_new->getImageFile());
 
 
-            $em->persist($user);
+            $em->persist($userBDD);
             $em->flush();
             $this->addFlash('success', 'L\'utilisateur ' . $user->getPseudo() . ' a été été mis à jour !');
         }
@@ -72,7 +66,7 @@ class ProfilController extends AbstractController
         $user = new User();
         $user = $userRepository->findOneBy(['id' => $id]);
 
-        return $this->render('profil/participant.html.twig', [
+        return $this->render('', [
             'user' => $user
         ]);
     }
