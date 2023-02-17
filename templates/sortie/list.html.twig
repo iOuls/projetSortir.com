@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    
+
     <div>
         <p>Date du jour : {{ date|date('d/m/Y') }}</p>
         {% if app.user %}
@@ -15,6 +15,7 @@
             <div class="box">
                 <label for="site">Site :</label>
                 <select name="site" id="site">
+                    <option value="">-Take a Site !-</option>
                     {% for site in sites %}
                         <option value="{{ site.id }}" {{ (criteres.site == site.id) ? 'selected="selected"' : '' }}>{{ site.nom }}</option>
                     {% endfor %}
