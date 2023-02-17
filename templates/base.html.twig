@@ -16,15 +16,10 @@
     <a href="{{ path('sortie_list') }}">Acceuil </a>
     {% if app.user %}
         <a href="{{ path('app_logout') }}">Logout</a>
-
-        {% if 'ROLE_ADMIN' in app.user.roles %}
-            <a href="{{ path('administration_index') }}">Administration</a>
-        {% endif %}
-
         <p>Bienvenue {{ app.user.pseudo }}</p>
     {% else %}
         <a href="{{ path('app_login') }}">Login</a>
-        <a href="{{ path('app_register') }}">Register</a>
+        <!-- <a href="{{ path('app_register') }}">Register</a> -->
     {% endif %}
 </header>
 {% block body %}{% endblock %}

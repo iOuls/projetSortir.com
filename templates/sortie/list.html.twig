@@ -11,37 +11,54 @@
 
     <h2>Filtrer les sorties</h2>
     <div class="container">
-        <div class="box">
-            <label for="site">Site :</label>
-            <select name="site" id="site">
-                {% for site in sites %}
-                    <option value="{{ site.id }}">{{ site.nom }}</option>
-                {% endfor %}
-            </select>
-            <label for="motsclefs">Le nom de la sortie contient :</label>
-            <input type="text" name="motsclefs" id="motsclefs">
-            <label for="datedebut">Entre </label>
-            <input type="date" name="datedebut" id="datedebut">
-            <label for="datefin"> et </label>
-            <input type="date" name="datefin" id="datefin">
-        </div>
-        <div class="box">
-            <input type="checkbox" name="organisateur" id="organisateur">
-            <label for="organisateur">Sorties dont je suis l'organisateur/trice</label>
+        <form method="GET" action="{{ path('sortie_list') }}">
+            <div class="box">
+                <label for="site">Site :</label>
+                <select name="site" id="site">
+                    {% for site in sites %}
+                        <option value="{{ site.id }}" {{ (criteres.site == site.id) ? 'selected="selected"' : '' }}>{{ site.nom }}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
-            <input type="checkbox" name="incrit" id="incrit">
-            <label for="incrit">Sorties auxquelles je suis inscrit/e</label>
+            <div class="box">
+                <label for="motsclefs">Le nom de la sortie contient :</label>
+                <input type="text" name="motsclefs"
+                       id="motsclefs" value="{{ criteres.motsclefs }}">
+            </div>
 
-            <input type="checkbox" name="noninscrit" id="noninscrit">
-            <label for="noninscrit">Sorties auxquelles je ne suis pas inscrit/e</label>
+            <div class="box">
+                <label for="datedebut">Entre </label>
+                <input type="date" name="datedebut" id="datedebut" value="{{ criteres.datedebut }}">
+                <label for="datefin"> et </label>
+                <input type="date" name="datefin" id="datefin" value="{{ criteres.datefin }}">
+            </div>
 
-            <input type="checkbox" name="passees" id="passees">
-            <label for="passees">Sorties passées</label>
-        </div>
+            <div class="box">
+                <input type="checkbox" name="organisateur"
+                       id="organisateur" {{ (criteres.organisateur) ? 'checked' : '' }}>
+                <label for="organisateur">Sorties dont je suis l'organisateur/trice</label>
+            </div>
 
-        <div class="box">
-            <button>Rechercher</button>
-        </div>
+            <div class="box">
+                <input type="checkbox" name="incrit" id="incrit" {{ (criteres.inscrit) ? 'checked' : '' }}>
+                <label for="incrit">Sorties auxquelles je suis inscrit/e</label>
+            </div>
+
+            <div class="box">
+                <input type="checkbox" name="noninscrit" id="noninscrit" {{ (criteres.noninscrit) ? 'checked' : '' }}>
+                <label for="noninscrit">Sorties auxquelles je ne suis pas inscrit/e</label>
+            </div>
+
+            <div class="box">
+                <input type="checkbox" name="passees" id="passees" {{ (criteres.passees) ? 'checked' : '' }}>
+                <label for="passees">Sorties passées</label>
+            </div>
+
+            <div class="box">
+                <input class="btn" type="submit" value="Rechercher">
+            </div>
+        </form>
     </div>
 
     {% for label, messages in app.flashes %}
@@ -85,12 +102,10 @@
                         {% if sortie.organisateur == app.user %}
                             - <a href="{{ path('sortie_annuler', {id : sortie.id}) }}">Annuler</a>
                         {% else %}
-                            {% if (app.user) %}
-                                {% if app.user.email in sortie.participant %}
-                                    {# TODO liens #}
-                                    - <a href="{{ path('sorties_sinscrire', {id : sortie.id}) }}">S'inscrire</a>                                {% else %}
-                                    {# TODO liens #}
-                                    - <a href="{{ path('sorties_desister', {id : sortie.id}) }}">Se désister</a>                                {% endif %}
+                            {% if app.user in sortie.participant %}
+                                - <a href="{{ path('sorties_desister', {id : sortie.id}) }}">Se désister</a>
+                            {% else %}
+                                - <a href="{{ path('sorties_sinscrire', {id : sortie.id}) }}">S'inscrire</a>
                             {% endif %}
                         {% endif %}
                     {% endif %}
