@@ -18,7 +18,7 @@ use function PHPUnit\Framework\assertFalse;
 
 class RegistrationController extends AbstractController
 {
-
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, AppAuthenticator $authenticator, EntityManagerInterface $entityManager): Response
     {
@@ -34,7 +34,6 @@ class RegistrationController extends AbstractController
             $user_new->setPrenom($user->getPrenom());
             $user_new->setTelephone($user->getTelephone());
             $user_new->setEmail($user->getEmail());
-            $user_new->setAdministrateur(false);
             $user_new->setActif(true);
             $user_new->setImageFile($user->getImageFile());
 
@@ -49,7 +48,9 @@ class RegistrationController extends AbstractController
             $entityManager->persist($user_new);
             $entityManager->flush();
             // do anything else you need here, like send an email
-
+            if(in_array('ROLE_ADMIN', $this->getUser()->getRoles())){
+                $this->redirectToRoute('administration_listeUsers');
+            }
 
                 return $userAuthenticator->authenticateUser(
                     $user_new,

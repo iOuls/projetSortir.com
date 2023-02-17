@@ -28,15 +28,8 @@ class RegistrationFormType extends AbstractType
             ->add('Prenom')
             ->add('Nom')
             ->add('Telephone')
+            ->add('actif')
             ->add('email')
-            ->add('agreeTerms', CheckboxType::class, [
-                'mapped' => false,
-                'constraints' => [
-                    new IsTrue([
-                        'message' => 'You should agree to our terms.',
-                    ]),
-                ],
-            ])
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'invalid_message' => 'The password fields must match.',
