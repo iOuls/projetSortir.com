@@ -28,6 +28,7 @@ class SortieController extends AbstractController
         SortieRepository $sortieRepository,
         SiteRepository   $siteRepository,
         UserRepository   $userRepository,
+        EtatRepository   $etatRepository,
         Request          $request
     ): Response
     {
@@ -96,6 +97,12 @@ class SortieController extends AbstractController
         foreach ($sorties as $sortie) {
             if ($sortie->getDateHeureDebut() < date_sub(new \DateTime(), new DateInterval('P1M'))) {
                 unset($sorties[array_search($sortie, $sorties, true)]);
+            }
+
+            if ($sortie->getOrganisateur() != $userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()])) {
+                if ($sortie->getEtat() == $etatRepository->findOneBy(['libelle' => 'Créée'])) {
+                    unset($sorties[array_search($sortie, $sorties, true)]);
+                }
             }
         }
 
