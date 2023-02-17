@@ -87,12 +87,23 @@ class SortieController extends AbstractController
 
         // traitement si aucun filtre = findall
         $sorties = $sortieRepository->findAll();
+        $criteres = [
+            'site' => null,
+            'motsclefs' => null,
+            'datedebut' => null,
+            'datefin' => null,
+            'organisateur' => null,
+            'inscrit' => null,
+            'noninscrit' => null,
+            'passees' => null
+        ];
 
         return $this->render('sortie/list.html.twig',
             [
                 'sorties' => $sorties,
                 'sites' => $sites,
-                'date' => $date
+                'date' => $date,
+                'criteres' => $criteres
             ]);
     }
 

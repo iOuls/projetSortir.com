@@ -150,6 +150,13 @@ class SortiesRLController extends AbstractController
     ): Response
     {
         $sortie = $sortieRepository->findOneBy(['id' => $id]);
+
+        // vérification si inscription = max
+        if ($sortie->getNbInscriptionsMax() == $sortie->getParticipant()->count()) {
+            $this->addFlash('Inscription non effectuée', 'Inscription non effectuée, la sortie est complète.');
+            return $this->redirectToRoute('sortie_list');
+        }
+
         $user = $userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
         $sortie->addParticipant($user);
         try {
