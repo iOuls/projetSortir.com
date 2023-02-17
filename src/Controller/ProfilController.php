@@ -40,7 +40,7 @@ class ProfilController extends AbstractController
             $userBDD->setNom($user_new->getNom());
             $userBDD->setPrenom($user_new->getPrenom());
             $userBDD->setTelephone($user_new->getTelephone());
-            // $userBDD->setMail($this->getUser()->getUserIdentifier());
+            $userBDD->setMail($this->getUser()->getUserIdentifier());
             $userBDD->setActif($user_new->isActif());
             $userBDD->setImageFile($user_new->getImageFile());
 
