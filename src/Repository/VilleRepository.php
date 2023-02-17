@@ -38,6 +38,18 @@ class VilleRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+    public function findByLettre($motsclefs)
+    {
+        $queryBuilder = $this->createQueryBuilder('ville');
+
+        if ($motsclefs !='') {
+            $queryBuilder->andWhere('ville.nom LIKE :motsclefs')
+                ->setParameter(':motsclefs', '%' . $motsclefs . '%');
+        }
+
+        $query = $queryBuilder->getQuery();
+        return $query->getResult();
+    }
 
 //    /**
 //     * @return Ville[] Returns an array of Ville objects

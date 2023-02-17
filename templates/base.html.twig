@@ -9,8 +9,8 @@
     {% if app.user %}
         {% if 'ROLE_ADMIN' in app.user.roles %}
             <a href="{{ path('administration_index') }}">Administration</a>
-            <a href="">Villes</a>
-            <a href="">Sites</a>
+            <a href="{{ path('administration_gererVilles') }}">Villes</a>
+            <a href="{{ path('administration_gererSites') }}">Sites</a>
         {% endif %}
     {% endif %}
     <a href="{{ path('sortie_list') }}">Acceuil </a>

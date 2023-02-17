@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Sortie;
 use App\Form\AnnulerSortieType;
+use App\Form\ModifierSortieType;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
 use App\Repository\SiteRepository;
@@ -204,10 +205,55 @@ class SortieController extends AbstractController
             }
             $sortieRepository->save($sortie, true);
             $this->addFlash('bravo', 'Sortie ajoutée.');
+            return $this->redirectToRoute('sortie_list', []);
+
         }
         return $this->render('sortie/create.html.twig',
             compact('sortieForm')
         );
+    }
+
+    #[Route('/modifier/{id}', name: '_modifier')]
+    public function modifier(
+        int                    $id,
+        EntityManagerInterface $em,
+        Request                $request,
+        EtatRepository         $etatRepository,
+        SortieRepository       $sortieRepository,
+
+    ){
+
+        $sortie = $sortieRepository->findOneBy(['id'=>$id]);
+        $modifierSortieForm = $this->createForm(ModifierSortieType::class, $sortie);
+        $modifierSortieForm->handleRequest($request);
+
+        $sortie->setOrganisateur(($this->getUser()));
+        if ($modifierSortieForm->isSubmitted() && $modifierSortieForm->isValid()) {
+            try {
+
+                if ($modifierSortieForm->getClickedButton() === $modifierSortieForm->get('Enregistrer')) {
+                    $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Créée']));
+                    $em->persist($sortie);
+                }elseif ($modifierSortieForm->getClickedButton() === $modifierSortieForm->get('Supprimer')){
+                    $sortieRepository->remove($sortie, true);
+                } else {
+                    $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Ouverte']));
+                    $em->persist($sortie);
+                }
+            } catch (Exception $exception) {
+                dd($exception->getMessage());
+            }
+
+            $em->flush();
+           /* $sortieRepository->save($sortie, true);*/
+            $this->addFlash('bravo', 'Sortie ajoutée.');
+            $em->persist($sortie);
+            return $this->redirectToRoute('sortie_list', []);
+        }
+        return $this->render('sortie/modifier.html.twig',
+            compact( 'modifierSortieForm', )
+        );
+
     }
 
 
