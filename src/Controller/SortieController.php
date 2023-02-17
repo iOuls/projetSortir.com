@@ -190,14 +190,13 @@ class SortieController extends AbstractController
         $sortie = new Sortie();
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
-
         $sortie->setOrganisateur(($this->getUser()));
+
         if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
             try {
-
                 if ($sortieForm->getClickedButton() === $sortieForm->get('Enregistrer')) {
                     $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Créée']));
-                } else {
+                }else {
                     $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Ouverte']));
                 }
             } catch (Exception $exception) {

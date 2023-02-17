@@ -3,21 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}PartouzMania - {% endblock %}</title>
+    <link rel="stylesheet" href="{{ asset('css/fichierCss.css') }}">
 </head>
 <body>
-<header>
+<header class="align_droite">
     
     {% if app.user %}
         {% if 'ROLE_ADMIN' in app.user.roles %}
-            <a href="{{ path('administration_index') }}">Administration</a>
-            <a href="{{ path('administration_gererVilles') }}">Villes</a>
-            <a href="{{ path('administration_gererSites') }}">Sites</a>
+            <a href="{{ path('administration_index') }}"> Administration /</a>
+            <a href="{{ path('administration_gererVilles') }}"> Villes /</a>
+            <a href="{{ path('administration_gererSites') }}"> Sites / </a>
         {% endif %}
     {% endif %}
-    <a href="{{ path('sortie_list') }}">Acceuil </a>
+    <a href="{{ path('sortie_list') }}"> Acceuil /</a>
     {% if app.user %}
-        <a href="{{ path('app_logout') }}">Logout</a>
-        <a href="{{ path('profil_users') }}">Profil</a><br>
+        <a href="{{ path('app_logout') }}"> Logout /</a>
+        <a href="{{ path('profil_users') }}"> Profil</a><br>
         <p>Bienvenue {{ app.user.pseudo }}</p>
     {% else %}
         <a href="{{ path('app_login') }}">Login</a>

@@ -22,7 +22,7 @@ class SortieType extends AbstractType
             ->add('dateHeureDebut', null , ['label'=>'Date et heure de la sortie '])
             ->add('dateLimitInscription', null , ['label'=>"Date limite d'inscription "])
             ->add('nbInscriptionsMax', null , ['label'=>'Nombre de place '])
-            ->add('duree', null , ['label'=>'Durée : '])
+            ->add('duree', null , ['label'=>'Durée '])
             ->add('InfosSortie', null , ['label'=>'Description et infos '])
             ->add('site', EntityType::class,[
                 "class"=>Site::class,
@@ -35,7 +35,9 @@ class SortieType extends AbstractType
             ->add('Enregistrer',SubmitType::class,['label'=>'Enregistrer'])
             ->add('Publier',SubmitType::class,['label'=>'Publier'])
 
-            ;
+
+
+        ;
 
 
 
