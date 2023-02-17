@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ProfilController extends AbstractController
@@ -23,7 +24,7 @@ class ProfilController extends AbstractController
 //    }
 
     #[Route('/profil', name: 'profil_users')]
-    public function users(Request $request, EntityManagerInterface $em)
+    public function users(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordHasher)
     {$userBDD = $em->getRepository(User::class)->findOneBy(['email'=>$this->getUser()->getUserIdentifier()]);
         $user = $userBDD;
 
@@ -40,10 +41,16 @@ class ProfilController extends AbstractController
             $userBDD->setNom($user_new->getNom());
             $userBDD->setPrenom($user_new->getPrenom());
             $userBDD->setTelephone($user_new->getTelephone());
-            $userBDD->setMail($this->getUser()->getUserIdentifier());
+            $userBDD->setEmail($user_new->getEmail());
             $userBDD->setActif($user_new->isActif());
             $userBDD->setImageFile($user_new->getImageFile());
 
+            $userBDD->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $user_new,
+                    $form->get('plainPassword')->getData()
+                )
+            );
 
             $em->persist($userBDD);
             $em->flush();
