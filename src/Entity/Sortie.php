@@ -24,7 +24,8 @@ class Sortie
     private ?string $nom = null;
 
     #[Assert\NotBlank]
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\GreaterThanOrEqual('today')]
     private ?\DateTimeInterface $dateHeureDebut = null;
 
     #[Assert\NotBlank]
@@ -32,7 +33,9 @@ class Sortie
     private ?\DateTimeInterface $duree = null;
 
     #[Assert\NotBlank]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Assert\GreaterThanOrEqual('today')]
+    #[Assert\LessThanOrEqual('today')]
     private ?\DateTimeInterface $dateLimitInscription = null;
 
     #[Assert\PositiveOrZero]

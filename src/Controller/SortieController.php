@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Groupe;
 use App\Entity\Sortie;
 use App\Form\AnnulerSortieType;
+use App\Form\GroupeType;
 use App\Form\ModifierSortieType;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
@@ -205,21 +207,36 @@ class SortieController extends AbstractController
         $sortieForm->handleRequest($request);
         $sortie->setOrganisateur(($this->getUser()));
 
-        if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
-            try {
-                if ($sortieForm->getClickedButton() === $sortieForm->get('Enregistrer')) {
-                    $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Créée']));
-                }else {
-                    $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Ouverte']));
+        if ($sortieForm->isSubmitted()) {
+
+            if ($sortieForm->isValid()) {
+                try {
+                    if ($sortieForm->getClickedButton() === $sortieForm->get('Enregistrer')) {
+                        $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Créée']));
+                    } else {
+                        $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Ouverte']));
+                    }
+                } catch (Exception $exception) {
+                    dd($exception->getMessage());
                 }
-            } catch (Exception $exception) {
-                dd($exception->getMessage());
+                $sortieRepository->save($sortie, true);
+                $this->addFlash('bravo', 'Sortie ajoutée.');
+                return $this->redirectToRoute('sortie_list', []);
+            }else{
+                    if ($sortie->getDateLimitInscription()> $sortie->getDateHeureDebut()){
+                        $this->addFlash('Erreur', "Oups, La date limite d'inscription ne peut pas dépasser la date de la sortie");
+                    }
+                $this->addFlash('Erreur', 'Veuillez ressaisir le formulaire svp');
+
             }
-            $sortieRepository->save($sortie, true);
-            $this->addFlash('bravo', 'Sortie ajoutée.');
-            return $this->redirectToRoute('sortie_list', []);
 
         }
+
+
+
+        //$sortie->setDateHeureDebut();
+        //if ($sortieForm->isSubmitted() && d)
+
         return $this->render('sortie/create.html.twig',
             compact('sortieForm')
         );
@@ -235,27 +252,34 @@ class SortieController extends AbstractController
 
     )
     {
-
         $sortie = $sortieRepository->findOneBy(['id' => $id]);
         $modifierSortieForm = $this->createForm(ModifierSortieType::class, $sortie);
         $modifierSortieForm->handleRequest($request);
 
         $sortie->setOrganisateur(($this->getUser()));
-        if ($modifierSortieForm->isSubmitted() && $modifierSortieForm->isValid()) {
-            try {
+        if ($modifierSortieForm->isSubmitted()) {
 
-                if ($modifierSortieForm->getClickedButton() === $modifierSortieForm->get('Enregistrer')) {
-                    $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Créée']));
-                    $em->persist($sortie);
-                } elseif ($modifierSortieForm->getClickedButton() === $modifierSortieForm->get('Supprimer')) {
-                    $sortieRepository->remove($sortie, true);
-                } else {
-                    $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Ouverte']));
-                    $em->persist($sortie);
+            if ($modifierSortieForm->isValid()) {
+                try {
+                    if ($modifierSortieForm->getClickedButton() === $modifierSortieForm->get('Enregistrer')) {
+                        $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Créée']));
+                    } else {
+                        $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Ouverte']));
+                    }
+                } catch (Exception $exception) {
+                    dd($exception->getMessage());
                 }
-            } catch (Exception $exception) {
-                dd($exception->getMessage());
+                $sortieRepository->save($sortie, true);
+                $this->addFlash('bravo', 'Sortie ajoutée.');
+                return $this->redirectToRoute('sortie_list', []);
+            } else {
+                if ($sortie->getDateLimitInscription() > $sortie->getDateHeureDebut()) {
+                    $this->addFlash('Erreur', "Oups, La date limite d'inscription ne peut pas dépasser la date de la sortie");
+                }
+                $this->addFlash('Erreur', 'Veuillez ressaisir le formulaire svp');
+
             }
+
 
             $em->flush();
             /* $sortieRepository->save($sortie, true);*/
@@ -264,9 +288,33 @@ class SortieController extends AbstractController
             return $this->redirectToRoute('sortie_list', []);
         }
         return $this->render('sortie/modifier.html.twig',
-            compact('modifierSortieForm',)
+            compact('modifierSortieForm')
         );
 
+    }
+
+    #[Route('/groupe/{id}', name: '_groupe')]
+    public function groupe(
+        EntityManagerInterface $em,
+        Request                $request,
+        SortieRepository $sortieRepository,
+        int              $id
+    )
+    {
+        $sortie = $sortieRepository->findOneBy(['id' => $id]);
+        $groupe = new Groupe();
+        $groupeForm = $this->createForm(GroupeType::class, $groupe);
+        $groupeForm->handleRequest($request);
+
+        if ($groupeForm->isSubmitted()&& $groupeForm->isValid()) {
+            $em->persist($groupe);
+            $em->flush();
+
+            $this->addFlash('Groupe créé', 'Groupe créé avec succès.');
+            return $this->redirectToRoute('sortie_afficher');
+        }
+        return $this->render('sortie/groupe.html.twig',
+            compact('groupeForm', 'sortie'));
     }
 
 

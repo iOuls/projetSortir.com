@@ -24,6 +24,7 @@
             <div>Nom</div>
         </div>
 
+
         {% for leparticipant in sortie.participant %}
             <div class="tab-data">
                 <div>{{ leparticipant.pseudo }}</div>
@@ -32,6 +33,11 @@
         {% endfor %}
 
     </div>
+
+    <a href="{{ path('sortie_groupe', {id : sortie.id}) }}" class="centrer" >
+        <button class="centrer">Créer un groupe privé</button>
+    </a>
+
 {% endblock %}
 
 {% block title %}

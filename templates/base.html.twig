@@ -16,7 +16,7 @@
     {% endif %}
     <a href="{{ path('sortie_list') }}"> Acceuil /</a>
     {% if app.user %}
-        <a href="{{ path('app_logout') }}">Se déconnecter</a>
+        <a href="{{ path('app_logout') }}">Se déconnecter /</a>
         <a href="{{ path('profil_users') }}">Profil</a><br>
         <p>Bienvenue {{ app.user.pseudo }}</p>
     {% else %}

@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    <h1>Créer un groupe</h1>
+{% endblock %}
+
+{% block body %}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alter-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+    <h1 class="centrer">Créer un groupe privé</h1>
+
+    <div class="centrer">
+        {{ form_start(groupeForm,) }}
+        <p>Nom du groupe : {{ form_widget(groupeForm.nom) }}</p>
+        <p>Participants : {{ form_widget(groupeForm.participant) }}</p>
+
+    </div>
+    <div class="flex-row">
+        {{ form_widget(groupeForm.Creer) }}
+        <a class="btn" href="{{ path('sortie_list') }}">Annuler</a>
+    </div>
+    {{ form_end(groupeForm) }}
+
+    <div>
+        {% for leparticipant in sortie.participant %}
+            <div class="tab-data">
+                <div>{{ leparticipant.pseudo }}</div>
+                <div>{{ leparticipant.prenom }} {{ leparticipant.nom }}</div>
+            </div>
+        {% endfor %}
+
+    </div>
+
+{% endblock %}
