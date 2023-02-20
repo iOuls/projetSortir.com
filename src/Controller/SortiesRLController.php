@@ -146,10 +146,26 @@ class SortiesRLController extends AbstractController
         int                    $id,
         SortieRepository       $sortieRepository,
         UserRepository         $userRepository,
+        EtatRepository         $etatRepository,
         EntityManagerInterface $entityManager
     ): Response
     {
         $sortie = $sortieRepository->findOneBy(['id' => $id]);
+
+        // verif date de cloture des inscriptions
+        if ($sortie->getDateLimitInscription() < (new \DateTime())) {
+            try {
+                $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Clôturée']));
+                $entityManager->persist($sortie);
+                $entityManager->flush();
+            } catch (\Exception $e) {
+                // redirection avec message KO
+                $this->addFlash('Inscription non effectué', 'Détail de l\'erreur : ' . $e->getMessage());
+                return $this->redirectToRoute('sortie_list');
+            }
+            $this->addFlash('Inscription non effectué', 'Date de clôture dépassée.');
+            return $this->redirectToRoute('sortie_list');
+        }
 
         // vérification si inscription = max
         if ($sortie->getNbInscriptionsMax() == $sortie->getParticipant()->count()) {
