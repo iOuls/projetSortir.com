@@ -94,7 +94,6 @@
 
                 <label>{% if sortie.etat.libelle == 'Créée' %}
                         {% if sortie.organisateur == app.user %}
-                            {# TODO liens #}
                             <a href="{{ path('sortie_modifier', {id : sortie.id}) }}">Modifier</a> -
                             <a href="{{ path('sortie_publier', {id : sortie.id}) }}">Publier</a>
                         {% endif %}
