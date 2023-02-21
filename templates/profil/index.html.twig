@@ -3,8 +3,11 @@
 {% block title %}Hello ProfilController!{% endblock %}
 
 {% block body %}
-    <h1>Profil</h1>
-    {{ form(profilForm) }}
-    <img src="{{ asset("images/products/" ~ user.image) }}" alt="">
+    <h1 class="centrer">Profil</h1>
+
+    <div class="centrer">
+        {{ form(profilForm) }}
+        <img src="{{ asset("images/products/" ~ user.image) }}" alt="">
+    </div>
 
 {% endblock %}

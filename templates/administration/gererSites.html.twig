@@ -1,20 +1,24 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Gérer les sites</h1>
-    <h2>Filtrer les sites</h2>
+    <h1 class="centrer">Gérer les sites</h1>
+    <h2 class="centrer">Filtrer les sites</h2>
 
-    <form method="GET" action="{{ path('administration_gererSites') }}">
-        <div class="box">
-            <label for="motsclefs">Le nom du site contient :</label>
-            <input type="text" name="motsclefs" id="motsclefs" value="{{ motsclefs }}">
-        </div>
-        <div class="box">
-            <input class="btn" type="submit" value="Rechercher">
-        </div>
-    </form>
+    <section class="centrer">
+        <form method="GET" action="{{ path('administration_gererSites') }}">
+            <div class="box">
+                <label for="motsclefs">Le nom du site contient :</label>
+                <input type="text" name="motsclefs" id="motsclefs" value="{{ motsclefs }}">
+            </div>
+            <div class="centrer">
+                <input class="btn" type="submit" value="Rechercher">
+            </div>
+        </form>
+    </section>
+    <br>
+    <br>
 
-    <table>
+    <table class="centrer">
         <tr>
             <th>Ville</th>
             <th>Actions</th>

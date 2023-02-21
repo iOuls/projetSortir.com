@@ -10,6 +10,7 @@ use App\Repository\EtatRepository;
 use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
 use App\Repository\UserRepository;
+use DateInterval;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,6 +28,7 @@ class SortieController extends AbstractController
         SortieRepository $sortieRepository,
         SiteRepository   $siteRepository,
         UserRepository   $userRepository,
+        EtatRepository   $etatRepository,
         Request          $request
     ): Response
     {
@@ -77,27 +79,32 @@ class SortieController extends AbstractController
                 $noninscrit,
                 $passees);
 
-            return $this->render('sortie/list.html.twig',
-                [
-                    'sorties' => $sorties,
-                    'sites' => $sites,
-                    'date' => $date,
-                    'criteres' => $criteres
-                ]);
+        } else {
+            // traitement si aucun filtre = findall
+            $sorties = $sortieRepository->findAll();
+            $criteres = [
+                'site' => null,
+                'motsclefs' => null,
+                'datedebut' => null,
+                'datefin' => null,
+                'organisateur' => null,
+                'inscrit' => null,
+                'noninscrit' => null,
+                'passees' => null
+            ];
         }
 
-        // traitement si aucun filtre = findall
-        $sorties = $sortieRepository->findAll();
-        $criteres = [
-            'site' => null,
-            'motsclefs' => null,
-            'datedebut' => null,
-            'datefin' => null,
-            'organisateur' => null,
-            'inscrit' => null,
-            'noninscrit' => null,
-            'passees' => null
-        ];
+        foreach ($sorties as $sortie) {
+            if ($sortie->getDateHeureDebut() < date_sub(new \DateTime(), new DateInterval('P1M'))) {
+                unset($sorties[array_search($sortie, $sorties, true)]);
+            }
+
+            if ($sortie->getOrganisateur() != $userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()])) {
+                if ($sortie->getEtat() == $etatRepository->findOneBy(['libelle' => 'Créée'])) {
+                    unset($sorties[array_search($sortie, $sorties, true)]);
+                }
+            }
+        }
 
         return $this->render('sortie/list.html.twig',
             [
@@ -115,6 +122,12 @@ class SortieController extends AbstractController
     ): Response
     {
         $sortie = $sortieRepository->findOneBy(['id' => $id]);
+
+        if ($sortie->getDateHeureDebut() < date_sub(new \DateTime(), new DateInterval('P1M'))) {
+            $this->addFlash('Impossible d\'accéder à cette sortie', 'Impossible d\'accéder à cette sortie, car elle a été clôturée il y a plus d\'un mois.');
+            return $this->redirectToRoute('sortie_list');
+        }
+
         return $this->render('sortie/afficher.html.twig',
             [
                 'sortie' => $sortie
@@ -190,14 +203,13 @@ class SortieController extends AbstractController
         $sortie = new Sortie();
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
-
         $sortie->setOrganisateur(($this->getUser()));
+
         if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
             try {
-
                 if ($sortieForm->getClickedButton() === $sortieForm->get('Enregistrer')) {
                     $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Créée']));
-                } else {
+                }else {
                     $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Ouverte']));
                 }
             } catch (Exception $exception) {
@@ -221,9 +233,10 @@ class SortieController extends AbstractController
         EtatRepository         $etatRepository,
         SortieRepository       $sortieRepository,
 
-    ){
+    )
+    {
 
-        $sortie = $sortieRepository->findOneBy(['id'=>$id]);
+        $sortie = $sortieRepository->findOneBy(['id' => $id]);
         $modifierSortieForm = $this->createForm(ModifierSortieType::class, $sortie);
         $modifierSortieForm->handleRequest($request);
 
@@ -234,7 +247,7 @@ class SortieController extends AbstractController
                 if ($modifierSortieForm->getClickedButton() === $modifierSortieForm->get('Enregistrer')) {
                     $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Créée']));
                     $em->persist($sortie);
-                }elseif ($modifierSortieForm->getClickedButton() === $modifierSortieForm->get('Supprimer')){
+                } elseif ($modifierSortieForm->getClickedButton() === $modifierSortieForm->get('Supprimer')) {
                     $sortieRepository->remove($sortie, true);
                 } else {
                     $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Ouverte']));
@@ -245,13 +258,13 @@ class SortieController extends AbstractController
             }
 
             $em->flush();
-           /* $sortieRepository->save($sortie, true);*/
+            /* $sortieRepository->save($sortie, true);*/
             $this->addFlash('bravo', 'Sortie ajoutée.');
             $em->persist($sortie);
             return $this->redirectToRoute('sortie_list', []);
         }
         return $this->render('sortie/modifier.html.twig',
-            compact( 'modifierSortieForm', )
+            compact('modifierSortieForm',)
         );
 
     }

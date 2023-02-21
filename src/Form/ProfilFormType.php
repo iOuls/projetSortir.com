@@ -19,8 +19,9 @@ class ProfilFormType extends AbstractType
         $builder
             ->add('Pseudo')
             ->add('email')
-            ->add('password')
+            ->add('password', null, ['label'=>'Password :'])
             ->add('password', RepeatedType::class, [
+                'label'=>'Répétez le assword :',
                 'type' => PasswordType::class,
                 'invalid_message' => 'The password fields must match.',
                 'options' => ['attr' => ['class' => 'password-field']],

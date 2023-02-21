@@ -18,18 +18,20 @@
     </ul>
 
     <h2>Liste des participants</h2>
-    <table>
-        <tr>
-            <th>Pseudo</th>
-            <th>Nom</th>
-        </tr>
-        <tr>
-            {% for leparticipant in sortie.participant %}
-                <td>{{ leparticipant.pseudo }}</td>
-                <td>{{ leparticipant.prenom }} {{ leparticipant.nom }}</td>
-            {% endfor %}
-        </tr>
-    </table>
+    <div class="tab">
+        <div class="tab-titre">
+            <div>Pseudo</div>
+            <div>Nom</div>
+        </div>
+
+        {% for leparticipant in sortie.participant %}
+            <div class="tab-data">
+                <div>{{ leparticipant.pseudo }}</div>
+                <div>{{ leparticipant.prenom }} {{ leparticipant.nom }}</div>
+            </div>
+        {% endfor %}
+
+    </div>
 {% endblock %}
 
 {% block title %}
