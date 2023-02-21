@@ -134,11 +134,17 @@ class SortieController extends AbstractController
         int              $id
     ): Response
     {
+        $date = new \DateTime();
         $sortie = $sortieRepository->findOneBy(['id' => $id]);
-        return $this->render('sortie/afficher.html.twig',
-            [
-                'sortie' => $sortie
-            ]);
+        if ($sortie->getDateHeureDebut() < date_sub($date, new DateInterval('P1M'))) {
+            $this->addFlash('Sortie non consultable', 'La sortie sélectionnée est trop ancienne pour être consultée.');
+            return $this->redirectToRoute('sortie_list');
+        } else {
+            return $this->render('sortie/afficher.html.twig',
+                [
+                    'sortie' => $sortie
+                ]);
+        }
     }
 
     #[Route('/sortie/publier/{id}', name: '_publier')]

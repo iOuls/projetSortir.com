@@ -3,29 +3,33 @@
 {% block title %}{{ parent() }}Administration{% endblock %}
 
 {% block body %}
-    <h1 class="centrer">Administration</h1>
 
-    <div class="centrer">
-        <ul>
-            <li class="btn">
-                <a href="{{ path('app_register') }}">Création d'un utilisateur</a>
-            </li><br>
-            <li class="btn">
-                <a href="{{ path('administration_listeUsers') }}">Liste des utilisateurs</a>
-            </li><br>
-            <li class="btn">
-                <a href="{{ path('administration_listeSorties') }}">Annuler une sortie</a>
-            </li><br>
-            <li class="btn">
-                <a href="">{# TODO #}Import d'une liste d'utilisateurs (encours)</a>
-            </li><br>
-            <li class="btn">
-                <a href="{{ path('administration_gererSites') }}">Gérer les sites</a>
-            </li><br>
-            <li class="btn">
-                <a href="{{ path('administration_gererVilles') }}">Gérer les villes</a>
-            </li>
-        </ul>
+    <div class="text-center flex-row center">
+        <h1 class="">Administration</h1>
+        <div class="flex-row">
+        <span class="btn">
+                    <a href="{{ path('app_register') }}">Création d'un utilisateur</a>
+                </span>
+            <br>
+            <span class="btn">
+                    <a href="{{ path('administration_listeUsers') }}">Liste des utilisateurs</a>
+                </span>
+            <br>
+            <span class="btn">
+                    <a href="{{ path('administration_listeSorties') }}">Annuler une sortie</a>
+                </span>
+            <br>
+            <span class="btn">
+                    <a href="">{# TODO #}Import d'une liste d'utilisateurs (encours)</a>
+                </span>
+            <br>
+            <span class="btn">
+                    <a href="{{ path('administration_gererSites') }}">Gérer les sites</a>
+                </span>
+            <br>
+            <span class="btn">
+                    <a href="{{ path('administration_gererVilles') }}">Gérer les villes</a>
+                </span>
+        </div>
     </div>
-
 {% endblock %}

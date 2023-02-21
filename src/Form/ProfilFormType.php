@@ -20,7 +20,7 @@ class ProfilFormType extends AbstractType
     {
         $builder
             ->add('Pseudo')
-            ->add('email')
+            ->add('email')//, null, ['attr' => ['disabled' => true]])
             ->add('password', null, ['label' => 'Password :'])
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
@@ -34,7 +34,12 @@ class ProfilFormType extends AbstractType
             ->add('nom')
             ->add('prenom')
             ->add('telephone')
-            ->add('imageFile', FileType::class)
+            ->add('imageFile', FileType::class, [
+                'attr' => [
+                    'accept' => "image/*"
+                ],
+                'required' => false,
+            ])
             ->add('save', SubmitType::class, [
                 'label' => 'Enregistrer les modifications',
                 'attr' => [

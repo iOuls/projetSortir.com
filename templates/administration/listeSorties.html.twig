@@ -11,18 +11,19 @@
         {% endfor %}
     {% endfor %}
 
-    <ul>
+    <div class="grid">
         {% for sortie in sorties %}
-            <li><b>{{ sortie.nom }}</b>
-                <ul>
-                    <li>Lieu : {{ sortie.lieu.nom }}</li>
-                    <li>Site : {{ sortie.site.nom }}</li>
-                    <li>Organisateur : {{ sortie.organisateur.pseudo }}</li>
-                    <li><a href="{{ path('administration_supprimer', {id : sortie.id}) }}">Supprimer</a></li>
-                </ul>
-            </li>
+            <div class="grid-card center text-center">
+                <b>{{ sortie.nom }}</b>
+                <p>{{ sortie.lieu.nom }}</p>
+                <p>{{ sortie.site.nom }}</p>
+                <p>Créé par {{ sortie.organisateur.pseudo }}</p>
+                <a href="{{ path('administration_supprimer', {id : sortie.id}) }}">
+                    <button>Supprimer</button>
+                </a>
+            </div>
         {% endfor %}
-    </ul>
+    </div>
 {% endblock %}
 
 {% block title %}

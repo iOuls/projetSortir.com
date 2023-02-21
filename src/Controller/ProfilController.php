@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ProfilController extends AbstractController
@@ -24,9 +25,10 @@ class ProfilController extends AbstractController
 
     #[Route('/profil', name: 'profil_users')]
     public function users(
-        Request                $request,
-        EntityManagerInterface $em,
-        UserRepository         $userRepository)
+        Request                     $request,
+        EntityManagerInterface      $em,
+        UserRepository              $userRepository,
+        UserPasswordHasherInterface $userPasswordHasher)
     {
         $user = new User();
 
@@ -46,7 +48,13 @@ class ProfilController extends AbstractController
             $user->setPrenom($form->getData()->getPrenom());
             $user->setTelephone($form->getData()->getTelephone());
             $user->setActif($form->getData()->isActif());
-            $user->setImageFile($form->getData()->getImageFile());
+            ($form->getData()->getImageFile() != null) ? $user->setImageFile($form->getData()->getImageFile()) : null;
+            $user->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $user,
+                    $form->get('password')->getData()
+                )
+            );
 
             $em->persist($user);
             $em->flush();

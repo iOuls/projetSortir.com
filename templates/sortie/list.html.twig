@@ -2,12 +2,25 @@
 
 {% block body %}
     <div class="flex-row text-center center">
-        <h2>Liste des sorties</h2>
         {% if app.user %}
-            <p>Salut {{ app.user.pseudo }},<br>on est le {{ date|date('d/m/Y') }} !</p>
+            <p class="neon-no-hover">Hey {{ app.user.pseudo }} !<br>{{ date|date('d/m/Y') }}</p>
         {% else %}
-            <p>On est le {{ date|date('d/m/Y') }}</p>
+            <p>{{ date|date('d/m/Y') }}</p>
         {% endif %}
+
+        <h2>Liste des sorties</h2>
+
+        <div class="text-center neon-no-hover">
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alter-{{ label }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+
+
     </div>
 
     <section class="flex-col center filtres">
@@ -69,14 +82,6 @@
         <br>
     </section>
 
-    {% for label, messages in app.flashes %}
-        {% for message in messages %}
-            <div class="alter-{{ label }}">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endfor %}
-
     <section class="grid">
         {% for sortie in sorties %}
             <article class="grid-card">
@@ -136,7 +141,7 @@
         {% endfor %}
     </section>
     {% if app.user %}
-        <a href="{{ path('sortie_create') }}" class="flex-col center text-center">
+        <a href="{{ path('sortie_create') }}" class="filtres flex-col center text-center">
             <button class="width-100 heigth-l font-l">Créer une sortie</button>
         </a>
     {% endif %}
