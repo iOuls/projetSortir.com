@@ -350,24 +350,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->password = $serialized['password'];
         return $this;}
 
-    // Reset password
-    #[ORM\Column(type: 'string', length: 100)]
-    private $resetToken;
-
-// ...
-
-    public function getResetToken(): ?string
-    {
-        return $this->resetToken;
-    }
-
-    public function setResetToken(?string $resetToken): self
-    {
-        $this->resetToken = $resetToken;
-
-        return $this;
-    }
-
     public function getSite(): ?Site
     {
         return $this->site;
