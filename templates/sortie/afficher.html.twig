@@ -32,11 +32,12 @@
             </div>
         {% endfor %}
 
-    </div>
+    </div><br>
 
-    <a href="{{ path('sortie_groupe', {id : sortie.id}) }}" class="centrer" >
-        <button class="centrer">Créer un groupe privé</button>
+    <h2> Groupe privé</h2>
+    <a href="{{ path('sortie_groupe', {id : sortie.id}) }}" class="btn">Créer un groupe privé
     </a>
+    <a class="btn" href="{{ path('sortie_ajouterParticipant', {id : sortie.id}) }}">Ajouter des membres</a>
 
 {% endblock %}
 

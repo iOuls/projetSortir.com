@@ -15,25 +15,13 @@
     <h1 class="centrer">Créer un groupe privé</h1>
 
     <div class="centrer">
-        {{ form_start(groupeForm,) }}
+        {{ form_start(groupeForm) }}
         <p>Nom du groupe : {{ form_widget(groupeForm.nom) }}</p>
-        <p>Participants : {{ form_widget(groupeForm.participant) }}</p>
-
     </div>
     <div class="flex-row">
-        {{ form_widget(groupeForm.Creer) }}
-        <a class="btn" href="{{ path('sortie_list') }}">Annuler</a>
+        <button class="btn" href="href="{{ path('sortie_ajouterParticipant', {id : sortie.id}) }}">{{ form_widget(groupeForm.Creer) }}</button>
+        <a class="btn" href="{{ path('sortie_afficher', {id : sortie.id}) }}">Annuler</a>
     </div>
     {{ form_end(groupeForm) }}
-
-    <div>
-        {% for leparticipant in sortie.participant %}
-            <div class="tab-data">
-                <div>{{ leparticipant.pseudo }}</div>
-                <div>{{ leparticipant.prenom }} {{ leparticipant.nom }}</div>
-            </div>
-        {% endfor %}
-
-    </div>
 
 {% endblock %}

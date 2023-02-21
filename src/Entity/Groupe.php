@@ -19,11 +19,18 @@ class Groupe
     private ?string $nom = null;
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'groupes')]
-    private Collection $participant;
+    private Collection $participants;
+
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    private ?Sortie $sortie = null;
+
+
+
 
     public function __construct()
     {
-        $this->participant = new ArrayCollection();
+        $this->participants = new ArrayCollection();
+
     }
 
     public function getId(): ?int
@@ -48,13 +55,13 @@ class Groupe
      */
     public function getParticipant(): Collection
     {
-        return $this->participant;
+        return $this->participants;
     }
 
     public function addParticipant(user $participant): self
     {
-        if (!$this->participant->contains($participant)) {
-            $this->participant->add($participant);
+        if (!$this->participants->contains($participant)) {
+            $this->participants->add($participant);
         }
 
         return $this;
@@ -62,8 +69,23 @@ class Groupe
 
     public function removeParticipant(user $participant): self
     {
-        $this->participant->removeElement($participant);
+        $this->participants->removeElement($participant);
 
         return $this;
     }
+
+    public function getSortie(): ?Sortie
+    {
+        return $this->sortie;
+    }
+
+    public function setSortie(?Sortie $sortie): self
+    {
+        $this->sortie = $sortie;
+
+        return $this;
+    }
+
+
+
 }

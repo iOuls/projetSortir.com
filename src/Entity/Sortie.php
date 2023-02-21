@@ -72,9 +72,11 @@ class Sortie
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $motifAnnulation = null;
 
+
     public function __construct()
     {
         $this->participant = new ArrayCollection();
+
     }
 
     public function getId(): ?int
@@ -237,4 +239,10 @@ class Sortie
 
         return $this;
     }
+
+
+
+
+
+
 }

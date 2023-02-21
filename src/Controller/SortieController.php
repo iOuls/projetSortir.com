@@ -4,11 +4,14 @@ namespace App\Controller;
 
 use App\Entity\Groupe;
 use App\Entity\Sortie;
+use App\Entity\User;
 use App\Form\AnnulerSortieType;
 use App\Form\GroupeType;
 use App\Form\ModifierSortieType;
 use App\Form\SortieType;
+use App\Form\UserType;
 use App\Repository\EtatRepository;
+use App\Repository\GroupeRepository;
 use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
 use App\Repository\UserRepository;
@@ -190,7 +193,6 @@ class SortieController extends AbstractController
         return $this->render('sortie/annuler.html.twig',
             compact('sortieForm', 'sortie')
         );
-
     }
 
     #[Route('/create', name: '_create')]
@@ -231,11 +233,6 @@ class SortieController extends AbstractController
             }
 
         }
-
-
-
-        //$sortie->setDateHeureDebut();
-        //if ($sortieForm->isSubmitted() && d)
 
         return $this->render('sortie/create.html.twig',
             compact('sortieForm')
@@ -280,7 +277,6 @@ class SortieController extends AbstractController
 
             }
 
-
             $em->flush();
             /* $sortieRepository->save($sortie, true);*/
             $this->addFlash('bravo', 'Sortie ajoutée.');
@@ -307,15 +303,81 @@ class SortieController extends AbstractController
         $groupeForm->handleRequest($request);
 
         if ($groupeForm->isSubmitted()&& $groupeForm->isValid()) {
+            $groupe->setSortie($sortie);
             $em->persist($groupe);
             $em->flush();
 
             $this->addFlash('Groupe créé', 'Groupe créé avec succès.');
-            return $this->redirectToRoute('sortie_afficher');
+            return $this->redirectToRoute('sortie_ajouterParticipant',['id' => $sortie->getId()]);
         }
+
         return $this->render('sortie/groupe.html.twig',
             compact('groupeForm', 'sortie'));
     }
+
+    #[Route('/ajouterParticipant/{id}', name: '_ajouterParticipant')]
+    public function ajouterParticipant(
+        EntityManagerInterface  $em,
+        GroupeRepository        $groupeRepository,
+        SortieRepository        $sortieRepository,
+        UserRepository          $userRepository,
+        int                     $id,
+    )
+    {
+        $sortie = $sortieRepository->findOneBy(['id'=>$id]);
+        $groupe = $groupeRepository->findOneBy(['sortie'=>$sortie]);
+
+        return $this->render('sortie/ajouterParticipant.html.twig',
+            compact('groupe', 'sortie'));
+    }
+
+    #[Route('/ajouter/{id}/{idUser}/{idSortie}', name: '_ajouter')]
+    public function ajouter(
+        int                     $id,
+        int                     $idUser,
+        int                     $idSortie,
+        UserRepository          $userRepository,
+        GroupeRepository        $groupeRepository,
+        SortieRepository        $sortieRepository,
+        EntityManagerInterface  $entityManager
+
+    ){
+        $sortie = $sortieRepository->findOneBy(['id'=>$idSortie]);
+        $groupe = $groupeRepository->findOneBy(['id'=>$id]);
+        $user = $userRepository->findOneBy(['id'=>$idUser]);
+
+        $groupe->addParticipant($user);
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        $this->addFlash('Ajout effectué', 'Participant ajouté au groupe');
+        return $this->redirectToRoute('sortie_ajouterParticipant',['id' => $sortie->getId()]);
+    }
+
+    #[Route('/exclure/{id}/{idUser}/{idSortie}', name: '_exclure')]
+    public function exclure(
+        int                     $id,
+        int                     $idUser,
+        int                     $idSortie,
+        UserRepository          $userRepository,
+        GroupeRepository        $groupeRepository,
+        SortieRepository        $sortieRepository,
+        EntityManagerInterface  $entityManager
+
+    ){
+        $sortie = $sortieRepository->findOneBy(['id'=>$idSortie]);
+        $groupe = $groupeRepository->findOneBy(['id'=>$id]);
+        $user = $userRepository->findOneBy(['id'=>$idUser]);
+
+        $groupe->removeParticipant($user);
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        $this->addFlash('Exclusion effectuée', 'Participant exclu du groupe');
+        return $this->redirectToRoute('sortie_ajouterParticipant',['id' => $sortie->getId()]);
+    }
+
+
 
 
 }

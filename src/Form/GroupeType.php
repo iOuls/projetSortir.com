@@ -17,11 +17,11 @@ class GroupeType extends AbstractType
     {
         $builder
             ->add('nom')
-            ->add('participant', EntityType::class,[
+          /*  ->add('participant', EntityType::class,[
                 "class" => User::class,
                 "choice_label"=> "Pseudo",
                 "multiple"=> true
-            ])
+            ])*/
             ->add('Creer',SubmitType::class,['label'=>'Créer']);
     }
 
