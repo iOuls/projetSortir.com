@@ -10,7 +10,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ProfilController extends AbstractController
@@ -24,35 +23,35 @@ class ProfilController extends AbstractController
 //    }
 
     #[Route('/profil', name: 'profil_users')]
-    public function users(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordHasher)
-    {$userBDD = $em->getRepository(User::class)->findOneBy(['email'=>$this->getUser()->getUserIdentifier()]);
-        $user = $userBDD;
+    public function users(Request $request, EntityManagerInterface $em)
+    {
+        $user = new User();
+
+        if ($this->getUser()) {
+            $user=$this->getUser();
+        }
 
         $form = $this->createForm(ProfilFormType::class, $user);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
+            $user_id = $form['id']->getData();
+            $user = $em->getRepository(User::class)->findOneById($user_id);
 
             $user_new = $form->getData();
 
-            $userBDD->setPseudo($user_new->getPseudo());
-            $userBDD->setNom($user_new->getNom());
-            $userBDD->setPrenom($user_new->getPrenom());
-            $userBDD->setTelephone($user_new->getTelephone());
-            $userBDD->setEmail($user_new->getEmail());
-            $userBDD->setActif($user_new->isActif());
-            $userBDD->setImageFile($user_new->getImageFile());
+            $user->setPseudo($user_new->getPseudo());
+            $user->setNom($user_new->getNom());
+            $user->setPrenom($user_new->getPrenom());
+            $user->setTelephone($user_new->getTelephone());
+            $user->setMail($user_new->getMail());
+            $user->setCampus($user_new->getCampus());
+            $user->setActif($user_new->isActif());
+            $user->setImageFile($user_new->getImageFile());
 
-            $userBDD->setPassword(
-                $userPasswordHasher->hashPassword(
-                    $user_new,
-                    $form->get('plainPassword')->getData()
-                )
-            );
 
-            $em->persist($userBDD);
+            $em->persist($user);
             $em->flush();
             $this->addFlash('success', 'L\'utilisateur ' . $user->getPseudo() . ' a été été mis à jour !');
         }
@@ -73,7 +72,7 @@ class ProfilController extends AbstractController
         $user = new User();
         $user = $userRepository->findOneBy(['id' => $id]);
 
-        return $this->render('', [
+        return $this->render('profil/participant.html.twig', [
             'user' => $user
         ]);
     }

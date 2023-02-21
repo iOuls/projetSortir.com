@@ -18,7 +18,13 @@ use function PHPUnit\Framework\assertFalse;
 class RegistrationController extends AbstractController
 {
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, AppAuthenticator $authenticator, EntityManagerInterface $entityManager): Response
+    public function register(
+        Request                     $request,
+        UserPasswordHasherInterface $userPasswordHasher,
+        UserAuthenticatorInterface  $userAuthenticator,
+        AppAuthenticator            $authenticator,
+        EntityManagerInterface      $entityManager
+    ): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -26,14 +32,13 @@ class RegistrationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user_new = new User();
-            //$user_new->setImg($user->getImg());
             $user_new->setPseudo($user->getPseudo());
             $user_new->setNom($user->getNom());
             $user_new->setPrenom($user->getPrenom());
             $user_new->setTelephone($user->getTelephone());
             $user_new->setEmail($user->getEmail());
+            $user_new->setAdministrateur(false);
             $user_new->setActif(true);
-            // encode the plain password
             $user_new->setPassword(
                 $userPasswordHasher->hashPassword(
                     $user,
@@ -44,15 +49,15 @@ class RegistrationController extends AbstractController
             $entityManager->persist($user_new);
             $entityManager->flush();
             // do anything else you need here, like send an email
-            if(in_array('ROLE_ADMIN', $this->getUser()->getRoles())){
-                $this->redirectToRoute('administration_listeUsers');
+            if (in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
+                return $this->redirectToRoute('administration_listeUsers');
             }
 
-                return $userAuthenticator->authenticateUser(
-                    $user_new,
-                    $authenticator,
-                    $request
-                );
+            return $userAuthenticator->authenticateUser(
+                $user_new,
+                $authenticator,
+                $request
+            );
 
 
         }

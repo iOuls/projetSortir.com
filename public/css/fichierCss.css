@@ -1,134 +1,183 @@
+/**
+    Sélecteurs HTML
+ */
+
 body {
     background: linear-gradient(#000000, #008b8b, rgba(234, 159, 207, 0.93));
     background-attachment: fixed;
-    color: #EEE;
     font-family: sans-serif;
+    color: white;
+    min-font-size: 14px;
 }
-header{
 
+header {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    background-color: rgba(255, 255, 255, .05);
+    border-bottom-left-radius: 1em;
+    border-bottom-right-radius: 1em;
+    box-shadow: 0 0 15px black;
 }
 
 a {
-    color: inherit;
     text-decoration: none;
+    color: white;
+}
+
+h1, h2 {
+    animation: neon1 .45s ease-in-out infinite alternate;
+    color: white;
+    font-size: 2em;
+}
+
+/**
+    Classes
+ */
+
+.bold {
+    font-weight: bold;
+}
+
+.logo {
+    animation: neon2 .45s ease-in-out infinite alternate;
+    width: 10vw;
+    margin-bottom: 1em;
+    max-width: 70px;
+    min-width: 30px;
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.center {
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.box * {
+    margin: .5em;
+}
+
+.margin-xs {
+    margin: .25em;
+}
+
+.margin-right-xs {
+    margin-right: 1em;
+}
+
+.menu {
+    margin-bottom: .5em;
+}
+
+.neon:hover, .neon:active {
+    animation: neon1 .25s ease-in-out infinite alternate;
+    font-size: 1.25em;
     transition: .2s;
 }
 
-a:hover{
-    animation: neon1 .45s ease-in-out infinite alternate;
-    color: white;
+.neon-no-hover {
+    animation: neon1 .25s ease-in-out infinite alternate;
     font-size: 2em;
     transition: .2s;
 }
 
-
 .tab-titre, .tab-data {
     display: grid;
+    padding: .5em;
     grid-template-columns: repeat(8, 1fr);
     border-bottom: 1px solid rgba(255, 255, 255, .65);
     grid-auto-columns: auto;
 }
-.tab-titre {
+
+.justify- {
+    align-items: center;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));
+    grid-gap: 1em;
+    margin: 1em;
+}
+
+.grid-card {
+    padding: 1em;
+    border: 1px solid rgba(0, 0, 0, .25);
+    background: linear-gradient(#008b8b, rgba(234, 159, 207, 0.50));
+    border-radius: .5em;
+    box-shadow: 0 0 20px #FF11A7;
+    text-shadow: 0 0 5px #008b8b;
+    margin: 1em;
+}
+
+.width-100 {
+    width: 100%;
+}
+
+.heigth-l {
+    height: 3em;
+}
+
+.font-l {
+    font-size: 2em;
+}
+
+/**
+    Boutons
+ */
+.btn, button, input {
+    background-color: rgba(0, 0, 0, 0);
+    display: inline-block;
+    padding: 0.35em 1.2em;
+    border: 0.1em solid #FFFFFF;
+    border-radius: 0.12em;
+    box-sizing: border-box;
+    text-decoration: none;
+    font-family: sans-serif;
+    color: white;
     font-weight: bold;
-}
-
-button, .btn{
-    background-color:rgba(0,0,0,0);
-    display:inline-block;
-    padding:0.35em 1.2em;
-    border:0.1em solid #FFFFFF;
-    margin:0 0.3em 0.3em 0;
-    border-radius:0.12em;
-    box-sizing: border-box;
-    text-decoration:none;
-    font-family:sans-serif;
-    font-weight:300;
-    color:#FFFFFF;
-    text-align:center;
-    transition: all 0.2s;
-}
-button:hover, .btn:hover{
-    animation: neon1 .45s ease-in-out infinite alternate;
-    color: black;
-    background-color:#FFFFFF;
-}
-
-.centrer{
-    display : flex;
-    justify-content: center;
-}
-
-.align_droite{
-    text-align: right;
-}
-
-
-input{
-    background-color:rgba(0,0,0,0);
-    display:inline-block;
-    padding:0.35em 1.2em;
-    border:0.1em solid #FFFFFF;
-    margin:0 0.3em 0.3em 0;
-    border-radius:0.12em;
-    box-sizing: border-box;
-    text-decoration:none;
-    font-family:sans-serif;
-    font-weight:300;
-    color:#FFFFFF;
-}
-
-select{
-    background-color:rgba(0,0,0,0);
-    display:inline-block;
-    padding:0.35em 1.2em;
-    border:0.1em solid #FFFFFF;
-    margin:0 0.3em 0.3em 0;
-    border-radius:0.12em;
-    box-sizing: border-box;
-    text-decoration:none;
-    font-family:sans-serif;
-    font-weight:300;
-    color:#FFFFFF;
-}
-option {
-    background-color:#003636;
-    display:inline-block;
-    padding:0.35em 1.2em;
-    border:0.1em solid #FFFFFF;
-    margin:0 0.3em 0.3em 0;
-    border-radius:0.12em;
-    box-sizing: border-box;
-    text-decoration:none;
-    font-family:sans-serif;
-    font-weight:300;
-    color:#FFFFFF;
-}
-
-
-.flex-row{
-    display : flex;
-    flex-direction: row;
-}
-
-
-h1 {
-    animation: neon1 .45s ease-in-out infinite alternate;
-    color: white;
-}
-
-.inscrit{
-    animation: neon1 .45s ease-in-out infinite alternate;
-    color: white;
-}
-#overlay {
-    position: absolute;
-    right: 0;
-    left: 0;
-    margin: auto;
     text-align: center;
+    transition: all 0.2s;
+    margin: .5em;
 }
 
+select:hover, input:hover, select:active, input:active {
+    animation: neon2 .10s ease-in-out infinite alternate;
+    color: black;
+    font-weight: bold;
+    background-color: #FFFFFF;
+}
 
+button:hover, .btn:hover, button:active, .btn:active, img {
+    animation: neon2 .10s ease-in-out infinite alternate, neon1 .15s ease-in-out infinite alternate;
+    font-weight: bold;
+    color: white;
+    background-color: #FFFFFF;
+}
+
+/**
+    Effets
+ */
 @keyframes neon1 {
     from {
         text-shadow: 0 0 1px #fff, 0 0 1px #fff, 0 0 1px #fff, 0 0 1px #008b8b, 0 0 5px #008b8b, 0 0 5px #008b8b, 0 0 5px #008b8b, 0 0 5px #008b8b;
@@ -137,4 +186,52 @@ h1 {
         text-shadow: 0 0 5px #fff, 0 0 5px #fff, 0 0 10px #fff, 0 0 10px #FF11A7, 0 0 25px #FF11A7, 0 0 20px #FF11A7, 0 0 25px #FF11A7, 0 0 35px #FF11A7;
     }
 }
+
+@keyframes neon2 {
+    from {
+        filter: drop-shadow(0px 0px 5px #008b8b);
+    }
+    to {
+        filter: drop-shadow(0px 0px 10px #FF11A7);
+    }
+}
+
+/**
+    Responsive
+ */
+
+@media only screen and (-webkit-device-pixel-ratio: 3), screen and (-webkit-device-pixel-ratio: 2) {
+    * {
+        font-size: 50px;
+    }
+
+    input {
+        min-width: 40px;
+        min-height: 40px;
+    }
+
+    .filtres {
+        display: none;
+    }
+
+    .grid-card {
+        text-align: center;
+    }
+
+    .bold {
+        font-weight: normal;
+    }
+}
+
+
+/** Sur les écrans, quand la largeur de la fenêtre fait au maximum 1280px
+@media screen and (max-width: 1280px)
+
+    Sur tous types d'écran, quand la largeur de la fenêtre est comprise entre 1024px et 1280px
+    @media all and (min-width: 1024px) and (max-width: 1280px)
+
+        Sur tous types d'écrans orientés verticalement
+        @media all and (orientation: portrait)
+
+**/
 

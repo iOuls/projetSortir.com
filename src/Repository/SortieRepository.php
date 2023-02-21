@@ -54,11 +54,13 @@ class SortieRepository extends ServiceEntityRepository
         // mise en place des jointures
         $queryBuilder =
             $this->createQueryBuilder('sortie')
-                ->innerJoin(Site::class, 'site', Join::WITH, 'sortie.site = site.id')
+                ->innerJoin(Site::class, 'site', Join::WITH, 'sortie.site = site.id');
 
-                // ajout du site
-                ->andWhere('site.id = :site')
+        // site
+        if ($site != '' || $site != null) {
+            $queryBuilder->andWhere('site.id = :site')
                 ->setParameter(':site', $site);
+        }
 
         // mots clefs
         if ($motsclefs != '') {

@@ -24,21 +24,11 @@ class RegistrationFormType extends AbstractType
     {
         $builder
             ->add('Pseudo')
-            ->add('imageFile',VichFileType::class)
             ->add('Prenom')
             ->add('Nom')
             ->add('Telephone')
-            ->add('actif')
             ->add('email')
-            ->add('password', RepeatedType::class, [
-                'type' => PasswordType::class,
-                'invalid_message' => 'The password fields must match.',
-                'options' => ['attr' => ['class' => 'password-field']],
-                'required' => true,
-                'first_options'  => ['label' => 'Password'],
-                'second_options' => ['label' => 'Repeat Password'],
-            ]);
-        ;
+            ->add('password', PasswordType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -1,13 +1,31 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ProfilController!{% endblock %}
+{% block title %}{{ parent() }}Mon profil{% endblock %}
 
 {% block body %}
-    <h1 class="centrer">Profil</h1>
+    <h1 class="center text-center">Profil</h1>
 
-    <div class="centrer">
-        {{ form(profilForm) }}
-        <img src="{{ asset("images/products/" ~ user.image) }}" alt="">
+    <div class="flex-row text-center">
+        {{ form_start(profilForm) }}
+        <div class="grid-card flex-col center">
+            <div class="flex-row text-left">
+                {{ form_row(profilForm.email) }}
+                {{ form_row(profilForm.Pseudo) }}
+                {{ form_row(profilForm.imageFile) }}
+                {{ form_row(profilForm.nom) }}
+                {{ form_row(profilForm.prenom) }}
+                {{ form_row(profilForm.telephone) }}
+            </div>
+
+        </div>
+        <div class="flex-col grid-card center">
+            {{ form_row (profilForm.password) }}
+        </div>
+
+        {{ form_end(profilForm) }}
+        {% if user.image %}
+            <img src="{{ asset("images/products/" ~ user.image) }}" alt="">
+        {% endif %}
     </div>
 
 {% endblock %}
