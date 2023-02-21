@@ -86,17 +86,20 @@ class SortieRepository extends ServiceEntityRepository
                 ->setParameter(':user', $user);
         }
 
-        // inscription
-        if ($inscrit) {
-            $queryBuilder->andWhere(':user MEMBER OF sortie.participant')
-                ->setParameter(':user', $user);
+        if (!($inscrit && $noninscrit)) {
+            // inscription
+            if ($inscrit) {
+                $queryBuilder->andWhere(':user MEMBER OF sortie.participant')
+                    ->setParameter(':user', $user);
+            }
+
+            // non inscrit
+            if ($noninscrit) {
+                $queryBuilder->andWhere(':user NOT MEMBER OF sortie.participant')
+                    ->setParameter(':user', $user);
+            }
         }
 
-        // non inscrit
-        if ($noninscrit) {
-            $queryBuilder->andWhere(':user NOT MEMBER OF sortie.participant')
-                ->setParameter(':user', $user);
-        }
 
         // passées
         if ($passe) {
