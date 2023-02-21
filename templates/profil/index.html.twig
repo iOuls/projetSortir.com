@@ -3,7 +3,8 @@
 {% block title %}{{ parent() }}Mon profil{% endblock %}
 
 {% block body %}
-    <h1 class="center text-center">Profil</h1>
+
+    <h1 class="center text-center">Mon profil</h1>
 
     <div class="flex-row text-center">
         {{ form_start(profilForm) }}
@@ -16,16 +17,17 @@
                 {{ form_row(profilForm.prenom) }}
                 {{ form_row(profilForm.telephone) }}
             </div>
-
+            {% if user.image %}
+                <img class="photo-profil"
+                     src="{{ asset("images/products/" ~ user.image) }}"
+                     alt="Ma photo de profil">
+            {% endif %}
         </div>
         <div class="flex-col grid-card center">
             {{ form_row (profilForm.password) }}
         </div>
 
         {{ form_end(profilForm) }}
-        {% if user.image %}
-            <img src="{{ asset("images/products/" ~ user.image) }}" alt="">
-        {% endif %}
     </div>
 
 {% endblock %}

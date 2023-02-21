@@ -3,38 +3,32 @@
 {% block body %}
     <h1>Liste des utilisateurs</h1>
 
-    {% for label, messages in app.flashes %}
-        {% for message in messages %}
-            <div class="alter-{{ label }}">
+    {% if app.flashes %}
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
                 {{ message }}
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+
+    <div class="grid">
+        {% for user in listeUsers %}
+            <div class="grid-card text-center">
+                <p class="bold">{{ user.pseudo }}</p>
+                <p>{{ user.prenom }} {{ user.nom }}<br>
+                    {{ user.email }}</p>
+                <a href="{{ path('administration_actif', {'id' : user.id}) }}">
+                    <button>Actif : {{ (user.actif) ? 'Oui' : 'Non' }}</button>
+                </a><br>
+
+                <a href="{{ path('administration_supprimer', {'id' : user.id}) }}">
+                    <button>Supprimer</button>
+                </a>
+
             </div>
         {% endfor %}
-    {% endfor %}
-
-    <ul>
-        {% for user in listeUsers %}
-            <li>
-                <ul>
-                    <li>Pseudo : {{ user.pseudo }}</li>
-                    <li>Nom complet : {{ user.prenom }} {{ user.nom }}</li>
-                    <li>Email : {{ user.email }}</li>
-                    {% set splitArray = user.telephone|split('', 2) %}
-                    {% set formattedString = splitArray|join(' ') %}
-                    <li>Téléphone : {{ formattedString }}</li>
-                    <li>Actif : {{ (user.actif) ? 'Oui' : 'Non' }}
-                        <a href="{{ path('administration_actif', {'id' : user.id}) }}">
-                            Modifier
-                        </a>
-                    </li>
-                    <li><a href="{{ path('administration_supprimer', {'id' : user.id}) }}">
-                            Supprimer l'utilisateur
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <br>
-        {% endfor %}
-    </ul>
+    </div>
 {% endblock %}
 
 {% block title %}

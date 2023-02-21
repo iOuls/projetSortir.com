@@ -60,12 +60,14 @@ class AdministrationController extends AbstractController
 
     #[Route('/supprimer/{id}', name: '_supprimer')]
     public function supprimer(
-        UserRepository $userRepository,
-        int            $id
+        UserRepository         $userRepository,
+        EntityManagerInterface $entityManager,
+        int                    $id
     ): Response
     {
         $user = $userRepository->findOneBy(['id' => $id]);
         $userRepository->remove($user);
+        $entityManager->flush();
         $this->addFlash('Utilisateur supprimé', $user->getPseudo() . ' a été supprimé de la liste des utilisateurs.');
         return $this->redirectToRoute('administration_listeUsers');
     }
@@ -104,7 +106,7 @@ class AdministrationController extends AbstractController
 
     #[Route('/gererSites/', name: '_gererSites')]
     public function gererSites(
-        Request                $request,
+        Request        $request,
         SiteRepository $siteRepository
     ): Response
     {
@@ -114,8 +116,8 @@ class AdministrationController extends AbstractController
         $motsclefs = $request->query->get('motsclefs');
         $sites = $siteRepository->findAll();
 
-        if ($motsclefs != null){
-            $sites=$siteRepository->findByLettre($motsclefs);
+        if ($motsclefs != null) {
+            $sites = $siteRepository->findByLettre($motsclefs);
         }
 
 
@@ -128,8 +130,8 @@ class AdministrationController extends AbstractController
 
         return $this->render('administration/gererSites.html.twig', [
             'sites' => $sites,
-            'siteForm'=>$siteForm,
-            'motsclefs'=>$motsclefs
+            'siteForm' => $siteForm,
+            'motsclefs' => $motsclefs
         ]);
     }
 
@@ -150,7 +152,7 @@ class AdministrationController extends AbstractController
 
     #[Route('/gererVilles/', name: '_gererVilles')]
     public function gererVilles(
-        Request                $request,
+        Request         $request,
         VilleRepository $villeRepository
     ): Response
     {
@@ -160,8 +162,8 @@ class AdministrationController extends AbstractController
         $motsclefs = $request->query->get('motsclefs');
         $villes = $villeRepository->findAll();
 
-        if ($motsclefs != null){
-            $villes=$villeRepository->findByLettre($motsclefs);
+        if ($motsclefs != null) {
+            $villes = $villeRepository->findByLettre($motsclefs);
         }
 
         if ($villeForm->isSubmitted() && $villeForm->isValid()) {
@@ -175,7 +177,7 @@ class AdministrationController extends AbstractController
         return $this->render('administration/gererVilles.html.twig', [
             'villes' => $villes,
             'villeForm' => $villeForm,
-            'motsclefs'=>$motsclefs
+            'motsclefs' => $motsclefs
         ]);
     }
 
