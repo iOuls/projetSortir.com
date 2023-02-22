@@ -1,13 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1 class="centrer">Gérer les villes</h1>
-    <h2 class="centrer">Filtrer les villes</h2>
+    <h1 class="text-center">Gérer les villes</h1>
 
-    <section class="centrer">
+    <section class="text-center">
         <form method="GET" action="{{ path('administration_gererVilles') }}">
             <div class="box">
-                <label for="motsclefs">Le nom de la ville contient :</label>
+                <label for="motsclefs">Le nom de la ville contient :</label><br>
                 <input type="text" name="motsclefs" id="motsclefs" value="{{ motsclefs }}">
             </div>
             <div class="centrer">
@@ -26,13 +25,13 @@
             <th>Actions</th>
         </tr>
         {% for ville in villes %}
-        <tr>
-            <td>{{ ville.nom }}</td>
-            <td>{{ ville.codePostal }}</td>
-            <td>
-                <a href="{{ path('administration_supprimerVille', {id : ville.id}) }}">Supprimer</a>
-            </td>
-        </tr>
+            <tr>
+                <td>{{ ville.nom }}</td>
+                <td>{{ ville.codePostal }}</td>
+                <td>
+                    <a href="{{ path('administration_supprimerVille', {id : ville.id}) }}">Supprimer</a>
+                </td>
+            </tr>
         {% endfor %}
         <tr>
             <td>
@@ -41,7 +40,7 @@
             </td>
             <td>{{ form_widget(villeForm.codePostal) }}</td>
             <td>
-                {#  <a href="">Ajouter</a>#}
+                {#  <a href="">Ajouter</a> #}
                 {{ form_end(villeForm) }}
             </td>
         </tr>

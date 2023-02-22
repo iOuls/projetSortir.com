@@ -10,6 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ProfilController extends AbstractController
@@ -23,33 +24,37 @@ class ProfilController extends AbstractController
 //    }
 
     #[Route('/profil', name: 'profil_users')]
-    public function users(Request $request, EntityManagerInterface $em)
+    public function users(
+        Request                     $request,
+        EntityManagerInterface      $em,
+        UserRepository              $userRepository,
+        UserPasswordHasherInterface $userPasswordHasher)
     {
         $user = new User();
 
         if ($this->getUser()) {
-            $user=$this->getUser();
+            $user = $this->getUser();
         }
 
         $form = $this->createForm(ProfilFormType::class, $user);
-
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $user_id = $form['id']->getData();
-            $user = $em->getRepository(User::class)->findOneById($user_id);
+        if ($form->isSubmitted()) {
+            $user = $userRepository->findOneBy(
+                ['email' => $this->getUser()->getUserIdentifier()]);
 
-            $user_new = $form->getData();
-
-            $user->setPseudo($user_new->getPseudo());
-            $user->setNom($user_new->getNom());
-            $user->setPrenom($user_new->getPrenom());
-            $user->setTelephone($user_new->getTelephone());
-            $user->setMail($user_new->getMail());
-            $user->setCampus($user_new->getCampus());
-            $user->setActif($user_new->isActif());
-            $user->setImageFile($user_new->getImageFile());
-
+            $user->setPseudo($form->getData()->getPseudo());
+            $user->setNom($form->getData()->getNom());
+            $user->setPrenom($form->getData()->getPrenom());
+            $user->setTelephone($form->getData()->getTelephone());
+            $user->setActif($form->getData()->isActif());
+            ($form->getData()->getImageFile() != null) ? $user->setImageFile($form->getData()->getImageFile()) : null;
+            $user->setPassword(
+                $userPasswordHasher->hashPassword(
+                    $user,
+                    $form->get('password')->getData()
+                )
+            );
 
             $em->persist($user);
             $em->flush();

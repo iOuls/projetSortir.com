@@ -61,14 +61,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $telephone = null;
 
     #[Assert\Type('boolean')]
-    #[Assert\NotBlank]
     #[ORM\Column]
-    private ?bool $administrateur = null;
+    private ?bool $administrateur = false;
 
     #[Assert\Type('boolean')]
-    #[Assert\NotBlank]
     #[ORM\Column]
-    private ?bool $actif = null;
+    private ?bool $actif = false;
 
     #[ORM\OneToMany(mappedBy: 'organisateur', targetEntity: Sortie::class)]
     private Collection $sortiesO;
@@ -296,15 +294,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
 
-     #[ORM\Column(nullable: true)]
+    #[ORM\Column(nullable: true)]
     private $image;
 
 
-     #[Vich\UploadableField(mapping:"image", fileNameProperty:"image")]
+    #[Vich\UploadableField(mapping: "image", fileNameProperty: "image")]
     private $imageFile;
 
 
-    #[ORM\Column(nullable: true)]private ?\DateTime $updatedAt;
+    #[ORM\Column(nullable: true)] private ?\DateTime $updatedAt;
 
 
     public function setImageFile(File $image = null)
@@ -334,6 +332,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->image;
     }
+
     public function __serialize(): array
     {
         return [
@@ -341,19 +340,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             'email' => $this->email,
             'imageFile' => base64_encode($this->imageFile),
             'password' => $this->password,
-            ];
+        ];
     }
+
     public function __unserialize(array $serialized)
     {
         $this->imageFile = base64_decode($serialized['imageFile']);
         $this->email = $serialized['email'];
         $this->id = $serialized['id'];
         $this->password = $serialized['password'];
-        return $this;}
+        return $this;
+    }
 
     // Reset password
-    #[ORM\Column(type: 'string', length: 100)]
-    private $resetToken;
+    #[ORM\Column(nullable: true, type: 'string', length: 100)]
+    private $resetToken = null;
 
     #[ORM\ManyToMany(targetEntity: Groupe::class, mappedBy: 'participant')]
     private Collection $groupes;

@@ -20,7 +20,7 @@ class SortieType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nom', null , ['label'=>'Nom de la sortie '])
+            ->add('nom', null, ['label' => 'Nom de la sortie '])
             ->add('dateHeureDebut', DateTimeType::class, ['html5' => true,
                 'widget' => 'single_text',
                 'label' => 'Date et heure de la sortie ',
@@ -35,20 +35,19 @@ class SortieType extends AbstractType
                     'min' => (new \DateTime())->format('Y-m-d'),
                     'format' => 'dd/MM/yyyy'
                 ]])
-            ->add('nbInscriptionsMax', null , ['label'=>'Nombre de place '])
-            ->add('duree', null , ['label'=>'Durée '])
-            ->add('InfosSortie', null , ['label'=>'Description et infos '])
-            ->add('site', EntityType::class,[
-                "class"=>Site::class,
-                "choice_label"=>"nom"
+            ->add('nbInscriptionsMax', null, ['label' => 'Nombre de place '])
+            ->add('duree', null, ['label' => 'Durée '])
+            ->add('InfosSortie', null, ['label' => 'Description et infos '])
+            ->add('site', EntityType::class, [
+                "class" => Site::class,
+                "choice_label" => "nom"
             ])
-            ->add('lieu', EntityType::class,[
-                "class"=>Lieu::class,
-                "choice_label"=>"nom"
+            ->add('lieu', EntityType::class, [
+                "class" => Lieu::class,
+                "choice_label" => "nom"
             ])
-            ->add('lieu', LieuType::class)
-            ->add('Enregistrer',SubmitType::class,['label'=>'Enregistrer'])
-            ->add('Publier',SubmitType::class,['label'=>'Publier']);
+            ->add('Enregistrer', SubmitType::class, ['label' => 'Enregistrer'])
+            ->add('Publier', SubmitType::class, ['label' => 'Publier']);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

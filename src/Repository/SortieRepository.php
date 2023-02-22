@@ -54,11 +54,13 @@ class SortieRepository extends ServiceEntityRepository
         // mise en place des jointures
         $queryBuilder =
             $this->createQueryBuilder('sortie')
-                ->innerJoin(Site::class, 'site', Join::WITH, 'sortie.site = site.id')
+                ->innerJoin(Site::class, 'site', Join::WITH, 'sortie.site = site.id');
 
-                // ajout du site
-                ->andWhere('site.id = :site')
+        // site
+        if ($site != '' || $site != null) {
+            $queryBuilder->andWhere('site.id = :site')
                 ->setParameter(':site', $site);
+        }
 
         // mots clefs
         if ($motsclefs != '') {
@@ -84,16 +86,18 @@ class SortieRepository extends ServiceEntityRepository
                 ->setParameter(':user', $user);
         }
 
-        // inscription
-        if ($inscrit) {
-            $queryBuilder->andWhere(':user MEMBER OF sortie.participant')
-                ->setParameter(':user', $user);
-        }
+        if (!($inscrit && $noninscrit)) {
+            // inscription
+            if ($inscrit) {
+                $queryBuilder->andWhere(':user MEMBER OF sortie.participant')
+                    ->setParameter(':user', $user);
+            }
 
-        // non inscrit
-        if ($noninscrit) {
-            $queryBuilder->andWhere(':user NOT MEMBER OF sortie.participant')
-                ->setParameter(':user', $user);
+            // non inscrit
+            if ($noninscrit) {
+                $queryBuilder->andWhere(':user NOT MEMBER OF sortie.participant')
+                    ->setParameter(':user', $user);
+            }
         }
 
         // passées

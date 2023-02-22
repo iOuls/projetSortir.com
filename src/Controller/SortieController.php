@@ -2,11 +2,14 @@
 
 namespace App\Controller;
 
+
 use App\Entity\Groupe;
+use App\Entity\Lieu;
 use App\Entity\Sortie;
 use App\Entity\User;
 use App\Form\AnnulerSortieType;
 use App\Form\GroupeType;
+use App\Form\LieuType;
 use App\Form\ModifierSortieType;
 use App\Form\SortieType;
 use App\Form\UserType;
@@ -30,16 +33,20 @@ class SortieController extends AbstractController
 {
     #[Route('', name: '_list')]
     public function list(
-        SortieRepository $sortieRepository,
-        SiteRepository   $siteRepository,
-        UserRepository   $userRepository,
-        EtatRepository   $etatRepository,
-        Request          $request
+        SortieRepository       $sortieRepository,
+        SiteRepository         $siteRepository,
+        UserRepository         $userRepository,
+        EtatRepository         $etatRepository,
+        EntityManagerInterface $em,
+        Request                $request
     ): Response
     {
-        // récupération des variables communes pour le return
+        // récupération des éléments de traitement
         $date = new \DateTime();
         $sites = $siteRepository->findAll();
+        $etatCloturee = $etatRepository->findOneBy(['libelle' => 'Clôturée']);
+        $etatCree = $etatRepository->findOneBy(['libelle' => 'Créée']);
+        $idUser = $userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
 
         // traitement si filtres activés
         if (
@@ -100,14 +107,23 @@ class SortieController extends AbstractController
         }
 
         foreach ($sorties as $sortie) {
-            if ($sortie->getDateHeureDebut() < date_sub(new \DateTime(), new DateInterval('P1M'))) {
+            // sorties datedébut m-1 et plus
+            if ($sortie->getDateHeureDebut() < date_sub($date, new DateInterval('P1M'))) {
                 unset($sorties[array_search($sortie, $sorties, true)]);
             }
 
-            if ($sortie->getOrganisateur() != $userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()])) {
-                if ($sortie->getEtat() == $etatRepository->findOneBy(['libelle' => 'Créée'])) {
+            // sorties != état créé & user non organisateur
+            if ($sortie->getOrganisateur() != $idUser) {
+                if ($sortie->getEtat() == $etatCree) {
                     unset($sorties[array_search($sortie, $sorties, true)]);
                 }
+            }
+
+            // clôture sorties date inscription dépassée
+            if ($date >= $sortie->getDateLimitInscription()) {
+                $sortie->setEtat($etatCloturee);
+                $em->persist($sortie);
+                $em->flush();
             }
         }
 
@@ -126,17 +142,17 @@ class SortieController extends AbstractController
         int              $id,
     ): Response
     {
+        $date = new \DateTime();
         $sortie = $sortieRepository->findOneBy(['id' => $id]);
-
-        if ($sortie->getDateHeureDebut() < date_sub(new \DateTime(), new DateInterval('P1M'))) {
-            $this->addFlash('Impossible d\'accéder à cette sortie', 'Impossible d\'accéder à cette sortie, car elle a été clôturée il y a plus d\'un mois.');
+        if ($sortie->getDateHeureDebut() < date_sub($date, new DateInterval('P1M'))) {
+            $this->addFlash('Sortie non consultable', 'La sortie sélectionnée est trop ancienne pour être consultée.');
             return $this->redirectToRoute('sortie_list');
+        } else {
+            return $this->render('sortie/afficher.html.twig',
+                [
+                    'sortie' => $sortie
+                ]);
         }
-
-        return $this->render('sortie/afficher.html.twig',
-            [
-                'sortie' => $sortie
-            ]);
     }
 
     #[Route('/sortie/publier/{id}', name: '_publier')]
@@ -207,7 +223,7 @@ class SortieController extends AbstractController
         $sortie = new Sortie();
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
-        $sortie->setOrganisateur(($this->getUser()));
+        $sortie->setOrganisateur($this->getUser());
 
         if ($sortieForm->isSubmitted()) {
 
@@ -382,7 +398,23 @@ class SortieController extends AbstractController
         return $this->redirectToRoute('sortie_ajouterParticipant',['id' => $sortie->getId()]);
     }
 
+    #[Route('/ajouterlieu', name: '_ajouterlieu')]
+    public function ajouterlieu(
+        $infos,
+        EntityManagerInterface $entityManager,
+        Request $request
+    )
+    {
+        // TODO
+        $lieu = new Lieu();
+        $lieuForm = $this->createForm(LieuType::class, $lieu);
+        $lieuForm->handleRequest($request);
 
+        if ($lieuForm->isSubmitted() && $lieuForm->isValid()) {
 
+        }
+        return $this->render('lieu/ajouterLieu.html.twig',
 
+        );
+    }
 }

@@ -3,15 +3,15 @@
 {% block title %}Log in!{% endblock %}
 
 {% block body %}
-    <form method="post">
+    <form method="post" class="flex-row center text-center">
         {% if error %}
             <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
         {% endif %}
 
         {% if app.user %}
-            <div class="mb-3">
-                Vous êtes connecté en tant que {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Se
-                    déconnecter</a>
+            <br>
+            <div class="neon-no-hover">
+                Vous êtes déjà connecté en tant que {{ app.user.userIdentifier }}.
             </div>
         {% endif %}
 
@@ -42,6 +42,8 @@
         <button class="btn btn-lg btn-primary" type="submit">
             Se connecter
         </button>
-        <a href="{{ path('forgotten_password') }}" class="btn btn-secondary mt-3">Mot de passe oublié</a>
     </form>
+    <a class="flex-col center" href="{{ path('forgotten_password') }}">
+        <button>Mot de passe oublié</button>
+    </a>
 {% endblock %}

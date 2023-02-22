@@ -1,34 +1,39 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Afficher une sortie</h1>
-    <ul>
-        <li>Nom de la sortie : {{ sortie.nom }}</li>
-        <li>Date et heure de la sortie : {{ sortie.dateHeureDebut | date('d/m/Y H:i') }}</li>
-        <li>Date limite d'inscription : {{ sortie.dateLimitInscription | date('d/m/Y') }}</li>
-        <li>Nombre de places : {{ sortie.nbInscriptionsMax }}</li>
-        <li>Durée : {{ sortie.duree | date('H:i') }}</li>
-        <li>Ville organisatrice : {{ sortie.site.nom }}</li>
-        <li>Lieu : {{ sortie.lieu.nom }}</li>
-        <li>Rue : {{ sortie.lieu.rue }}</li>
-        <li>Code postal : {{ sortie.lieu.ville.codePostal }}</li>
-        <li>Latitude : {{ sortie.lieu.latitude }}</li>
-        <li>Longitude : {{ sortie.lieu.longitude }}</li>
-        <li>Description et infos : {{ sortie.infosSortie }}</li>
-    </ul>
+<h1 class="text-center">Afficher une sortie</h1>
+<div>
+    <p class="text-center">
+        <span class="bold">{{ sortie.nom }}</span><br>
+        Date de la sortie : {{ sortie.dateHeureDebut | date('d/m/Y H:i') }}<br><br>
+        Limite des inscriptions : {{ sortie.dateLimitInscription | date('d/m/Y') }}<br>
+        Inscrits : {{ sortie.participant|length }} / {{ sortie.nbInscriptionsMax }}<br>
+        Durée : {{ sortie.duree | date('H:i') }}<br>
+        Site : {{ sortie.site.nom }}<br><br>
+        Lieu : {{ sortie.lieu.nom }}<br>
+        Rue : {{ sortie.lieu.rue }}<br>
+        Code postal : {{ sortie.lieu.ville.codePostal }}<br><br>
+        Infos : {{ sortie.infosSortie }}<br>
+    </p>
 
-    <h2>Liste des participants</h2>
-    <div class="tab">
-        <div class="tab-titre">
+    <input type="hidden" id="latitude" value="{{ sortie.lieu.latitude }}">
+    <input type="hidden" id="longitude" value="{{ sortie.lieu.longitude }}">
+
+    <h2 class="text-center">Liste des participants</h2>
+    <div class="tab center text-center">
+        <div class="tab-titre center text-center">
             <div>Pseudo</div>
             <div>Nom</div>
         </div>
 
 
         {% for leparticipant in sortie.participant %}
-            <div class="tab-data">
+            <div class="tab-data center text-center ">
                 <div>{{ leparticipant.pseudo }}</div>
                 <div>{{ leparticipant.prenom }} {{ leparticipant.nom }}</div>
+                <a href="{{ path('profil_afficher', {id : leparticipant.id}) }}">
+                    <button>Son profil</button>
+                </a>
             </div>
         {% endfor %}
 
@@ -39,9 +44,29 @@
     </a>
     <a class="btn" href="{{ path('sortie_ajouterParticipant', {id : sortie.id }) }}">Ajouter des membres</a>
 
-{% endblock %}
+    <div id="map"></div>
 
-{% block title %}
-    {{ parent() }}Sortie : {{ sortie.nom }}
-{% endblock %}
+    <script type="text/javascript">
+        var options = { // LIGNE 16
+            center: new google.maps.LatLng(
+                document.getElementById('latitude').value,
+                document.getElementById('longitude').value),
+            zoom: 15
+        };
+
+        var map = new google.maps.Map(document.getElementById("map"), options);
+
+        var marker = new google.maps.Marker({
+            position: new google.maps.LatLng(document.getElementById('latitude').value,
+                document.getElementById('longitude').value),
+            map: map,
+            title: 'Rendez-vous ici !'
+        })
+    </script>
+
+    {% endblock %}
+
+    {% block title %}
+        {{ parent() }}Sortie : {{ sortie.nom }}
+    {% endblock %}
 

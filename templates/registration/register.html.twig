@@ -1,22 +1,43 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}{{ parent() }}Nouvel utilisateur{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
+    <h1 class="text-center">Créer un utilisateur</h1>
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.Pseudo) }}
-        {{ form_row(registrationForm.Prenom) }}
-        {{ form_row(registrationForm.Nom) }}
-        {{ form_row(registrationForm.Telephone) }}
-        {{ form_row(registrationForm.imageFile) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
+    <div class="flex-col center text-center">
+        {{ form_start(registrationForm) }}
+        <div class="flex-row">
+            {{ form_label(registrationForm.Pseudo) }}
+            {{ form_widget(registrationForm.Pseudo) }}
+        </div>
+        <div class="flex-row">
+            {{ form_label(registrationForm.Prenom) }}
+            {{ form_widget(registrationForm.Prenom) }}
+        </div>
+        <div class="flex-row">
+            {{ form_label(registrationForm.Nom) }}
+            {{ form_widget(registrationForm.Nom) }}
+        </div>
+        <div class="flex-row">
+            {{ form_label(registrationForm.Telephone) }}
+            {{ form_widget(registrationForm.Telephone) }}
+        </div>
+        <div class="flex-row">
+            {{ form_label(registrationForm.email) }}
+            {{ form_widget(registrationForm.email) }}
+        </div>
+        <div class="flex-row">
+            {{ form_label(registrationForm.password) }}
+            {{ form_widget(registrationForm.password) }}
+        </div>
+        <div class="flex-row">
+            {{ form_label(registrationForm.site) }}
+            {{ form_widget(registrationForm.site) }}
+        </div>
+        <br>
 
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+        <button type="submit" class="btn">Enregistrer</button>
+        {{ form_end(registrationForm) }}
+    </div>
 {% endblock %}

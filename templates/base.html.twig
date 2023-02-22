@@ -2,29 +2,63 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}PartouzMania - {% endblock %}</title>
+    <title>{% block title %}Enferm&Dehors - {% endblock %}</title>
     <link rel="stylesheet" href="{{ asset('css/fichierCss.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+          integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+          crossorigin=""/>
+    <script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false"></script>
+    <link rel="icon" href="{{ asset('images/logo.svg') }}"/>
 </head>
 <body>
-<header class="align_droite">
-    {% if app.user %}
-        {% if 'ROLE_ADMIN' in app.user.roles %}
-            <a href="{{ path('administration_index') }}"> Administration /</a>
-            <a href="{{ path('administration_gererVilles') }}"> Villes /</a>
-            <a href="{{ path('administration_gererSites') }}"> Sites / </a>
+<header>
+
+
+    <div class="flex-col center">
+        {% if app.user %}
+            <p class="neon-no-hover">Hey {{ app.user.pseudo }}</p>
         {% endif %}
-    {% endif %}
-    <a href="{{ path('sortie_list') }}"> Acceuil /</a>
-    {% if app.user %}
-        <a href="{{ path('app_logout') }}">Se déconnecter /</a>
-        <a href="{{ path('profil_users') }}">Profil</a><br>
-        <p>Bienvenue {{ app.user.pseudo }}</p>
-    {% else %}
-        <a href="{{ path('app_login') }}">Se connecter</a>
-        <!-- <a href="{{ path('app_register') }}">Register</a> -->
-    {% endif %}
+        <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+            <path fill="white"
+                  d="M432 240c53 0 96-43 96-96s-43-96-96-96c-35.5 0-66.6 19.3-83.2 48H296.2C316 40.1 369.3 0 432 0c79.5 0 144 64.5 144 144s-64.5 144-144 144c-27.7 0-53.5-7.8-75.5-21.3l35.4-35.4c12.2 5.6 25.8 8.7 40.1 8.7zM1.8 142.8C5.5 133.8 14.3 128 24 128H392c9.7 0 18.5 5.8 22.2 14.8s1.7 19.3-5.2 26.2l-177 177V464h64c13.3 0 24 10.7 24 24s-10.7 24-24 24H208 120c-13.3 0-24-10.7-24-24s10.7-24 24-24h64V345.9L7 169c-6.9-6.9-8.9-17.2-5.2-26.2z"/>
+        </svg>
+        <a href="{{ path('sortie_list') }}">
+            <h1 class="neon-no-hover">Enferm&Dehors</h1>
+        </a>
+    </div>
+
+    <div class="flex-row menu center">
+        {% if app.user %}
+            {% if 'ROLE_ADMIN' in app.user.roles %}
+                <div class="flex-col menu align-center">
+                    <a class="neon margin-xs" href="{{ path('administration_index') }}"> Administration</a>
+                    <a class="neon margin-xs" href="{{ path('administration_gererVilles') }}"> Villes</a>
+                    <a class="neon margin-xs" href="{{ path('administration_gererSites') }}"> Sites</a>
+                </div>
+            {% endif %}
+        {% endif %}
+        <div class="flex-col menu center">
+            <a class="neon margin-xs" href="{{ path('sortie_list') }}"> Acceuil</a>
+            {% if app.user %}
+                <a class="neon margin-xs" href="{{ path('profil_users') }}">Profil</a>
+                <a class="neon margin-xs" href="{{ path('app_logout') }}">Déconnexion</a>
+            {% else %}
+                <a class="neon margin-xs" href="{{ path('app_login') }}">Connexion</a>
+                <!-- <a href="{{ path('app_register') }}">Register</a> -->
+            {% endif %}
+        </div>
+    </div>
 </header>
+
+<div class="flex-col center">
+    <audio id="audio" loop preload autoplay>
+        <source src="{{ asset('sound/1.mp3') }}" type="audio/mpeg">
+    </audio>
+    <script>
+        document.getElementById('audio').volume = 0.05;
+    </script>
+</div>
 {% block body %}{% endblock %}
-{% block footer %}{% endblock %}
+
 </body>
 </html>

@@ -3,7 +3,9 @@
 namespace App\Form;
 
 use App\Entity\User;
+use PharIo\Manifest\Email;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
@@ -18,34 +20,33 @@ class ProfilFormType extends AbstractType
     {
         $builder
             ->add('Pseudo')
-            ->add('email')
-            ->add('password', null, ['label'=>'Password :'])
+            ->add('email')//, null, ['attr' => ['disabled' => true]])
+            ->add('password', null, ['label' => 'Password :'])
             ->add('password', RepeatedType::class, [
-                'label'=>'Répétez le assword :',
                 'type' => PasswordType::class,
-                'invalid_message' => 'The password fields must match.',
+                'invalid_message' => 'Les champs mot de passe doivent correspondre.',
                 'options' => ['attr' => ['class' => 'password-field']],
                 'required' => true,
-                'first_options'  => ['label' => 'Password'],
-                'second_options' => ['label' => 'Repeat Password'],
+                'first_options' => ['label' => 'Mot de passe'],
+                'second_options' => ['label' => 'Confirmez le mot de passe'],
             ])
 //            ->add('roles')
             ->add('nom')
             ->add('prenom')
             ->add('telephone')
-            ->add('administrateur')
-            ->add('actif')
-            ->add('imageFile',FileType::class)
+            ->add('imageFile', FileType::class, [
+                'attr' => [
+                    'accept' => "image/*"
+                ],
+                'required' => false,
+            ])
             ->add('save', SubmitType::class, [
                 'label' => 'Enregistrer les modifications',
                 'attr' => [
                     'class' => 'btn mt-3 cardButton col-12',
                     'id' => 'loginBtn'
                 ]
-            ])
-
-
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
