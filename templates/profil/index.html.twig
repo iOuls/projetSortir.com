@@ -21,6 +21,10 @@
                 <img class="photo-profil"
                      src="{{ asset("images/products/" ~ user.image) }}"
                      alt="Ma photo de profil">
+            {% else %}
+                <img class="photo-profil"
+                     src="{{ asset('images/avatar.png') }}"
+                     alt="Ma photo de profil">
             {% endif %}
         </div>
         <div class="flex-col grid-card center">

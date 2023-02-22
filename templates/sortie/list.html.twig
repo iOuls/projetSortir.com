@@ -2,11 +2,6 @@
 
 {% block body %}
     <div class="flex-row text-center center">
-        {% if app.user %}
-            <p class="neon-no-hover">Hey {{ app.user.pseudo }} !<br>{{ date|date('d/m/Y') }}</p>
-        {% else %}
-            <p>{{ date|date('d/m/Y') }}</p>
-        {% endif %}
 
         <h2>Liste des sorties</h2>
 
@@ -85,6 +80,17 @@
     <section class="grid">
         {% for sortie in sorties %}
             <article class="grid-card">
+
+                {% if user.image %}
+                    <img class="photo-profil"
+                         src="{{ asset("images/products/" ~ sortie.organisateur.image) }}"
+                         alt="Photo de {{ sortie.organisateur.pseudo }}">
+                {% else %}
+                    <img class="photo-profil"
+                         src="{{ asset('images/avatar.png') }}"
+                         alt="Organisateur sans photo">
+                {% endif %}
+
                 <div class="bold text-center neon-no-hover">{{ sortie.nom }}</div>
                 <br>
                 Date {{ sortie.dateHeureDebut | date('d/m/Y') }}<br>

@@ -5,11 +5,10 @@
 {% endblock %}
 
 {% block body %}
-    <h1 class="centrer">Créer une sortie</h1>
+    <h1 class="text-center">Créer une sortie</h1>
 
-    <div class="centrer">
+    <div class="flex-col center text-center">
         {{ form_start(sortieForm) }}
-
         <div class="flex-row">
             <label>{{ field_label(sortieForm.nom) }} :</label>
             <div>{{ form_widget(sortieForm.nom) }}</div>
@@ -27,7 +26,6 @@
             <div>{{ form_widget(sortieForm.dateLimitInscription) }}</div>
             <br>
         </div>
-
         <div class="flex-row">
             <label>{{ field_label(sortieForm.nbInscriptionsMax) }} :</label>
             <div>{{ form_widget(sortieForm.nbInscriptionsMax) }}</div>
@@ -62,7 +60,6 @@
             <div>{{ form_widget(sortieForm.Enregistrer) }}</div>
             <div>{{ form_widget(sortieForm.Publier) }}</div>
             <a class="btn" href="{{ path('sortie_list') }}">Annuler</a>
-
         </div>
         {{ form_end(sortieForm) }}
 

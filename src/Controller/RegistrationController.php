@@ -45,6 +45,7 @@ class RegistrationController extends AbstractController
                     $form->get('password')->getData()
                 )
             );
+            $user_new->setSite($user->getSite());
 
             $entityManager->persist($user_new);
             $entityManager->flush();

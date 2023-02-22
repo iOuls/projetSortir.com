@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Lieu;
 use App\Entity\Sortie;
 use App\Form\AnnulerSortieType;
+use App\Form\LieuType;
 use App\Form\ModifierSortieType;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
@@ -283,5 +285,23 @@ class SortieController extends AbstractController
 
     }
 
+    #[Route('/ajouterlieu', name: '_ajouterlieu')]
+    public function ajouterlieu(
+        $infos,
+        EntityManagerInterface $entityManager,
+        Request $request
+    )
+    {
+        // TODO
+        $lieu = new Lieu();
+        $lieuForm = $this->createForm(LieuType::class, $lieu);
+        $lieuForm->handleRequest($request);
 
+        if ($lieuForm->isSubmitted() && $lieuForm->isValid()) {
+
+        }
+        return $this->render('lieu/ajouterLieu.html.twig',
+
+        );
+    }
 }

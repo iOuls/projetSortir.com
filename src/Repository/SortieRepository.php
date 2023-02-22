@@ -100,7 +100,6 @@ class SortieRepository extends ServiceEntityRepository
             }
         }
 
-
         // passées
         if ($passe) {
             $queryBuilder->andWhere('sortie.dateHeureDebut < :date')
