@@ -6,6 +6,7 @@ use App\Entity\Lieu;
 use App\Entity\Ville;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -15,24 +16,15 @@ class LieuType extends AbstractType
     {
         $builder
             ->add('ville',
-                EntityType::class,[
+                EntityType::class, [
                     "class" => Ville::class,
-                    "choice_label"=>"nom"
+                    "choice_label" => "nom"
                 ])
             ->add('nom')
-
-            ->add('rue', options: [
-                'disabled' => true,
-                'attr' => [
-                    'placeholder' => 'rue' ]
-            ]
-            )
-            ->add('latitude', null, ['label'=>'Latitude '])
-            ->add('longitude', null, ['label'=>'Longitude '])
-
-
-
-        ;
+            ->add('rue')
+            ->add('latitude', null, ['label' => 'Latitude '])
+            ->add('longitude', null, ['label' => 'Longitude '])
+            ->add('creer', SubmitType::class, ['label' => 'Valider']);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

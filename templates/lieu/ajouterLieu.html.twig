@@ -3,5 +3,34 @@
 {% block title %}{{ parent() }}Ajouter un lieu{% endblock %}
 
 {% block body %}
+    <h1 class="text-center">Ajouter un lieu</h1>
 
+    <div class="flex-col center text-center">
+        {{ form_start(lieuForm) }}
+        <div class="flex-row">
+            {{ form_label(lieuForm.nom) }}
+            {{ form_widget(lieuForm.nom) }}
+        </div>
+        <div class="flex-row">
+            {{ form_label(lieuForm.rue) }}
+            {{ form_widget(lieuForm.rue) }}
+        </div>
+        <div class="flex-row">
+            {{ form_label(lieuForm.latitude) }}
+            {{ form_widget(lieuForm.latitude) }}
+        </div>
+        <div class="flex-row">
+            {{ form_label(lieuForm.longitude) }}
+            {{ form_widget(lieuForm.longitude) }}
+        </div>
+        <div class="flex-row">
+            {{ form_label(lieuForm.ville) }}
+            {{ form_widget(lieuForm.ville) }}
+        </div>
+        <div class="flex-row">
+            {{ form_row(lieuForm.creer) }}
+        </div>
+
+        {{ form_end(lieuForm) }}
+    </div>
 {% endblock %}
