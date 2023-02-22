@@ -2,13 +2,19 @@
 
 namespace App\Controller;
 
+
+use App\Entity\Groupe;
 use App\Entity\Lieu;
 use App\Entity\Sortie;
+use App\Entity\User;
 use App\Form\AnnulerSortieType;
+use App\Form\GroupeType;
 use App\Form\LieuType;
 use App\Form\ModifierSortieType;
 use App\Form\SortieType;
+use App\Form\UserType;
 use App\Repository\EtatRepository;
+use App\Repository\GroupeRepository;
 use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
 use App\Repository\UserRepository;
@@ -133,7 +139,7 @@ class SortieController extends AbstractController
     #[Route('/sortie/{id}', name: '_afficher')]
     public function afficher(
         SortieRepository $sortieRepository,
-        int              $id
+        int              $id,
     ): Response
     {
         $date = new \DateTime();
@@ -203,7 +209,6 @@ class SortieController extends AbstractController
         return $this->render('sortie/annuler.html.twig',
             compact('sortieForm', 'sortie')
         );
-
     }
 
     #[Route('/create', name: '_create')]
@@ -218,24 +223,33 @@ class SortieController extends AbstractController
         $sortie = new Sortie();
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
+        $sortie->setOrganisateur($this->getUser());
 
-        $sortie->setOrganisateur(($this->getUser()));
-        if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
-            try {
+        if ($sortieForm->isSubmitted()) {
 
-                if ($sortieForm->getClickedButton() === $sortieForm->get('Enregistrer')) {
-                    $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Créée']));
-                } else {
-                    $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Ouverte']));
+            if ($sortieForm->isValid()) {
+                try {
+                    if ($sortieForm->getClickedButton() === $sortieForm->get('Enregistrer')) {
+                        $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Créée']));
+                    } else {
+                        $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Ouverte']));
+                    }
+                } catch (Exception $exception) {
+                    dd($exception->getMessage());
                 }
-            } catch (Exception $exception) {
-                dd($exception->getMessage());
+                $sortieRepository->save($sortie, true);
+                $this->addFlash('bravo', 'Sortie ajoutée.');
+                return $this->redirectToRoute('sortie_list', []);
+            }else{
+                    if ($sortie->getDateLimitInscription()> $sortie->getDateHeureDebut()){
+                        $this->addFlash('Erreur', "Oups, La date limite d'inscription ne peut pas dépasser la date de la sortie");
+                    }
+                $this->addFlash('Erreur', 'Veuillez ressaisir le formulaire svp');
+
             }
-            $sortieRepository->save($sortie, true);
-            $this->addFlash('bravo', 'Sortie ajoutée.');
-            return $this->redirectToRoute('sortie_list', []);
 
         }
+
         return $this->render('sortie/create.html.twig',
             compact('sortieForm')
         );
@@ -251,26 +265,32 @@ class SortieController extends AbstractController
 
     )
     {
-
         $sortie = $sortieRepository->findOneBy(['id' => $id]);
         $modifierSortieForm = $this->createForm(ModifierSortieType::class, $sortie);
         $modifierSortieForm->handleRequest($request);
 
         $sortie->setOrganisateur(($this->getUser()));
-        if ($modifierSortieForm->isSubmitted() && $modifierSortieForm->isValid()) {
-            try {
+        if ($modifierSortieForm->isSubmitted()) {
 
-                if ($modifierSortieForm->getClickedButton() === $modifierSortieForm->get('Enregistrer')) {
-                    $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Créée']));
-                    $em->persist($sortie);
-                } elseif ($modifierSortieForm->getClickedButton() === $modifierSortieForm->get('Supprimer')) {
-                    $sortieRepository->remove($sortie, true);
-                } else {
-                    $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Ouverte']));
-                    $em->persist($sortie);
+            if ($modifierSortieForm->isValid()) {
+                try {
+                    if ($modifierSortieForm->getClickedButton() === $modifierSortieForm->get('Enregistrer')) {
+                        $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Créée']));
+                    } else {
+                        $sortie->setEtat($etatRepository->findOneBy(['libelle' => 'Ouverte']));
+                    }
+                } catch (Exception $exception) {
+                    dd($exception->getMessage());
                 }
-            } catch (Exception $exception) {
-                dd($exception->getMessage());
+                $sortieRepository->save($sortie, true);
+                $this->addFlash('bravo', 'Sortie ajoutée.');
+                return $this->redirectToRoute('sortie_list', []);
+            } else {
+                if ($sortie->getDateLimitInscription() > $sortie->getDateHeureDebut()) {
+                    $this->addFlash('Erreur', "Oups, La date limite d'inscription ne peut pas dépasser la date de la sortie");
+                }
+                $this->addFlash('Erreur', 'Veuillez ressaisir le formulaire svp');
+
             }
 
             $em->flush();
@@ -280,9 +300,102 @@ class SortieController extends AbstractController
             return $this->redirectToRoute('sortie_list', []);
         }
         return $this->render('sortie/modifier.html.twig',
-            compact('modifierSortieForm',)
+            compact('modifierSortieForm')
         );
 
+    }
+
+    #[Route('/groupe/{id}', name: '_groupe')]
+    public function groupe(
+        EntityManagerInterface $em,
+        Request                $request,
+        SortieRepository       $sortieRepository,
+        GroupeRepository       $groupeRepository,
+        int                    $id
+    )
+    {
+        $sortie = $sortieRepository->findOneBy(['id' => $id]);
+        $groupe = new Groupe();
+        $groupeForm = $this->createForm(GroupeType::class, $groupe);
+        $groupeForm->handleRequest($request);
+        $groupeExist = $groupeRepository->findOneBy(['sortie'=>$sortie]);
+
+        if ($groupeExist != null){
+            $em->persist($groupeExist);
+            $em->flush();
+        }elseif ($groupeForm->isSubmitted()&& $groupeForm->isValid()) {
+            $groupe->setSortie($sortie);
+            $em->persist($groupe);
+            $em->flush();
+
+            $this->addFlash('Groupe créé', 'Groupe créé avec succès.');
+            return $this->redirectToRoute('sortie_ajouterParticipant',['id' => $sortie->getId()]);
+        }
+
+        return $this->render('sortie/groupe.html.twig',
+            compact('groupeForm', 'sortie', 'groupeExist'));
+    }
+
+    #[Route('/ajouterParticipant/{id}', name: '_ajouterParticipant')]
+    public function ajouterParticipant(
+        EntityManagerInterface  $em,
+        GroupeRepository        $groupeRepository,
+        SortieRepository        $sortieRepository,
+        UserRepository          $userRepository,
+        int                     $id,
+    )
+    {
+        $sortie = $sortieRepository->findOneBy(['id'=>$id]);
+        $groupe = $groupeRepository->findOneBy(['sortie'=>$sortie]);
+
+        return $this->render('sortie/ajouterParticipant.html.twig',
+            compact('groupe', 'sortie'));
+    }
+
+    #[Route('/ajouter/{id}/{idUser}/{idSortie}', name: '_ajouter')]
+    public function ajouter(
+        int                     $id,
+        int                     $idUser,
+        int                     $idSortie,
+        UserRepository          $userRepository,
+        GroupeRepository        $groupeRepository,
+        SortieRepository        $sortieRepository,
+        EntityManagerInterface  $entityManager
+
+    ){
+        $sortie = $sortieRepository->findOneBy(['id'=>$idSortie]);
+        $groupe = $groupeRepository->findOneBy(['id'=>$id]);
+        $user = $userRepository->findOneBy(['id'=>$idUser]);
+
+        $groupe->addParticipant($user);
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        $this->addFlash('Ajout effectué', 'Participant ajouté au groupe');
+        return $this->redirectToRoute('sortie_ajouterParticipant',['id' => $sortie->getId()]);
+    }
+
+    #[Route('/exclure/{id}/{idUser}/{idSortie}', name: '_exclure')]
+    public function exclure(
+        int                     $id,
+        int                     $idUser,
+        int                     $idSortie,
+        UserRepository          $userRepository,
+        GroupeRepository        $groupeRepository,
+        SortieRepository        $sortieRepository,
+        EntityManagerInterface  $entityManager
+
+    ){
+        $sortie = $sortieRepository->findOneBy(['id'=>$idSortie]);
+        $groupe = $groupeRepository->findOneBy(['id'=>$id]);
+        $user = $userRepository->findOneBy(['id'=>$idUser]);
+
+        $groupe->removeParticipant($user);
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        $this->addFlash('Exclusion effectuée', 'Participant exclu du groupe');
+        return $this->redirectToRoute('sortie_ajouterParticipant',['id' => $sortie->getId()]);
     }
 
     #[Route('/ajouterlieu', name: '_ajouterlieu')]

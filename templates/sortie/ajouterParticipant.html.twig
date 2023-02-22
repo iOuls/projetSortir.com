@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Groupe privée </h1>
+
+    <h2>Ajouter des membres au groupe</h2>
+
+    <h2>Liste des participants à la sortie</h2>
+    <div class="tab">
+        <div class="tab-titre">
+            <div>Pseudo</div>
+            <div>Nom</div>
+            <label>Membre</label>
+            <div>Action</div>
+        </div>
+
+        {% for leparticipant in sortie.participant %}
+            <div class="tab-data">
+                <div>{{ leparticipant.pseudo }}</div>
+                <div>{{ leparticipant.prenom }} {{ leparticipant.nom }}</div>
+                <label class="inscrit">{{ (leparticipant in groupe.participant) ? 'X' : '' }}</label>
+                {% if leparticipant in groupe.participant %}
+                    <a href="{{ path('sortie_exclure', {id : groupe.id, idUser : leparticipant.id, idSortie : sortie.id})}}">Exclure</a>
+                {% else %}
+                    <a href="{{ path('sortie_ajouter', {id : groupe.id, idUser : leparticipant.id, idSortie : sortie.id})}}">Ajouter</a>
+                {% endif %}
+
+            </div>
+        {% endfor %}
+    </div>
+
+    <a class="btn" href="{{ path('sortie_afficher', {id : sortie.id}) }}">Revenir à la sortie</a>
+
+{% endblock %}
+
+{% block title %}
+
+{% endblock %}

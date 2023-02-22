@@ -87,6 +87,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->sorties = new ArrayCollection();
+        $this->groupes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -355,6 +356,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true, type: 'string', length: 100)]
     private $resetToken = null;
 
+    #[ORM\ManyToMany(targetEntity: Groupe::class, mappedBy: 'participant')]
+    private Collection $groupes;
+
 // ...
 
     public function getResetToken(): ?string
@@ -380,4 +384,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Groupe>
+     */
+    public function getGroupes(): Collection
+    {
+        return $this->groupes;
+    }
+
+    public function addGroupe(Groupe $groupe): self
+    {
+        if (!$this->groupes->contains($groupe)) {
+            $this->groupes->add($groupe);
+            $groupe->addParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroupe(Groupe $groupe): self
+    {
+        if ($this->groupes->removeElement($groupe)) {
+            $groupe->removeParticipant($this);
+        }
+
+        return $this;
+    }
+
 }

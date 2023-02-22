@@ -26,6 +26,7 @@
             <div>Nom</div>
         </div>
 
+
         {% for leparticipant in sortie.participant %}
             <div class="tab-data center text-center ">
                 <div>{{ leparticipant.pseudo }}</div>
@@ -36,7 +37,12 @@
             </div>
         {% endfor %}
 
-    </div>
+    </div><br>
+
+    <h2> Groupe privé</h2>
+    <a href="{{ path('sortie_groupe', {id : sortie.id}) }}" class="btn">Créer un groupe privé
+    </a>
+    <a class="btn" href="{{ path('sortie_ajouterParticipant', {id : sortie.id }) }}">Ajouter des membres</a>
 
     <div id="map"></div>
 

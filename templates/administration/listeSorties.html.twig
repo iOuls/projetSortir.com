@@ -1,16 +1,17 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Liste des sorties</h1>
 
-    {% for label, messages in app.flashes %}
-        {% for message in messages %}
-            <div class="alter-{{ label }}">
-                {{ message }}
-            </div>
+        <h1 class="centrer">Liste des sorties</h1>
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alter-{{ label }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
         {% endfor %}
-    {% endfor %}
-
+        
     <div class="grid">
         {% for sortie in sorties %}
             <div class="grid-card center text-center">
