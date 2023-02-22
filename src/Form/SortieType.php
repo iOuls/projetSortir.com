@@ -48,12 +48,6 @@ class SortieType extends AbstractType
             ])
             ->add('Enregistrer', SubmitType::class, ['label' => 'Enregistrer'])
             ->add('Publier', SubmitType::class, ['label' => 'Publier']);
-
-
-        //  ->add("Enregistrer", SubmitType::class)
-        // ->add("Publier", SubmitType::class);
-
-
     }
 
     public function configureOptions(OptionsResolver $resolver): void
