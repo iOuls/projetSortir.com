@@ -146,7 +146,7 @@ h1, h2 {
     margin: auto;
     display: flex;
     border-radius: 15px;
-    max-width: 25vw;
+    max-width: 150px;
     animation: neon2 .35s ease-in-out infinite alternate;
 }
 
@@ -177,6 +177,29 @@ select:hover, input:hover, select:active, input:active {
 }
 
 button:hover, .btn:hover, button:active, .btn:active {
+    animation: neon2 .10s ease-in-out infinite alternate, neon1 .15s ease-in-out infinite alternate;
+    font-weight: bold;
+    color: white;
+    background-color: #FFFFFF;
+}
+
+.btn-plus {
+    background-color: rgba(0, 0, 0, 0);
+    display: inline-block;
+    border: 0.1em solid #FFFFFF;
+    border-radius: 0.12em;
+    box-sizing: border-box;
+    text-decoration: none;
+    font-family: sans-serif;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    width: 20px;
+    border-radius: 100%;
+    transition: all 0.2s;
+}
+
+.btn-plus:hover {
     animation: neon2 .10s ease-in-out infinite alternate, neon1 .15s ease-in-out infinite alternate;
     font-weight: bold;
     color: white;
