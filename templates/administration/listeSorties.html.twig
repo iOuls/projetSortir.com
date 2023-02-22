@@ -2,16 +2,16 @@
 
 {% block body %}
 
-        <h1 class="centrer">Liste des sorties</h1>
+    <h2 class="centrer">Liste des sorties</h2>
 
-        {% for label, messages in app.flashes %}
-            {% for message in messages %}
-                <div class="alter-{{ label }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alter-{{ label }}">
+                {{ message }}
+            </div>
         {% endfor %}
-        
+    {% endfor %}
+
     <div class="grid">
         {% for sortie in sorties %}
             <div class="grid-card center text-center">

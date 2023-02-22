@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}{{ parent() }}Se connecter{% endblock %}
 
 {% block body %}
     <form method="post" class="flex-row center text-center">
@@ -15,7 +15,7 @@
             </div>
         {% endif %}
 
-        <h1 class="h3 mb-3 font-weight-normal">Se connecter</h1>
+        <h2 class="h3 mb-3 font-weight-normal">Se connecter</h2>
         <label for="inputEmail">Email</label>
         <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control"
                autocomplete="email" required autofocus>
