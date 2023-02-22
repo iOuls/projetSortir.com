@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<h1 class="text-center">Afficher une sortie</h1>
+<h2 class="text-center">Afficher une sortie</h2>
 <div>
     <p class="text-center">
         <span class="bold">{{ sortie.nom }}</span><br>
@@ -37,7 +37,8 @@
             </div>
         {% endfor %}
 
-    </div><br>
+    </div>
+    <br>
 
     <h2> Groupe privé</h2>
     <a href="{{ path('sortie_groupe', {id : sortie.id}) }}" class="btn">Créer un groupe privé
