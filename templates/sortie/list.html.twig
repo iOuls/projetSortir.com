@@ -79,6 +79,7 @@
 
     <section class="grid">
         {% for sortie in sorties %}
+            
             <article class="grid-card text-center">
                 <div class="bold text-center neon-no-hover">{{ sortie.nom }}</div>
                 <br>
@@ -91,16 +92,16 @@
                 {% endif %}<br>
                 Il reste <b>{{ sortie.nbInscriptionsMax - sortie.participant |length }} places</b>
                 <br>
-                Statut {{ sortie.etat.libelle }}<br>
+                Statut {{ sortie.etat.libelle }}<br><br>
                 {% if sortie.organisateur.image %}
-                    <img class="photo-profil"
-                         src="{{ asset("images/products/" ~ sortie.organisateur.image) }}"
-                         alt="Photo de {{ sortie.organisateur.pseudo }}">
-                {% else %}
-                    <img class="photo-profil"
-                         src="{{ asset('images/avatar.png') }}"
-                         alt="Organisateur sans photo">
-                {% endif %}
+            <img class="photo-profil"
+                 src="{{ asset("images/products/" ~ sortie.organisateur.image) }}"
+                 alt="Photo de {{ sortie.organisateur.pseudo }}">
+            {% else %}
+                <img class="photo-profil"
+                     src="{{ asset('images/avatar.png') }}"
+                     alt="Organisateur sans photo">
+                {% endif %}<br><br>
                 <div class="neon-no-hover">{{ sortie.organisateur.pseudo }}</div>
                 <br><br>
                 <hr>

@@ -15,9 +15,11 @@ use App\Form\SortieType;
 use App\Form\UserType;
 use App\Repository\EtatRepository;
 use App\Repository\GroupeRepository;
+use App\Repository\LieuRepository;
 use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
 use App\Repository\UserRepository;
+use App\Repository\VilleRepository;
 use DateInterval;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -217,13 +219,17 @@ class SortieController extends AbstractController
         Request                $request,
         EtatRepository         $etatRepository,
         SortieRepository       $sortieRepository,
-
+        LieuRepository         $lieuRepository,
+        VilleRepository        $villeRepository
     )
     {
+
         $sortie = new Sortie();
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
         $sortie->setOrganisateur($this->getUser());
+        $lieux = $lieuRepository->findAll();
+        $villes = $villeRepository->findAll();
 
         if ($sortieForm->isSubmitted()) {
             if ($sortieForm->isValid()) {
@@ -248,7 +254,7 @@ class SortieController extends AbstractController
         }
 
         return $this->render('sortie/create.html.twig',
-            compact('sortieForm')
+            compact('sortieForm', 'lieux', 'villes')
         );
     }
 
