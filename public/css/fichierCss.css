@@ -57,6 +57,14 @@ h1, h2 {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.label
+{
+    display: block;
+    width: 150px;
+    float: left;
 }
 
 .text-center {
@@ -153,7 +161,7 @@ h1, h2 {
 /**
     Boutons
  */
-.btn, button, input {
+.btn, button, input, select {
     background-color: rgba(0, 0, 0, 0);
     display: inline-block;
     padding: 0.35em 1.2em;
@@ -164,12 +172,17 @@ h1, h2 {
     font-family: sans-serif;
     color: white;
     font-weight: bold;
+    font-size : 1em;
     text-align: center;
     transition: all 0.2s;
     margin: .5em;
+    min-width: 200px;
 }
 
+
+
 select:hover, input:hover, select:active, input:active {
+    cursor: pointer;
     animation: neon2 .10s ease-in-out infinite alternate;
     color: black;
     font-weight: bold;
@@ -177,6 +190,7 @@ select:hover, input:hover, select:active, input:active {
 }
 
 button:hover, .btn:hover, button:active, .btn:active {
+    cursor: pointer;
     animation: neon2 .10s ease-in-out infinite alternate, neon1 .15s ease-in-out infinite alternate;
     font-weight: bold;
     color: white;

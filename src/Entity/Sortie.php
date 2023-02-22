@@ -35,7 +35,6 @@ class Sortie
     #[Assert\NotBlank]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\GreaterThanOrEqual('today')]
-    #[Assert\LessThanOrEqual('today')]
     private ?\DateTimeInterface $dateLimitInscription = null;
 
     #[Assert\PositiveOrZero]

@@ -19,31 +19,35 @@
     <input type="hidden" id="latitude" value="{{ sortie.lieu.latitude }}">
     <input type="hidden" id="longitude" value="{{ sortie.lieu.longitude }}">
 
-    <h2 class="text-center">Liste des participants</h2>
-    <div class="tab center text-center">
-        <div class="tab-titre center text-center">
-            <div>Pseudo</div>
-            <div>Nom</div>
+
+        <h2 class="text-center">Liste des participants</h2>
+        <div class="tab center text-center">
+            <div class="tab-titre center text-center">
+                <div>Pseudo</div>
+                <div>Nom</div>
+            </div>
         </div>
 
 
-        {% for leparticipant in sortie.participant %}
-            <div class="tab-data center text-center ">
-                <div>{{ leparticipant.pseudo }}</div>
-                <div>{{ leparticipant.prenom }} {{ leparticipant.nom }}</div>
-                <a href="{{ path('profil_afficher', {id : leparticipant.id}) }}">
-                    <button>Son profil</button>
-                </a>
-            </div>
-        {% endfor %}
+            {% for leparticipant in sortie.participant %}
+                <div class="tab-data center text-center ">
+                    <div>{{ leparticipant.pseudo }}</div>
+                    <div>{{ leparticipant.prenom }} {{ leparticipant.nom }}</div>
+                    <a href="{{ path('profil_afficher', {id : leparticipant.id}) }}">
+                        <button>Son profil</button>
+                    </a>
+                </div>
+            {% endfor %}
 
     </div><br>
 
-    <div class="flex-row center">
-        <h2> Groupe privé</h2>
-        <a href="{{ path('sortie_groupe', {id : sortie.id}) }}" class="btn">Créer un groupe privé</a>
-        <a class="btn" href="{{ path('sortie_ajouterParticipant', {id : sortie.id }) }}">Ajouter des membres</a>
-    </div>
+    {% if app.user in sortie.participant %}
+        <div class="flex-row center">
+            <h2> Groupe privé</h2>
+            <a href="{{ path('sortie_groupe', {id : sortie.id}) }}" class="btn">Créer un groupe privé</a>
+            <a class="btn" href="{{ path('sortie_ajouterParticipant', {id : sortie.id }) }}">Ajouter des membres</a>
+        </div>
+    {% endif %}
 
     <div id="map"></div>
 
