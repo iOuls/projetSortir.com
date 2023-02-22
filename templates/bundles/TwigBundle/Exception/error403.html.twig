@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }}Erreur 403
+{% endblock %}
+
+{% block body %}
+    <img class="center-img" src="{{ asset('images/403.jpg') }}"
+         alt="Erreur 403 - Vous n\'avez pas les habilitations">
+{% endblock %}
