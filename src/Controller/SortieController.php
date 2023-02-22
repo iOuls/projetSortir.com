@@ -226,7 +226,6 @@ class SortieController extends AbstractController
         $sortie->setOrganisateur($this->getUser());
 
         if ($sortieForm->isSubmitted()) {
-
             if ($sortieForm->isValid()) {
                 try {
                     if ($sortieForm->getClickedButton() === $sortieForm->get('Enregistrer')) {
@@ -245,7 +244,6 @@ class SortieController extends AbstractController
                         $this->addFlash('Erreur', "Oups, La date limite d'inscription ne peut pas dépasser la date de la sortie");
                     }
                 $this->addFlash('Erreur', 'Veuillez ressaisir le formulaire svp');
-
             }
 
         }

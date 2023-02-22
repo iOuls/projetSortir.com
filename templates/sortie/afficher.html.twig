@@ -39,10 +39,11 @@
 
     </div><br>
 
-    <h2> Groupe privé</h2>
-    <a href="{{ path('sortie_groupe', {id : sortie.id}) }}" class="btn">Créer un groupe privé
-    </a>
-    <a class="btn" href="{{ path('sortie_ajouterParticipant', {id : sortie.id }) }}">Ajouter des membres</a>
+    <div class="flex-row center">
+        <h2> Groupe privé</h2>
+        <a href="{{ path('sortie_groupe', {id : sortie.id}) }}" class="btn">Créer un groupe privé</a>
+        <a class="btn" href="{{ path('sortie_ajouterParticipant', {id : sortie.id }) }}">Ajouter des membres</a>
+    </div>
 
     <div id="map"></div>
 
