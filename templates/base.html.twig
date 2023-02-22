@@ -12,8 +12,6 @@
 </head>
 <body>
 <header>
-
-
     <div class="flex-col center">
         {% if app.user %}
             <p class="neon-no-hover">Hey {{ app.user.pseudo }}</p>
@@ -48,17 +46,44 @@
             {% endif %}
         </div>
     </div>
+    <p id="party" class="text-center neon-no-hover" hidden>Lets go party !</p>
 </header>
 
-<div class="flex-col center">
-    <audio id="audio" loop preload autoplay>
-        <source src="{{ asset('sound/1.mp3') }}" type="audio/mpeg">
-    </audio>
-    <script>
-        document.getElementById('audio').volume = 0.05;
-    </script>
-</div>
 {% block body %}{% endblock %}
 
 </body>
+
+<script>
+    var allowedKeys = {
+        37: 'left',
+        38: 'up',
+        39: 'right',
+        40: 'down',
+        65: 'a',
+        66: 'b'
+    };
+    var konamiCode = ['up', 'up', 'down', 'down', 'left', 'right', 'left', 'right', 'b', 'a'];
+    var konamiCodePosition = 0;
+
+    document.addEventListener('keydown', function (e) {
+        var key = allowedKeys[e.keyCode];
+        var requiredKey = konamiCode[konamiCodePosition];
+        if (key == requiredKey) {
+            konamiCodePosition++;
+            if (konamiCodePosition == konamiCode.length) {
+                activateCheats();
+                konamiCodePosition = 0;
+            }
+        } else {
+            konamiCodePosition = 0;
+        }
+    });
+
+    function activateCheats() {
+        var audio = new Audio('{{ asset('sound/1.mp3') }}');
+        audio.play();
+        document.getElementById('party').hidden = false;
+    }
+</script>
+
 </html>
