@@ -12,16 +12,26 @@
             </div>
         {% endfor %}
     {% endfor %}
-    <h1 class="centrer">Créer un groupe privé</h1>
 
-    <div class="centrer">
-        {{ form_start(groupeForm) }}
-        <p>Nom du groupe : {{ form_widget(groupeForm.nom) }}</p>
-    </div>
-    <div class="flex-row">
-        <button class="btn" href="href="{{ path('sortie_ajouterParticipant', {id : sortie.id}) }}">{{ form_widget(groupeForm.Creer) }}</button>
-        <a class="btn" href="{{ path('sortie_afficher', {id : sortie.id}) }}">Annuler</a>
-    </div>
-    {{ form_end(groupeForm) }}
+    {% if not groupeExist %}
+        <h1 class="centrer">Créer un groupe privé</h1>
+
+        <div class="centrer">
+            {{ form_start(groupeForm) }}
+            <p>Nom du groupe : {{ form_widget(groupeForm.nom) }}</p>
+        </div>
+        <div class="flex-row">
+            <button class="btn" href="href="{{ path('sortie_ajouterParticipant', {id : sortie.id}) }}">{{ form_widget(groupeForm.Creer) }}</button>
+            <a class="btn" href="{{ path('sortie_afficher', {id : sortie.id}) }}">Annuler</a>
+        </div>
+        {{ form_end(groupeForm) }}
+
+    {% else %}
+
+        <h1>Vous avez déjà créé un groupe pour cette sortie </h1>
+        <a class="btn" href="{{ path('sortie_ajouterParticipant', {id : sortie.id }) }}">Ajouter des membres</a>
+
+
+    {% endif %}
 
 {% endblock %}

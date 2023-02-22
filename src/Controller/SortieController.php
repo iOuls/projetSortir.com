@@ -123,7 +123,7 @@ class SortieController extends AbstractController
     #[Route('/sortie/{id}', name: '_afficher')]
     public function afficher(
         SortieRepository $sortieRepository,
-        int              $id
+        int              $id,
     ): Response
     {
         $sortie = $sortieRepository->findOneBy(['id' => $id]);
@@ -293,16 +293,21 @@ class SortieController extends AbstractController
     public function groupe(
         EntityManagerInterface $em,
         Request                $request,
-        SortieRepository $sortieRepository,
-        int              $id
+        SortieRepository       $sortieRepository,
+        GroupeRepository       $groupeRepository,
+        int                    $id
     )
     {
         $sortie = $sortieRepository->findOneBy(['id' => $id]);
         $groupe = new Groupe();
         $groupeForm = $this->createForm(GroupeType::class, $groupe);
         $groupeForm->handleRequest($request);
+        $groupeExist = $groupeRepository->findOneBy(['sortie'=>$sortie]);
 
-        if ($groupeForm->isSubmitted()&& $groupeForm->isValid()) {
+        if ($groupeExist != null){
+            $em->persist($groupeExist);
+            $em->flush();
+        }elseif ($groupeForm->isSubmitted()&& $groupeForm->isValid()) {
             $groupe->setSortie($sortie);
             $em->persist($groupe);
             $em->flush();
@@ -312,7 +317,7 @@ class SortieController extends AbstractController
         }
 
         return $this->render('sortie/groupe.html.twig',
-            compact('groupeForm', 'sortie'));
+            compact('groupeForm', 'sortie', 'groupeExist'));
     }
 
     #[Route('/ajouterParticipant/{id}', name: '_ajouterParticipant')]

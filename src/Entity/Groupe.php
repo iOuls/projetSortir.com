@@ -24,9 +24,6 @@ class Groupe
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?Sortie $sortie = null;
 
-
-
-
     public function __construct()
     {
         $this->participants = new ArrayCollection();
