@@ -81,7 +81,7 @@
         {% for sortie in sorties %}
             <article class="grid-card">
 
-                {% if user.image %}
+                {% if sortie.organisateur.image %}
                     <img class="photo-profil"
                          src="{{ asset("images/products/" ~ sortie.organisateur.image) }}"
                          alt="Photo de {{ sortie.organisateur.pseudo }}">
