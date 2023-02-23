@@ -6,11 +6,34 @@
 
 {% block body %}
 
-    <h2 class="neon-no-hover">Importer des utilisateurs en CSV</h2>
-    <form method="post" enctype="multipart/form-data">
-        <input type="file" name="file"/>
-        <p>
-            <button type="submit" name="submit">Submit</button>
-        </p>
-    </form>
+    <div class="flex-row center text-center">
+        <h2>Importer des utilisateurs en CSV</h2>
+
+        Faire un fichier de données csv avec les champs suivants :
+        <ul class="text-left">
+            <li>mail,</li>
+            <li>password haché,</li>
+            <li>nom,</li>
+            <li>prenom,</li>
+            <li>telephone,</li>
+            <li>statut admin (true ou false),</li>
+            <li>statut actif (true ou false),</li>
+            <li>pseudo,</li>
+            <li><b>ID </b>du site.</li>
+        </ul>
+
+        <h2>Liste des ID par site</h2>
+        <ul class="text-left">
+            {% for site in sites %}
+                <li>{{ site.id }} - {{ site.nom }}</li>
+            {% endfor %}
+        </ul>
+
+        {{ form_start(userForm) }}
+        <div class="flex-row center">
+            {{ form_widget(userForm.csv) }}
+            {{ form_widget(userForm.submit) }}
+        </div>
+        {{ form_end(userForm) }}
+    </div>
 {% endblock %}
