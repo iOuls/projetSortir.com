@@ -18,35 +18,35 @@
     <br>
     <br>
 
-    <table class="centrer">
-        <tr>
-            <th>Ville</th>
-            <th>Code postal</th>
-            <th>Actions</th>
-        </tr>
-        {% for ville in villes %}
+    <div class="flex-row center">
+        <table>
             <tr>
-                <td>{{ ville.nom }}</td>
-                <td>{{ ville.codePostal }}</td>
+                <th>Ville</th>
+                <th>Code postal</th>
+                <th>Actions</th>
+            </tr>
+            {% for ville in villes %}
+                <tr>
+                    <td>{{ ville.nom }}</td>
+                    <td>{{ ville.codePostal }}</td>
+                    <td>
+                        <a href="{{ path('administration_supprimerVille', {id : ville.id}) }}">Supprimer</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            <tr>
                 <td>
-                    <input type="submit"
-                           href="{{ path('administration_supprimerVille', {id : ville.id}) }}"
-                           value="Supprimer">
+                    {{ form_start(villeForm) }}
+                    {{ form_widget(villeForm.nom) }}
+                </td>
+                <td>{{ form_widget(villeForm.codePostal) }}</td>
+                <td>
+                    {#  <a href="">Ajouter</a> #}
+                    {{ form_end(villeForm) }}
                 </td>
             </tr>
-        {% endfor %}
-        <tr>
-            <td>
-                {{ form_start(villeForm) }}
-                {{ form_widget(villeForm.nom) }}
-            </td>
-            <td>{{ form_widget(villeForm.codePostal) }}</td>
-            <td>
-                {#  <a href="">Ajouter</a> #}
-                {{ form_end(villeForm) }}
-            </td>
-        </tr>
-    </table>
+        </table>
+    </div>
 
 {% endblock %}
 

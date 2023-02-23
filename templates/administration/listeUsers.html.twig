@@ -2,7 +2,6 @@
 
 {% block body %}
     <h2 class="centrer">Liste des utilisateurs</h2>
-
     {% if app.flashes %}
 
         {% for label, messages in app.flashes %}
@@ -25,7 +24,6 @@
                 <a href="{{ path('administration_supprimer', {'id' : user.id}) }}">
                     <button>Supprimer</button>
                 </a>
-
             </div>
         {% endfor %}
     </div>

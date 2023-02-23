@@ -23,7 +23,7 @@
             <div class="flex-col">
                 <div class="flex-row">
                     <div class="box">
-                        <label for="site" class="bold margin-right-xs">Site </label>
+                        <label for="site" class="bold margin-right-xs label">Site </label>
                         <select name="site" id="site">
                             <option value="">-Choisir un Site !-</option>
                             {% for site in sites %}
@@ -33,13 +33,13 @@
                     </div>
 
                     <div class="box">
-                        <label class="bold margin-right-xs" for="motsclefs">Le nom contient </label>
+                        <label class="bold margin-right-xs label" for="motsclefs">Le nom contient </label>
                         <input type="text" name="motsclefs"
                                id="motsclefs" value="{{ criteres.motsclefs }}">
                     </div>
 
                     <div class="box">
-                        <label class="bold margin-right-xs" for="datedebut">Entre </label>
+                        <label class="bold margin-right-xs label" for="datedebut">Entre </label>
                         <input class="margin-right-xs" type="date" name="datedebut" id="datedebut"
                                value="{{ criteres.datedebut }}">
                         <label class="bold margin-right-xs" for="datefin"> et </label>
@@ -76,6 +76,12 @@
         </form>
         <br>
     </section>
+
+    {% if app.user %}
+        <a href="{{ path('sortie_create') }}" class="filtres flex-col center text-center">
+            <button class="width-100 heigth-l font-l">Créer une sortie</button>
+        </a>
+    {% endif %}
 
     <section class="grid">
         {% for sortie in sorties %}
@@ -145,11 +151,7 @@
             </article>
         {% endfor %}
     </section>
-    {% if app.user %}
-        <a href="{{ path('sortie_create') }}" class="filtres flex-col center text-center">
-            <button class="width-100 heigth-l font-l">Créer une sortie</button>
-        </a>
-    {% endif %}
+
 
 {% endblock %}
 

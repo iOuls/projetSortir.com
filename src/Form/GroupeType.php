@@ -16,13 +16,13 @@ class GroupeType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nom')
+            ->add('nom');
           /*  ->add('participant', EntityType::class,[
                 "class" => User::class,
                 "choice_label"=> "Pseudo",
                 "multiple"=> true
             ])*/
-            ->add('Creer',SubmitType::class,['label'=>'Créer']);
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void
