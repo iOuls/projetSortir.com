@@ -3,6 +3,16 @@
 {% block body %}
     <h2 class="text-center">Gérer les villes</h2>
 
+    <div class="text-center neon-no-hover">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alter-{{ label }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+
     <section class="text-center">
         <form method="GET" action="{{ path('administration_gererVilles') }}">
             <div class="box">
@@ -30,8 +40,7 @@
                     <td>{{ ville.nom }}</td>
                     <td>{{ ville.codePostal }}</td>
                     <td>
-                        <input type="submit" href="{{ path('administration_supprimerVille', {id : ville.id}) }}"
-                               value="Supprimer">
+                        <a class="btn" href="{{ path('administration_supprimerVille', {id : ville.id}) }}">Supprimer</a>
                     </td>
                 </tr>
             {% endfor %}
