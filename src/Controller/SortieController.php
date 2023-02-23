@@ -28,6 +28,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use function Sodium\add;
 
 #[IsGranted('ROLE_USER')]
 #[Route('/', name: 'sortie')]
@@ -43,12 +44,17 @@ class SortieController extends AbstractController
         Request                $request
     ): Response
     {
+        $idUser = $userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
+        if (!$idUser->isActif()){
+            return $this->redirectToRoute('app_logout');
+        }
+
         // récupération des éléments de traitement
         $date = new \DateTime();
         $sites = $siteRepository->findAll();
         $etatCloturee = $etatRepository->findOneBy(['libelle' => 'Clôturée']);
         $etatCree = $etatRepository->findOneBy(['libelle' => 'Créée']);
-        $idUser = $userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
+
 
         // traitement si filtres activés
         if (
