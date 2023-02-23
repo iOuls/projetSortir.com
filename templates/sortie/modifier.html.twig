@@ -12,59 +12,51 @@
             </div>
         {% endfor %}
     {% endfor %}
-    <h2 class="centrer">Modifier une sortie</h2>
+    <h2 class="text-center">Modifier une sortie</h1>
 
-    <div class="centrer">
+    <div class="flex-row center ">
         {{ form_start(modifierSortieForm) }}
-        <div class="flex-row">
-            <label>{{ field_label(modifierSortieForm.nom) }} :</label>
-            <div>{{ form_widget(modifierSortieForm.nom) }}</div>
-            <br>
+        <div class="flex-col">
+            <label class="bold margin-right-xs label" >{{ field_label(modifierSortieForm.nom) }} :</label>
+            <div>{{ form_widget(modifierSortieForm.nom) }}</div><br>
         </div>
 
-        <div class="flex-row">
-            <label>{{ field_label(modifierSortieForm.dateHeureDebut) }} :</label>
-            <div>{{ form_widget(modifierSortieForm.dateHeureDebut) }}</div>
-            <br>
+        <div class="flex-col">
+            <label class="bold margin-right-xs label">{{ field_label(modifierSortieForm.dateHeureDebut) }} :</label>
+            <div>{{ form_widget(modifierSortieForm.dateHeureDebut) }}</div><br>
         </div>
 
-        <div class="flex-row">
-            <label>{{ field_label(modifierSortieForm.dateLimitInscription) }} :</label>
-            <div>{{ form_widget(modifierSortieForm.dateLimitInscription) }}</div>
-            <br>
+        <div class="flex-col">
+            <label class="bold margin-right-xs label">{{ field_label(modifierSortieForm.dateLimitInscription) }} :</label>
+            <div>{{ form_widget(modifierSortieForm.dateLimitInscription) }}</div><br>
         </div>
 
-        <div class="flex-row">
-            <label>{{ field_label(modifierSortieForm.nbInscriptionsMax) }} :</label>
-            <div>{{ form_widget(modifierSortieForm.nbInscriptionsMax) }}</div>
-            <br>
+        <div class="flex-col">
+            <label class="bold margin-right-xs label">{{ field_label(modifierSortieForm.nbInscriptionsMax) }} :</label>
+            <div>{{ form_widget(modifierSortieForm.nbInscriptionsMax) }}</div><br>
         </div>
 
-        <div class="flex-row">
-            <label>{{ field_label(modifierSortieForm.duree) }} :</label>
-            <div>{{ form_widget(modifierSortieForm.duree) }}</div>
-            <br>
+        <div class="flex-col">
+            <label class="bold margin-right-xs label">{{ field_label(modifierSortieForm.duree) }} :</label>
+            <div>{{ form_widget(modifierSortieForm.duree) }}</div><br>
         </div>
 
-        <div class="flex-row">
-            <label>{{ field_label(modifierSortieForm.InfosSortie) }} :</label>
-            <div>{{ form_widget(modifierSortieForm.InfosSortie) }}</div>
-            <br>
+        <div class="flex-col">
+            <label class="bold margin-right-xs label">{{ field_label(modifierSortieForm.InfosSortie) }} :</label>
+            <div>{{ form_widget(modifierSortieForm.InfosSortie) }}</div><br>
         </div>
 
-        <div class="flex-row">
-            <label>{{ field_label(modifierSortieForm.site) }} :</label>
-            <div>{{ form_widget(modifierSortieForm.site) }}</div>
-            <br>
+        <div class="flex-col">
+            <label class="bold margin-right-xs label">{{ field_label(modifierSortieForm.site) }} :</label>
+            <div>{{ form_widget(modifierSortieForm.site) }}</div><br>
         </div>
 
-        <div class="flex-row">
-            <label>{{ field_label(modifierSortieForm.lieu) }} :</label>
-            <div>{{ form_widget(modifierSortieForm.lieu) }}</div>
-            <br><br>
+        <div class="flex-col">
+            <label class="bold margin-right-xs label">{{ field_label(modifierSortieForm.lieu) }} :</label>
+            <div>{{ form_widget(modifierSortieForm.lieu) }}</div><br><br><br>
         </div>
 
-        <div class="flex-row">
+        <div class="flex-col center" >
             <div>{{ form_widget(modifierSortieForm.Enregistrer) }}</div>
             <div>{{ form_widget(modifierSortieForm.Publier) }}</div>
             <a class="btn" href="{{ path('sortie_list') }}">Annuler</a>

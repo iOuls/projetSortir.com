@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    <h2>Créer un groupe</h2>
+    {{ parent() }}Créer un groupe
 {% endblock %}
 
 {% block body %}
@@ -14,24 +14,25 @@
     {% endfor %}
 
     {% if not groupeExist %}
-        <h2 class="centrer">Créer un groupe privé</h2>
+        <div class="flex-row center">
+            <h2>Créer un groupe privé</h1>
 
-        <div class="centrer">
-            {{ form_start(groupeForm) }}
-            <p>Nom du groupe : {{ form_widget(groupeForm.nom) }}</p>
+            <div>
+                {{ form_start(groupeForm) }}
+                <p>Nom du groupe : {{ form_widget(groupeForm.nom) }}</p>
+            </div>
+            <div class="flex-row">
+                <input type="submit" class="btn" href="{{ path('sortie_ajouterParticipant', {id : sortie.id}) }}" value="Créer">
+                {{ form_end(groupeForm) }}
+                <a class="btn" href="{{ path('sortie_afficher', {id : sortie.id}) }}" >Annuler</a>
+            </div>
         </div>
-        <div class="flex-row">
-            <button class="btn" href="href="{{ path('sortie_ajouterParticipant', {id : sortie.id}) }}
-            ">{{ form_widget(groupeForm.Creer) }}</button>
-            <a class="btn" href="{{ path('sortie_afficher', {id : sortie.id}) }}">Annuler</a>
-        </div>
-        {{ form_end(groupeForm) }}
-
     {% else %}
-
-        <h2>Vous avez déjà créé un groupe pour cette sortie </h2>
-        <a class="btn" href="{{ path('sortie_ajouterParticipant', {id : sortie.id }) }}">Ajouter des membres</a>
-
+        <div class="flex-row center">
+            <h2>Un groupe existe déjà pour cette sortie </h1>
+            <a class="btn" href="{{ path('sortie_ajouterParticipant', {id : sortie.id }) }}">Ajouter des membres</a>
+            <a class="btn" href="{{ path('sortie_afficher', {id : sortie.id}) }}">Revenir à la sortie</a>
+        </div>
 
     {% endif %}
 
