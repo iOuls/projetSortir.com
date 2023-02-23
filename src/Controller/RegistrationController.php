@@ -18,6 +18,15 @@ use function PHPUnit\Framework\assertFalse;
 
 class RegistrationController extends AbstractController
 {
+    /**
+     * Creation d'un profil + add flash regex
+     * @param Request $request
+     * @param UserPasswordHasherInterface $userPasswordHasher
+     * @param UserAuthenticatorInterface $userAuthenticator
+     * @param AppAuthenticator $authenticator
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     */
     #[Route('/register', name: 'app_register')]
     public function register(
         Request                     $request,

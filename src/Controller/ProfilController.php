@@ -23,6 +23,14 @@ class ProfilController extends AbstractController
 //        ]);
 //    }
 
+    /**
+     * Recuperation et modifcation d'un profil
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @param UserRepository $userRepository
+     * @param UserPasswordHasherInterface $userPasswordHasher
+     * @return Response
+     */
     #[Route('/profil', name: 'profil_users')]
     public function users(
         Request                     $request,
