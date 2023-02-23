@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Site;
+use App\Entity\User;
 use App\Entity\Ville;
+use App\Form\ImportUsersType;
 use App\Form\SiteType;
 use App\Form\VilleType;
 use App\Repository\SiteRepository;
@@ -11,6 +13,7 @@ use App\Repository\SortieRepository;
 use App\Repository\UserRepository;
 use App\Repository\VilleRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -74,43 +77,45 @@ class AdministrationController extends AbstractController
 
     #[Route('/importUsers/import', name: '_importUsers')]
     public function importUsers(
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        Request                $request,
+        SiteRepository         $siteRepository
     ): Response
     {
-        $file_mimes = array('text/x-comma-separated-values', 'text/comma-separated-values', 'application/octet-stream', 'application/vnd.ms-excel', 'application/x-csv', 'text/x-csv', 'text/csv', 'application/csv', 'application/excel', 'application/vnd.msexcel', 'text/plain', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $sites = $siteRepository->findAll();
+        $usersForm = $this->createForm(ImportUsersType::class)->handleRequest($request);
+        if ($usersForm->isSubmitted()) {
+            $csv = $usersForm->get('csv')->getData();
 
-        if (isset($_FILES['file']['name']) && in_array($_FILES['file']['type'], $file_mimes)) {
-
-            $arr_file = explode('.', $_FILES['file']['name']);
-            $extension = end($arr_file);
-
-            if ('csv' == $extension) {
-                $reader = new \PhpOffice\PhpSpreadsheet\Reader\Csv();
-            } else {
-                $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+            if ($csv) {
+                $donnees = IOFactory::load($csv)->getActiveSheet()->toArray(null, true, true, true);
             }
 
-            $spreadsheet = $reader->load($_FILES['file']['tmp_name']);
+            foreach ($donnees as $donnee) {
+                $user = new User();
+                $user->setEmail($donnee['A']);
+                $user->setPassword($donnee['B']);
+                $user->setNom($donnee['C']);
+                $user->setPrenom($donnee['D']);
+                $user->setTelephone($donnee['E']);
+                $user->setAdministrateur($donnee['F']);
+                $user->setActif($donnee['G']);
+                $user->setPseudo($donnee['H']);
+                $user->setSite($siteRepository->find($donnee['I']));
 
-            $sheetData = $spreadsheet->getActiveSheet()->toArray();
-
-            if (!empty($sheetData)) {
-                for ($i = 1; $i < count($sheetData); $i++) { //skipping first row
-                    $name = $sheetData[$i][0];
-                    $email = $sheetData[$i][1];
-                    $company = $sheetData[$i][2];
-
-
-                    $db->query("INSERT INTO USERS(name, email, company) VALUES('$name', '$email', '$company')");
-                }
+                $entityManager->persist($user);
             }
-            echo "Records inserted successfully.";
-        } else {
-            echo "Upload only CSV or Excel file.";
+
+            $entityManager->flush();
+
+            $this->addFlash('Enregistrement effectué', 'La liste des utilisateurs a été importée.');
+            return $this->redirectToRoute('administration_listeUsers');
         }
 
-        $this->addFlash('Enregistrement effectué', 'La liste des utilisateurs a été importée.');
-        return $this->redirectToRoute('administration_listeUsers');
+        return $this->render('administration/importUsers.html.twig', [
+            'userForm' => $usersForm,
+            'sites' => $sites
+        ]);
     }
 
     #[Route('/listeSorties', name: '_listeSorties')]
