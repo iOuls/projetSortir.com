@@ -5,6 +5,16 @@
 {% block body %}
     <h2 class="text-center">Créer un utilisateur</h2>
 
+    <div class="text-center neon-no-hover">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alter-{{ label }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+
     <div class="flex-col center text-center">
         {{ form_start(registrationForm) }}
         <div class="flex-row">
