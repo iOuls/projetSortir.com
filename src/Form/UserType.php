@@ -4,8 +4,10 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class UserType extends AbstractType
 {
@@ -15,12 +17,24 @@ class UserType extends AbstractType
             ->add('email')
             ->add('roles')
             ->add('password')
-            ->add('nom')
-            ->add('prenom')
+            ->add('nom', TextType::class, [
+                'constraints' => [
+                    new Regex('/^[A-Za-z]+$/')
+                ]
+            ])
+            ->add('prenom', TextType::class, [
+                'constraints' => [
+                    new Regex('/^[A-Za-z]+$/')
+                ]
+            ])
             ->add('telephone')
             ->add('administrateur')
             ->add('actif')
-            ->add('Pseudo')
+            ->add('Pseudo', TextType::class, [
+                'constraints' => [
+                    new Regex('/^[A-Za-z]+$/')
+                ]
+            ])
             ->add('image')
             ->add('updatedAt')
             ->add('resetToken')
