@@ -27,7 +27,8 @@
                 <tr>
                     <td>{{ site.nom }}</td>
                     <td>
-                        <a href="{{ path('administration_supprimerSite', {id : site.id}) }}">Supprimer</a>
+                        <input type="submit" href="{{ path('administration_supprimerSite', {id : site.id}) }}"
+                               value="Supprimer">
                     </td>
 
                 </tr>

@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block body %}
+
     <h2 class="text-center">Créer une sortie</h2>
 
     <div class="text-center neon-no-hover">
@@ -17,12 +18,12 @@
         {% endfor %}
     </div>
 
-    <div class="flex-row center text-center">
+    <div class="flex-row center ">
 
         {{ form_start(sortieForm) }}
 
-        <div class="flex-row">
-            <label>{{ field_label(sortieForm.lieu) }} :</label>
+        <div class="flex-col">
+            <label class="bold margin-right-xs label">{{ field_label(sortieForm.lieu) }} :</label>
             <div>{{ form_widget(sortieForm.lieu) }}
                 {% if not app.flashes %}
                     <a href="{{ path('sortie_ajouterlieu') }}" class="btn-plus margin-xs">
@@ -33,48 +34,50 @@
             <br><br>
         </div>
 
-        <div class="flex-row">
-            <label>{{ field_label(sortieForm.nom) }} :</label>
+        <div class="flex-col">
+            <label class="bold margin-right-xs label">{{ field_label(sortieForm.nom) }} :</label>
             <div>{{ form_widget(sortieForm.nom) }}</div>
             <br>
         </div>
 
-        <div class="flex-row">
-            <label>{{ field_label(sortieForm.dateHeureDebut) }} :</label>
+        <div class="flex-col">
+            <label class="bold margin-right-xs label">{{ field_label(sortieForm.dateHeureDebut) }} :</label>
             <div>{{ form_widget(sortieForm.dateHeureDebut) }}</div>
             <br>
         </div>
 
-        <div class="flex-row">
-            <label>{{ field_label(sortieForm.dateLimitInscription) }} :</label>
+        <div class="flex-col">
+            <label class="bold margin-right-xs label">{{ field_label(sortieForm.dateLimitInscription) }} :</label>
             <div>{{ form_widget(sortieForm.dateLimitInscription) }}</div>
             <br>
         </div>
-        <div class="flex-row">
-            <label>{{ field_label(sortieForm.nbInscriptionsMax) }} :</label>
+        <div class="flex-col">
+            <label class="bold margin-right-xs label">{{ field_label(sortieForm.nbInscriptionsMax) }} :</label>
             <div>{{ form_widget(sortieForm.nbInscriptionsMax) }}</div>
             <br>
         </div>
 
-        <div class="flex-row">
-            <label>{{ field_label(sortieForm.duree) }} :</label>
+        <div class="flex-col">
+            <label class="bold margin-right-xs label">{{ field_label(sortieForm.duree) }} :</label>
             <div>{{ form_widget(sortieForm.duree) }}</div>
             <br>
         </div>
 
-        <div class="flex-row">
-            <label>{{ field_label(sortieForm.InfosSortie) }} :</label>
+        <div class="flex-col">
+            <label class="bold margin-right-xs label">{{ field_label(sortieForm.InfosSortie) }} :</label>
             <div>{{ form_widget(sortieForm.InfosSortie) }}</div>
             <br>
         </div>
 
-        <div class="flex-row">
-            <label>{{ field_label(sortieForm.site) }} :</label>
+        <div class="flex-col">
+            <label class="bold margin-right-xs label">{{ field_label(sortieForm.site) }} :</label>
             <div>{{ form_widget(sortieForm.site) }}</div>
             <br>
         </div>
+        <br><br>
 
-        <div class="flex-row">
+
+        <div class="flex-col center">
             <div>{{ form_widget(sortieForm.Enregistrer) }}</div>
             <div>{{ form_widget(sortieForm.Publier) }}</div>
             <a class="btn" href="{{ path('sortie_list') }}">Annuler</a>
@@ -82,4 +85,5 @@
         {{ form_end(sortieForm) }}
 
     </div>
+
 {% endblock %}
