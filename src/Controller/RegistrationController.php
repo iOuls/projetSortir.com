@@ -7,6 +7,7 @@ use App\Form\RegistrationFormType;
 use App\Security\AppAuthenticator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -60,7 +61,8 @@ class RegistrationController extends AbstractController
                 $request
             );
 
-
+        } else {
+            $this->addFlash('Register', 'Les valeurs que vous avez rentrées ne sont pas valides. Veuillez vérifier et réessayer.');
         }
 
         return $this->render('registration/register.html.twig', [
