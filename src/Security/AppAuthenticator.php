@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,7 +26,7 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
     {
     }
 
-    public function authenticate(Request $request): Passport
+    public function authenticate(Request $request ): Passport
     {
         $email = $request->request->get('email', '');
 
@@ -42,6 +43,7 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
+        
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
@@ -51,7 +53,7 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
 
     }
 
-    protected function getLoginUrl(Request $request): string
+    protected function getLoginUrl(Request $request,): string
     {
         return $this->urlGenerator->generate(self::LOGIN_ROUTE);
     }

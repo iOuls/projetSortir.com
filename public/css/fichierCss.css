@@ -3,14 +3,26 @@
  */
 
 body {
-    background: linear-gradient(#000000, #008b8b, rgba(234, 159, 207, 0.93));
+   /* background: linear-gradient(#000000 ,#008b8b, rgba(234, 159, 207, 0.93));*/
     background-attachment: fixed;
     font-family: sans-serif;
     color: white;
     min-font-size: 14px;
+    background-size: 300% 300%;
+    background-image: linear-gradient(
+            -45deg,
+
+            #85d7d7 0%,
+            #006969 30%,
+            rgba(234, 159, 207, 0.93) 50%,
+            rgb(128, 58, 154) 70%,
+            #000000 100%
+    );
+    animation: AnimateBG 5s ease infinite;
+
 }
 
-header, footer {
+header {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
@@ -18,7 +30,40 @@ header, footer {
     border-bottom-left-radius: 1em;
     border-bottom-right-radius: 1em;
     box-shadow: 0 0 15px black;
+
+    background-size: 300% 300%;
+    background-image: linear-gradient(
+            -45deg,
+
+    #008b8b 0%,
+            rgba(152,68,183,1) 100%
+    );
+    animation: AnimateBG 1s ease infinite;
 }
+
+
+footer{
+    position: absolute;
+    bottom: 0;
+    width:100%;
+    height:100px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    background-color: rgba(255, 255, 255, .05);
+    border-bottom-left-radius: 1em;
+    border-bottom-right-radius: 1em;
+    box-shadow: 0 0 15px black;
+
+    background-size: 300% 300%;
+    background-image: linear-gradient(
+            -45deg,
+            #008b8b 0%,
+            rgba(152,68,183,1) 100%
+    );
+    animation: AnimateBG 1s ease infinite;
+}
+
 
 a {
     text-decoration: none;
@@ -176,6 +221,7 @@ h1, h2 {
     text-align: center;
     transition: all 0.2s;
     margin: .5em;
+    min-width: 150px;
 
 }
 
@@ -201,8 +247,8 @@ h1, h2 {
 
 select:hover, input:hover, select:active, input:active {
     cursor: pointer;
-    animation: neon2 .10s ease-in-out infinite alternate;
-    color: black;
+    animation: neon2 .10s ease-in-out infinite alternate, neon1 .10s ease-in-out infinite alternate;
+    color: white;
     font-weight: bold;
     background-color: #FFFFFF;
     transform: rotate(2deg);
@@ -276,6 +322,11 @@ button:hover, .btn:hover, button:active, .btn:active {
         filter: drop-shadow(0px 0px 10px #FF11A7);
     }
 }
+@keyframes AnimateBG {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
 
 /**
     MAP
@@ -311,6 +362,9 @@ button:hover, .btn:hover, button:active, .btn:active {
         font-weight: normal;
     }
 }
+
+
+
 
 
 /** Sur les écrans, quand la largeur de la fenêtre fait au maximum 1280px
