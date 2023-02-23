@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1 class="centrer">Liste des utilisateurs</h1>
+    <h1 class="text-center">Liste des utilisateurs</h1>
 
     {% if app.flashes %}
 
@@ -25,7 +25,6 @@
                 <a href="{{ path('administration_supprimer', {'id' : user.id}) }}">
                     <button>Supprimer</button>
                 </a>
-
             </div>
         {% endfor %}
     </div>
