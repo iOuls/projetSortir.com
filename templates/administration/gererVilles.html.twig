@@ -29,7 +29,9 @@
                 <td>{{ ville.nom }}</td>
                 <td>{{ ville.codePostal }}</td>
                 <td>
-                    <a href="{{ path('administration_supprimerVille', {id : ville.id}) }}">Supprimer</a>
+                    <input type="submit"
+                           href="{{ path('administration_supprimerVille', {id : ville.id}) }}"
+                           value="Supprimer">
                 </td>
             </tr>
         {% endfor %}

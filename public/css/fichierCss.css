@@ -217,6 +217,12 @@ button:hover, .btn:hover, button:active, .btn:active {
     animation: neon2 .01s ease-in-out infinite alternate;
 }
 
+.grille {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-auto-flow: row;
+}
+
 /**
     Effets
  */

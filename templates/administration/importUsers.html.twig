@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }}Administration - Import d'utilisateurs
+{% endblock %}
+
+{% block body %}
+
+    <h2 class="neon-no-hover">Importer des utilisateurs en CSV</h2>
+    <form method="post" enctype="multipart/form-data">
+        <input type="file" name="file"/>
+        <p>
+            <button type="submit" name="submit">Submit</button>
+        </p>
+    </form>
+{% endblock %}
