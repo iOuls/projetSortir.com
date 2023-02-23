@@ -2,20 +2,28 @@
 
 {% block body %}
 
-    <img src="{{ user.image }}" alt="Photo de {{ user.pseudo }}">
+    {% if user.image %}
+        <img class="photo-profil"
+             src="{{ asset("images/products/" ~ user.image) }}"
+             alt="Photo de {{ user.image }}">
+    {% else %}
+        <img class="photo-profil"
+             src="{{ asset('images/avatar.png') }}"
+             alt="Participant sans photo">
+    {% endif %}
 
-    <h1>{{ user.pseudo }}</h1>
-    <ul>
-        <li>Prénom : {{ user.prenom }}</li>
-        <li>Nom : {{ user.nom }}</li>
-        <li>Téléphone : {{ user.telephone }}</li>
-        <li>Email : {{ user.email }}</li>
-        <li>Ville de rattachement : {{ user.site.nom }}</li>
-    </ul>
+    <h2 class="text-center">{{ user.pseudo }}</h2>
+    <div class="flex-row center text-center">
+        {{ user.prenom }}<br>
+        {{ user.nom }}<br>
+        {{ user.telephone }}<br>
+        {{ user.email }}<br>
+        {{ user.site.nom }}<br>
+        <a href="{{ path('sortie_list') }}">
+            <button>Retour</button>
+        </a>
+    </div>
 
-    <a href="{{ path('sortie_list') }}">
-        <button>Retour</button>
-    </a>
 {% endblock %}
 
 {% block title %}

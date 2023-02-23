@@ -240,8 +240,4 @@ class Sortie
     }
 
 
-
-
-
-
 }

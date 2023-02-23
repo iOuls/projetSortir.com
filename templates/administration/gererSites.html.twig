@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1 class="text-center">Gérer les sites</h1>
+    <h2 class="text-center">Gérer les sites</h2>
 
     <section class="text-center">
         <form method="GET" action="{{ path('administration_gererSites') }}">
@@ -27,7 +27,8 @@
                 <tr>
                     <td>{{ site.nom }}</td>
                     <td>
-                        <a href="{{ path('administration_supprimerSite', {id : site.id}) }}">Supprimer</a>
+                        <input type="submit" href="{{ path('administration_supprimerSite', {id : site.id}) }}"
+                               value="Supprimer">
                     </td>
 
                 </tr>

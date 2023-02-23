@@ -15,7 +15,7 @@
 
     {% if not groupeExist %}
         <div class="flex-row center">
-            <h1>Créer un groupe privé</h1>
+            <h2>Créer un groupe privé</h1>
 
             <div>
                 {{ form_start(groupeForm) }}
@@ -29,11 +29,10 @@
         </div>
     {% else %}
         <div class="flex-row center">
-            <h1>Un groupe existe déjà pour cette sortie </h1>
+            <h2>Un groupe existe déjà pour cette sortie </h1>
             <a class="btn" href="{{ path('sortie_ajouterParticipant', {id : sortie.id }) }}">Ajouter des membres</a>
             <a class="btn" href="{{ path('sortie_afficher', {id : sortie.id}) }}">Revenir à la sortie</a>
         </div>
-
 
     {% endif %}
 

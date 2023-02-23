@@ -15,9 +15,11 @@ use App\Form\SortieType;
 use App\Form\UserType;
 use App\Repository\EtatRepository;
 use App\Repository\GroupeRepository;
+use App\Repository\LieuRepository;
 use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
 use App\Repository\UserRepository;
+use App\Repository\VilleRepository;
 use DateInterval;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -217,13 +219,17 @@ class SortieController extends AbstractController
         Request                $request,
         EtatRepository         $etatRepository,
         SortieRepository       $sortieRepository,
-
+        LieuRepository         $lieuRepository,
+        VilleRepository        $villeRepository
     )
     {
+
         $sortie = new Sortie();
         $sortieForm = $this->createForm(SortieType::class, $sortie);
         $sortieForm->handleRequest($request);
         $sortie->setOrganisateur($this->getUser());
+        $lieux = $lieuRepository->findAll();
+        $villes = $villeRepository->findAll();
 
         if ($sortieForm->isSubmitted()) {
             if ($sortieForm->isValid()) {
@@ -239,17 +245,16 @@ class SortieController extends AbstractController
                 $sortieRepository->save($sortie, true);
                 $this->addFlash('bravo', 'Sortie ajoutée.');
                 return $this->redirectToRoute('sortie_list', []);
-            }else{
-                    if ($sortie->getDateLimitInscription()> $sortie->getDateHeureDebut()){
-                        $this->addFlash('Erreur', "Oups, La date limite d'inscription ne peut pas dépasser la date de la sortie");
-                    }
+            } else {
+                if ($sortie->getDateLimitInscription() > $sortie->getDateHeureDebut()) {
+                    $this->addFlash('Erreur', "Oups, date d'inscription dépasse date de sortie");
+                }
                 $this->addFlash('Erreur', 'Veuillez ressaisir le formulaire svp');
             }
-
         }
 
         return $this->render('sortie/create.html.twig',
-            compact('sortieForm')
+            compact('sortieForm', 'lieux', 'villes')
         );
     }
 
@@ -316,18 +321,18 @@ class SortieController extends AbstractController
         $groupe = new Groupe();
         $groupeForm = $this->createForm(GroupeType::class, $groupe);
         $groupeForm->handleRequest($request);
-        $groupeExist = $groupeRepository->findOneBy(['sortie'=>$sortie]);
+        $groupeExist = $groupeRepository->findOneBy(['sortie' => $sortie]);
 
-        if ($groupeExist != null){
+        if ($groupeExist != null) {
             $em->persist($groupeExist);
             $em->flush();
-        }elseif ($groupeForm->isSubmitted()&& $groupeForm->isValid()) {
+        } elseif ($groupeForm->isSubmitted() && $groupeForm->isValid()) {
             $groupe->setSortie($sortie);
             $em->persist($groupe);
             $em->flush();
 
             $this->addFlash('Groupe créé', 'Groupe créé avec succès.');
-            return $this->redirectToRoute('sortie_ajouterParticipant',['id' => $sortie->getId()]);
+            return $this->redirectToRoute('sortie_ajouterParticipant', ['id' => $sortie->getId()]);
         }
 
         return $this->render('sortie/groupe.html.twig',
@@ -336,15 +341,15 @@ class SortieController extends AbstractController
 
     #[Route('/ajouterParticipant/{id}', name: '_ajouterParticipant')]
     public function ajouterParticipant(
-        EntityManagerInterface  $em,
-        GroupeRepository        $groupeRepository,
-        SortieRepository        $sortieRepository,
-        UserRepository          $userRepository,
-        int                     $id,
+        EntityManagerInterface $em,
+        GroupeRepository       $groupeRepository,
+        SortieRepository       $sortieRepository,
+        UserRepository         $userRepository,
+        int                    $id,
     )
     {
-        $sortie = $sortieRepository->findOneBy(['id'=>$id]);
-        $groupe = $groupeRepository->findOneBy(['sortie'=>$sortie]);
+        $sortie = $sortieRepository->findOneBy(['id' => $id]);
+        $groupe = $groupeRepository->findOneBy(['sortie' => $sortie]);
 
         return $this->render('sortie/ajouterParticipant.html.twig',
             compact('groupe', 'sortie'));
@@ -352,67 +357,69 @@ class SortieController extends AbstractController
 
     #[Route('/ajouter/{id}/{idUser}/{idSortie}', name: '_ajouter')]
     public function ajouter(
-        int                     $id,
-        int                     $idUser,
-        int                     $idSortie,
-        UserRepository          $userRepository,
-        GroupeRepository        $groupeRepository,
-        SortieRepository        $sortieRepository,
-        EntityManagerInterface  $entityManager
+        int                    $id,
+        int                    $idUser,
+        int                    $idSortie,
+        UserRepository         $userRepository,
+        GroupeRepository       $groupeRepository,
+        SortieRepository       $sortieRepository,
+        EntityManagerInterface $entityManager
 
-    ){
-        $sortie = $sortieRepository->findOneBy(['id'=>$idSortie]);
-        $groupe = $groupeRepository->findOneBy(['id'=>$id]);
-        $user = $userRepository->findOneBy(['id'=>$idUser]);
+    )
+    {
+        $sortie = $sortieRepository->findOneBy(['id' => $idSortie]);
+        $groupe = $groupeRepository->findOneBy(['id' => $id]);
+        $user = $userRepository->findOneBy(['id' => $idUser]);
 
         $groupe->addParticipant($user);
         $entityManager->persist($user);
         $entityManager->flush();
 
         $this->addFlash('Ajout effectué', 'Participant ajouté au groupe');
-        return $this->redirectToRoute('sortie_ajouterParticipant',['id' => $sortie->getId()]);
+        return $this->redirectToRoute('sortie_ajouterParticipant', ['id' => $sortie->getId()]);
     }
 
     #[Route('/exclure/{id}/{idUser}/{idSortie}', name: '_exclure')]
     public function exclure(
-        int                     $id,
-        int                     $idUser,
-        int                     $idSortie,
-        UserRepository          $userRepository,
-        GroupeRepository        $groupeRepository,
-        SortieRepository        $sortieRepository,
-        EntityManagerInterface  $entityManager
+        int                    $id,
+        int                    $idUser,
+        int                    $idSortie,
+        UserRepository         $userRepository,
+        GroupeRepository       $groupeRepository,
+        SortieRepository       $sortieRepository,
+        EntityManagerInterface $entityManager
 
-    ){
-        $sortie = $sortieRepository->findOneBy(['id'=>$idSortie]);
-        $groupe = $groupeRepository->findOneBy(['id'=>$id]);
-        $user = $userRepository->findOneBy(['id'=>$idUser]);
+    )
+    {
+        $sortie = $sortieRepository->findOneBy(['id' => $idSortie]);
+        $groupe = $groupeRepository->findOneBy(['id' => $id]);
+        $user = $userRepository->findOneBy(['id' => $idUser]);
 
         $groupe->removeParticipant($user);
         $entityManager->persist($user);
         $entityManager->flush();
 
         $this->addFlash('Exclusion effectuée', 'Participant exclu du groupe');
-        return $this->redirectToRoute('sortie_ajouterParticipant',['id' => $sortie->getId()]);
+        return $this->redirectToRoute('sortie_ajouterParticipant', ['id' => $sortie->getId()]);
     }
 
     #[Route('/ajouterlieu', name: '_ajouterlieu')]
     public function ajouterlieu(
-        $infos,
         EntityManagerInterface $entityManager,
-        Request $request
+        Request                $request
     )
     {
-        // TODO
         $lieu = new Lieu();
         $lieuForm = $this->createForm(LieuType::class, $lieu);
         $lieuForm->handleRequest($request);
 
         if ($lieuForm->isSubmitted() && $lieuForm->isValid()) {
-
+            $entityManager->persist($lieu);
+            $entityManager->flush();
         }
-        return $this->render('lieu/ajouterLieu.html.twig',
-
+        return $this->render('lieu/ajouterLieu.html.twig', [
+                'lieuForm' => $lieuForm
+            ]
         );
     }
 }

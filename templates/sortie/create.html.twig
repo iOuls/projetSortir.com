@@ -5,7 +5,8 @@
 {% endblock %}
 
 {% block body %}
-    <h1 class="text-center">Créer une sortie</h1>
+
+    <h2 class="text-center">Créer une sortie</h2>
 
     <div class="text-center neon-no-hover">
         {% for label, messages in app.flashes %}
@@ -84,4 +85,5 @@
         {{ form_end(sortieForm) }}
 
     </div>
+
 {% endblock %}

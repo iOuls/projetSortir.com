@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }}Erreur 404
+{% endblock %}
+
+{% block body %}
+    <img class="center-img" src="{{ asset('images/404.png') }}"
+         alt="Erreur 404 - Page non trouvée">
+{% endblock %}
