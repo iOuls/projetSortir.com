@@ -2,14 +2,16 @@
 
 {% block body %}
     <h2 class="text-center">Liste des utilisateurs</h2>
-    {% if app.flashes %}
-
-        {% for label, messages in app.flashes %}
-            {% for message in messages %}
-                {{ message }}
+    
+    <div class="text-center neon-no-hover">
+        {% if app.flashes %}
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
             {% endfor %}
-        {% endfor %}
-    {% endif %}
+        {% endif %}
+    </div>
 
     <div class="grid">
         {% for user in listeUsers %}

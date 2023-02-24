@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Site;
+use App\Entity\User;
 use App\Entity\Ville;
+use App\Form\ImportUsersType;
 use App\Form\SiteType;
 use App\Form\VilleType;
 use App\Repository\SiteRepository;
@@ -11,6 +13,7 @@ use App\Repository\SortieRepository;
 use App\Repository\UserRepository;
 use App\Repository\VilleRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,6 +24,10 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/administration', name: 'administration')]
 class AdministrationController extends AbstractController
 {
+    /**
+     * Accès à la page d'administration
+     * @return Response
+     */
     #[Route('', name: '_index')]
     public function index(): Response
     {
@@ -29,6 +36,11 @@ class AdministrationController extends AbstractController
         ]);
     }
 
+    /**
+     * Accès à la liste des users
+     * @param UserRepository $userRepository
+     * @return Response
+     */
     #[Route('/listeUsers', name: '_listeUsers')]
     public function listeUsers(
         UserRepository $userRepository
@@ -42,6 +54,13 @@ class AdministrationController extends AbstractController
         ]);
     }
 
+    /**
+     * Changement de l'attribut actif d'un user
+     * @param UserRepository $userRepository
+     * @param EntityManagerInterface $entityManager
+     * @param int $id
+     * @return Response
+     */
     #[Route('/actif/{id}', name: '_actif')]
     public function actif(
         UserRepository         $userRepository,
@@ -58,61 +77,90 @@ class AdministrationController extends AbstractController
         return $this->redirectToRoute('administration_listeUsers');
     }
 
+    /**
+     * Supprimer un user
+     * @param UserRepository $userRepository
+     * @param EntityManagerInterface $entityManager
+     * @param int $id
+     * @return Response
+     */
     #[Route('/supprimer/{id}', name: '_supprimer')]
     public function supprimer(
-        UserRepository         $userRepository,
         EntityManagerInterface $entityManager,
-        int                    $id
+        User                   $user,
+        UserRepository         $userRepository
     ): Response
     {
-        $user = $userRepository->findOneBy(['id' => $id]);
-        $userRepository->remove($user);
-        $entityManager->flush();
+        $listeUsers = $userRepository->findAll();
+        try {
+            $entityManager->remove($user);
+            $entityManager->flush();
+
+        } catch (\Exception $e) {
+            $this->addFlash('Utilisateur non supprimé', 'Erreur SQL - Suppression impossible.');
+            return $this->render('administration/listeUsers.html.twig', [
+                'listeUsers' => $listeUsers
+            ]);
+        }
         $this->addFlash('Utilisateur supprimé', $user->getPseudo() . ' a été supprimé de la liste des utilisateurs.');
         return $this->redirectToRoute('administration_listeUsers');
     }
 
+    /**
+     * Importer des users à partir d'un CSV
+     * @param EntityManagerInterface $entityManager
+     * @param Request $request
+     * @param SiteRepository $siteRepository
+     * @return Response
+     */
     #[Route('/importUsers/import', name: '_importUsers')]
     public function importUsers(
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        Request                $request,
+        SiteRepository         $siteRepository
     ): Response
     {
-        $file_mimes = array('text/x-comma-separated-values', 'text/comma-separated-values', 'application/octet-stream', 'application/vnd.ms-excel', 'application/x-csv', 'text/x-csv', 'text/csv', 'application/csv', 'application/excel', 'application/vnd.msexcel', 'text/plain', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $sites = $siteRepository->findAll();
+        $usersForm = $this->createForm(ImportUsersType::class)->handleRequest($request);
+        if ($usersForm->isSubmitted()) {
+            $csv = $usersForm->get('csv')->getData();
 
-        if (isset($_FILES['file']['name']) && in_array($_FILES['file']['type'], $file_mimes)) {
-
-            $arr_file = explode('.', $_FILES['file']['name']);
-            $extension = end($arr_file);
-
-            if ('csv' == $extension) {
-                $reader = new \PhpOffice\PhpSpreadsheet\Reader\Csv();
-            } else {
-                $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+            if ($csv) {
+                $donnees = IOFactory::load($csv)->getActiveSheet()->toArray(null, true, true, true);
             }
 
-            $spreadsheet = $reader->load($_FILES['file']['tmp_name']);
+            foreach ($donnees as $donnee) {
+                $user = new User();
+                $user->setEmail($donnee['A']);
+                $user->setPassword($donnee['B']);
+                $user->setNom($donnee['C']);
+                $user->setPrenom($donnee['D']);
+                $user->setTelephone($donnee['E']);
+                $user->setAdministrateur($donnee['F']);
+                $user->setActif($donnee['G']);
+                $user->setPseudo($donnee['H']);
+                $user->setSite($siteRepository->find($donnee['I']));
 
-            $sheetData = $spreadsheet->getActiveSheet()->toArray();
-
-            if (!empty($sheetData)) {
-                for ($i = 1; $i < count($sheetData); $i++) { //skipping first row
-                    $name = $sheetData[$i][0];
-                    $email = $sheetData[$i][1];
-                    $company = $sheetData[$i][2];
-
-
-                    $db->query("INSERT INTO USERS(name, email, company) VALUES('$name', '$email', '$company')");
-                }
+                $entityManager->persist($user);
             }
-            echo "Records inserted successfully.";
-        } else {
-            echo "Upload only CSV or Excel file.";
+
+            $entityManager->flush();
+
+            $this->addFlash('Enregistrement effectué', 'La liste des utilisateurs a été importée.');
+            return $this->redirectToRoute('administration_listeUsers');
         }
 
-        $this->addFlash('Enregistrement effectué', 'La liste des utilisateurs a été importée.');
-        return $this->redirectToRoute('administration_listeUsers');
+        return $this->render('administration/importUsers.html.twig', [
+            'userForm' => $usersForm,
+            'sites' => $sites
+        ]);
     }
 
+    /**
+     * Lister les sorties
+     * @param SortieRepository $sortieRepository
+     * @return Response
+     */
     #[Route('/listeSorties', name: '_listeSorties')]
     public function listeSorties(
         SortieRepository $sortieRepository
@@ -124,18 +172,33 @@ class AdministrationController extends AbstractController
         ]);
     }
 
+    /**
+     * Supprimer une sortie
+     * @param SortieRepository $sortieRepository
+     * @param int $id
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     */
     #[Route('/supprimerSortie/{id}', name: '_supprimerSortie')]
     public function supprimerSortie(
-        SortieRepository $sortieRepository,
-        int              $id
+        SortieRepository       $sortieRepository,
+        int                    $id,
+        EntityManagerInterface $entityManager
     ): Response
     {
         $sortie = $sortieRepository->findOneBy(['id' => $id]);
         $sortieRepository->remove($sortie);
+        $entityManager->flush();
         $this->addFlash('Sortie supprimée', $sortie->getNom() . ' a été supprimé de la liste des sorties.');
         return $this->redirectToRoute('administration_listeSorties');
     }
 
+    /**
+     * Gérer les sites
+     * @param Request $request
+     * @param SiteRepository $siteRepository
+     * @return Response
+     */
     #[Route('/gererSites/', name: '_gererSites')]
     public function gererSites(
         Request        $request,
@@ -167,7 +230,13 @@ class AdministrationController extends AbstractController
         ]);
     }
 
-
+    /**
+     * Supprimer un site
+     * @param EntityManagerInterface $em
+     * @param SiteRepository $siteRepository
+     * @param int $id
+     * @return Response
+     */
     #[Route('/supprimerSite/{id}', name: '_supprimerSite')]
     public function supprimerSite(
         EntityManagerInterface $em,
@@ -187,6 +256,12 @@ class AdministrationController extends AbstractController
         return $this->redirectToRoute('administration_gererSites');
     }
 
+    /**
+     * Lister les villes
+     * @param Request $request
+     * @param VilleRepository $villeRepository
+     * @return Response
+     */
     #[Route('/gererVilles/', name: '_gererVilles')]
     public function gererVilles(
         Request         $request,
@@ -218,6 +293,13 @@ class AdministrationController extends AbstractController
         ]);
     }
 
+    /**
+     * Supprimer une ville
+     * @param EntityManagerInterface $em
+     * @param VilleRepository $villeRepository
+     * @param int $id
+     * @return Response
+     */
     #[Route('/supprimerVille/{id}', name: '_supprimerVille')]
     public function supprimerVille(
         EntityManagerInterface $em,
