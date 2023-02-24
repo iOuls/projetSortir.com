@@ -20,9 +20,7 @@ class SecurityController extends AbstractController
 {
     #[Route(path: '/login', name: 'app_login')]
     public function login(
-        AuthenticationUtils $authenticationUtils,
-        UserRepository      $userRepository,
-
+        AuthenticationUtils $authenticationUtils
     ): Response
     {
 
@@ -30,8 +28,6 @@ class SecurityController extends AbstractController
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
-
-
 
 
         return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
@@ -44,25 +40,25 @@ class SecurityController extends AbstractController
     }
 
     //reset password
-    #[Route('/oubli-pass', name:'forgotten_password')]
+    #[Route('/oubli-pass', name: 'forgotten_password')]
     public function forgottenPassword(
-        Request $request,
-        UserRepository $usersRepository,
+        Request                 $request,
+        UserRepository          $usersRepository,
         TokenGeneratorInterface $tokenGenerator,
-        EntityManagerInterface $entityManager,
-        SendMailService $mail
+        EntityManagerInterface  $entityManager,
+        SendMailService         $mail
     ): Response
     {
         $form = $this->createForm(ResetPasswordRequestFormType::class);
 
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()){
+        if ($form->isSubmitted() && $form->isValid()) {
             //On va chercher l'utilisateur par son email
             $user = $usersRepository->findOneByEmail($form->get('email')->getData());
 
             // On vérifie si on a un utilisateur
-            if($user){
+            if ($user) {
                 // On génère un token de réinitialisation
                 $token = $tokenGenerator->generateToken();
                 $user->setResetToken($token);
@@ -98,12 +94,12 @@ class SecurityController extends AbstractController
     }
 
 
-    #[Route('/oubli-pass/{token}', name:'reset_pass')]
+    #[Route('/oubli-pass/{token}', name: 'reset_pass')]
     public function resetPass(
-        string $token,
-        Request $request,
-        UserRepository $usersRepository,
-        EntityManagerInterface $entityManager,
+        string                      $token,
+        Request                     $request,
+        UserRepository              $usersRepository,
+        EntityManagerInterface      $entityManager,
         UserPasswordHasherInterface $passwordHasher
     ): Response
     {
@@ -112,12 +108,12 @@ class SecurityController extends AbstractController
 
         // On vérifie si l'utilisateur existe
 
-        if($user){
+        if ($user) {
             $form = $this->createForm(ResetPasswordFormType::class);
 
             $form->handleRequest($request);
 
-            if($form->isSubmitted() && $form->isValid()){
+            if ($form->isSubmitted() && $form->isValid()) {
                 // On efface le token
                 $user->setResetToken('');
 

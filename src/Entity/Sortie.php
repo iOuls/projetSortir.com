@@ -66,7 +66,7 @@ class Sortie
     private ?User $organisateur = null;
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'sortiesP')]
-    private Collection $participants;
+    private Collection $participant;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $motifAnnulation = null;
@@ -74,7 +74,7 @@ class Sortie
 
     public function __construct()
     {
-        $this->participants = new ArrayCollection();
+        $this->participant = new ArrayCollection();
 
     }
 
@@ -208,13 +208,13 @@ class Sortie
      */
     public function getParticipant(): Collection
     {
-        return $this->participants;
+        return $this->participant;
     }
 
     public function addParticipant(User $participant): self
     {
-        if (!$this->participants->contains($participant)) {
-            $this->participants->add($participant);
+        if (!$this->participant->contains($participant)) {
+            $this->participant->add($participant);
         }
 
         return $this;
@@ -222,7 +222,7 @@ class Sortie
 
     public function removeParticipant(User $participant): self
     {
-        $this->participants->removeElement($participant);
+        $this->participant->removeElement($participant);
 
         return $this;
     }
