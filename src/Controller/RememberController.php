@@ -8,6 +8,10 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class RememberController extends AbstractController
 {
+    /**
+     * Se souvenir de moi
+     * @return Response
+     */
     #[Route('/remember', name: 'app_remember')]
     public function index(): Response
     {

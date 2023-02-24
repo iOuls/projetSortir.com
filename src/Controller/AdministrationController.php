@@ -221,7 +221,10 @@ class AdministrationController extends AbstractController
             $siteForm->handleRequest($request);
             $siteRepository->save($site, true);
             return $this->redirectToRoute('administration_gererSites', []);
-        }
+
+        } else {
+        $this->addFlash('Gerer', 'Les valeurs que vous avez rentrées ne sont pas valides. Veuillez vérifier et réessayer.');
+    }
 
         return $this->render('administration/gererSites.html.twig', [
             'sites' => $sites,
@@ -284,6 +287,8 @@ class AdministrationController extends AbstractController
             $villeRepository->save($ville, true);
             return $this->redirectToRoute('administration_gererVilles', []);
 
+        } else {
+            $this->addFlash('Gerer', 'Les valeurs que vous avez rentrées ne sont pas valides. Veuillez vérifier et réessayer.');
         }
 
         return $this->render('administration/gererVilles.html.twig', [

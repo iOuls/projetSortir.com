@@ -18,6 +18,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class SortieType extends AbstractType
 {
@@ -43,7 +44,11 @@ class SortieType extends AbstractType
                 ]])
             ->add('nbInscriptionsMax', null, ['label' => 'Nombre de place '])
             ->add('duree', null, ['label' => 'Durée '])
-            ->add('InfosSortie', null, ['label' => 'Description et infos '])
+            ->add('InfosSortie', null, ['label' => 'Description et infos ',
+            'constraints' => [
+            new Regex('/^[A-Za-z]+$/')
+            ]
+            ])
             ->add('site', EntityType::class, [
                 "class" => Site::class,
                 "choice_label" => "nom"
