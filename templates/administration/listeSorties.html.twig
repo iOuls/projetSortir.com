@@ -19,7 +19,7 @@
                 <p>{{ sortie.lieu.nom }}</p>
                 <p>{{ sortie.site.nom }}</p>
                 <p>Créé par {{ sortie.organisateur.pseudo }}</p>
-                <a href="{{ path('administration_supprimer', {id : sortie.id}) }}">
+                <a href="{{ path('administration_supprimerSortie', {id : sortie.id}) }}">
                     <button>Supprimer</button>
                 </a>
             </div>
