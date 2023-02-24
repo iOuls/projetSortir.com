@@ -245,8 +245,13 @@ class AdministrationController extends AbstractController
     ): Response
     {
         $site = $siteRepository->findOneBy(['id' => $id]);
-        $siteRepository->remove($site);
-        $em->flush();
+        try {
+            $siteRepository->remove($site);
+            $em->flush();
+        } catch (\Exception $e){
+            $this->addFlash('Suppression non effectuée', 'Impossible de supprimer un site utilisé pour une sortie !');
+            return $this->redirectToRoute('administration_gererSites');
+        }
         $this->addFlash('Site supprimé', $site->getNom() . ' a été supprimé de la liste des sites.');
         return $this->redirectToRoute('administration_gererSites');
     }
@@ -303,8 +308,13 @@ class AdministrationController extends AbstractController
     ): Response
     {
         $ville = $villeRepository->findOneBy(['id' => $id]);
-        $villeRepository->remove($ville);
-        $em->flush();
+        try {
+            $villeRepository->remove($ville);
+            $em->flush();
+        } catch (\Exception $e){
+            $this->addFlash('Suppression non effectuée', 'Impossible de supprimer une ville utilisée pour une sortie !');
+            return $this->redirectToRoute('administration_gererVilles');
+        }
         $this->addFlash('Ville supprimée', $ville->getNom() . ' a été supprimée de la liste des villes.');
         return $this->redirectToRoute('administration_gererVilles');
     }
