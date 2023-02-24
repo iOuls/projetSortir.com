@@ -66,7 +66,7 @@ class ProfilController extends AbstractController
 
             $em->persist($user);
             $em->flush();
-            $this->addFlash('success', 'L\'utilisateur ' . $user->getPseudo() . ' a été été mis à jour !');
+            $this->addFlash('success', 'L\'utilisateur ' . $user->getPseudo() . ' a été mis à jour !');
         }
 
 

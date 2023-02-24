@@ -6,6 +6,16 @@
 
     <h2 class="center text-center">Mon profil</h2>
 
+    <div class="text-center neon-no-hover">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alter-{{ label }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+
     <div class="flex-row text-center">
         {{ form_start(profilForm) }}
         <div class="grid-card flex-col center">

@@ -216,15 +216,17 @@ class AdministrationController extends AbstractController
         }
 
 
-        if ($siteForm->isSubmitted() && $siteForm->isValid()) {
-            $siteForm = $this->createForm(SiteType::class, $site);
-            $siteForm->handleRequest($request);
-            $siteRepository->save($site, true);
-            return $this->redirectToRoute('administration_gererSites', []);
+        if ($siteForm->isSubmitted()) {
+            if ($siteForm->isValid()) {
+                $siteForm = $this->createForm(SiteType::class, $site);
+                $siteForm->handleRequest($request);
+                $siteRepository->save($site, true);
+                return $this->redirectToRoute('administration_gererSites', []);
 
-        } else {
-        $this->addFlash('Gerer', 'Les valeurs que vous avez rentrées ne sont pas valides. Veuillez vérifier et réessayer.');
-    }
+            } else {
+                $this->addFlash('Gerer', 'Les valeurs que vous avez rentrées ne sont pas valides. Veuillez vérifier et réessayer.');
+            }
+        }
 
         return $this->render('administration/gererSites.html.twig', [
             'sites' => $sites,
@@ -251,7 +253,7 @@ class AdministrationController extends AbstractController
         try {
             $siteRepository->remove($site);
             $em->flush();
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             $this->addFlash('Suppression non effectuée', 'Impossible de supprimer un site utilisé pour une sortie !');
             return $this->redirectToRoute('administration_gererSites');
         }
@@ -281,14 +283,16 @@ class AdministrationController extends AbstractController
             $villes = $villeRepository->findByLettre($motsclefs);
         }
 
-        if ($villeForm->isSubmitted() && $villeForm->isValid()) {
-            $villeForm = $this->createForm(VilleType::class, $ville);
-            $villeForm->handleRequest($request);
-            $villeRepository->save($ville, true);
-            return $this->redirectToRoute('administration_gererVilles', []);
+        if ($villeForm->isSubmitted()) {
+            if ($villeForm->isValid()) {
+                $villeForm = $this->createForm(VilleType::class, $ville);
+                $villeForm->handleRequest($request);
+                $villeRepository->save($ville, true);
+                return $this->redirectToRoute('administration_gererVilles', []);
 
-        } else {
-            $this->addFlash('Gerer', 'Les valeurs que vous avez rentrées ne sont pas valides. Veuillez vérifier et réessayer.');
+            } else {
+                $this->addFlash('Gerer', 'Les valeurs que vous avez rentrées ne sont pas valides. Veuillez vérifier et réessayer.');
+            }
         }
 
         return $this->render('administration/gererVilles.html.twig', [
@@ -316,7 +320,7 @@ class AdministrationController extends AbstractController
         try {
             $villeRepository->remove($ville);
             $em->flush();
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             $this->addFlash('Suppression non effectuée', 'Impossible de supprimer une ville utilisée pour une sortie !');
             return $this->redirectToRoute('administration_gererVilles');
         }

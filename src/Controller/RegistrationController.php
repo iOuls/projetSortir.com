@@ -40,38 +40,40 @@ class RegistrationController extends AbstractController
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $user_new = new User();
-            $user_new->setPseudo($user->getPseudo());
-            $user_new->setNom($user->getNom());
-            $user_new->setPrenom($user->getPrenom());
-            $user_new->setTelephone($user->getTelephone());
-            $user_new->setEmail($user->getEmail());
-            $user_new->setAdministrateur(false);
-            $user_new->setActif(true);
-            $user_new->setPassword(
-                $userPasswordHasher->hashPassword(
-                    $user,
-                    $form->get('password')->getData()
-                )
-            );
-            $user_new->setSite($user->getSite());
+        if ($form->isSubmitted()) {
+            if ($form->isValid()) {
+                $user_new = new User();
+                $user_new->setPseudo($user->getPseudo());
+                $user_new->setNom($user->getNom());
+                $user_new->setPrenom($user->getPrenom());
+                $user_new->setTelephone($user->getTelephone());
+                $user_new->setEmail($user->getEmail());
+                $user_new->setAdministrateur(false);
+                $user_new->setActif(true);
+                $user_new->setPassword(
+                    $userPasswordHasher->hashPassword(
+                        $user,
+                        $form->get('password')->getData()
+                    )
+                );
+                $user_new->setSite($user->getSite());
 
-            $entityManager->persist($user_new);
-            $entityManager->flush();
-            // do anything else you need here, like send an email
-            if (in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
-                return $this->redirectToRoute('administration_listeUsers');
+                $entityManager->persist($user_new);
+                $entityManager->flush();
+                // do anything else you need here, like send an email
+                if (in_array('ROLE_ADMIN', $this->getUser()->getRoles())) {
+                    return $this->redirectToRoute('administration_listeUsers');
+                }
+
+                return $userAuthenticator->authenticateUser(
+                    $user_new,
+                    $authenticator,
+                    $request
+                );
+
+            } else {
+                $this->addFlash('Register', 'Les valeurs que vous avez rentrées ne sont pas valides. Veuillez vérifier et réessayer.');
             }
-
-            return $userAuthenticator->authenticateUser(
-                $user_new,
-                $authenticator,
-                $request
-            );
-
-        } else {
-            $this->addFlash('Register', 'Les valeurs que vous avez rentrées ne sont pas valides. Veuillez vérifier et réessayer.');
         }
 
         return $this->render('registration/register.html.twig', [
