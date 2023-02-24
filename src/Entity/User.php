@@ -72,7 +72,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'organisateur', targetEntity: Sortie::class)]
     private Collection $sortiesO;
 
-    #[ORM\ManyToMany(mappedBy: 'participant', targetEntity: Sortie::class)]
+    #[ORM\ManyToMany(mappedBy: 'participants', targetEntity: Sortie::class)]
     private Collection $sortiesP;
 
 
@@ -87,7 +87,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
-        $this->sorties = new ArrayCollection();
+        $this->sortiesO = new ArrayCollection();
+        $this->sortiesP = new ArrayCollection();
         $this->groupes = new ArrayCollection();
     }
 
@@ -357,7 +358,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true, type: 'string', length: 100)]
     private $resetToken = null;
 
-    #[ORM\ManyToMany(targetEntity: Groupe::class, mappedBy: 'participant')]
+    #[ORM\ManyToMany(targetEntity: Groupe::class, mappedBy: 'participants')]
     private Collection $groupes;
 
 // ...
@@ -412,6 +413,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
         $metadata->addPropertyConstraint('Pseudo', new Assert\Regex([

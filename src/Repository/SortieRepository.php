@@ -89,13 +89,13 @@ class SortieRepository extends ServiceEntityRepository
         if (!($inscrit && $noninscrit)) {
             // inscription
             if ($inscrit) {
-                $queryBuilder->andWhere(':user MEMBER OF sortie.participant')
+                $queryBuilder->andWhere(':user MEMBER OF sortie.participant OR sortie.organisateur = :user')
                     ->setParameter(':user', $user);
             }
 
             // non inscrit
             if ($noninscrit) {
-                $queryBuilder->andWhere(':user NOT MEMBER OF sortie.participant')
+                $queryBuilder->andWhere(':user NOT MEMBER OF sortie.participant AND sortie.organisateur <> :user')
                     ->setParameter(':user', $user);
             }
         }

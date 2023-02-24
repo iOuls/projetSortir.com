@@ -34,6 +34,16 @@ use function Sodium\add;
 #[Route('/', name: 'sortie')]
 class SortieController extends AbstractController
 {
+    /**
+     * Lister les sorties pour la page d'accueil
+     * @param SortieRepository $sortieRepository
+     * @param SiteRepository $siteRepository
+     * @param UserRepository $userRepository
+     * @param EtatRepository $etatRepository
+     * @param EntityManagerInterface $em
+     * @param Request $request
+     * @return Response
+     */
     #[Route('', name: '_list')]
     public function list(
         SortieRepository       $sortieRepository,
@@ -45,7 +55,7 @@ class SortieController extends AbstractController
     ): Response
     {
         $idUser = $userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
-        if (!$idUser->isActif()){
+        if (!$idUser->isActif()) {
             return $this->redirectToRoute('app_logout');
         }
 
@@ -68,13 +78,13 @@ class SortieController extends AbstractController
             $request->query->get('passees') != false
         ) {
 
-            $site = $request->query->get('site'); // filtre ok
-            $motsclefs = $request->query->get('motsclefs'); // filtre ok
-            $datedebut = $request->query->get('datedebut'); // TODO filtre ko
-            $datefin = $request->query->get('datefin'); // TODO filtre ko
-            $organisateur = ($request->query->get('organisateur') == 'on') ? true : false; // filtre ok
-            $inscrit = ($request->query->get('incrit') == 'on') ? true : false; // filtre ok
-            $noninscrit = ($request->query->get('noninscrit') == 'on') ? true : false; // filtre ok
+            $site = $request->query->get('site');
+            $motsclefs = $request->query->get('motsclefs');
+            $datedebut = $request->query->get('datedebut');
+            $datefin = $request->query->get('datefin');
+            $organisateur = ($request->query->get('organisateur') == 'on') ? true : false;
+            $inscrit = ($request->query->get('incrit') == 'on') ? true : false;
+            $noninscrit = ($request->query->get('noninscrit') == 'on') ? true : false;
             $passees = ($request->query->get('passees') == 'on') ? true : false;
             $criteres = [
                 'site' => $site,
@@ -144,6 +154,12 @@ class SortieController extends AbstractController
             ]);
     }
 
+    /**
+     * Afficher une sortie
+     * @param SortieRepository $sortieRepository
+     * @param int $id
+     * @return Response
+     */
     #[Route('/sortie/{id}', name: '_afficher')]
     public function afficher(
         SortieRepository $sortieRepository,
@@ -163,6 +179,14 @@ class SortieController extends AbstractController
         }
     }
 
+    /**
+     * Publier une sortie
+     * @param SortieRepository $sortieRepository
+     * @param EtatRepository $etatRepository
+     * @param EntityManagerInterface $em
+     * @param int $id
+     * @return Response
+     */
     #[Route('/sortie/publier/{id}', name: '_publier')]
     public function publier(
         SortieRepository       $sortieRepository,
@@ -183,6 +207,15 @@ class SortieController extends AbstractController
         return $this->redirectToRoute('sortie_list');
     }
 
+    /**
+     * Annuler une sortie
+     * @param SortieRepository $sortieRepository
+     * @param int $id
+     * @param Request $request
+     * @param EtatRepository $etatRepository
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
     #[Route('/sortie/annuler/{id}', name: '_annuler')]
     public function annuler(
         SortieRepository       $sortieRepository,
@@ -219,6 +252,16 @@ class SortieController extends AbstractController
         );
     }
 
+    /**
+     * Créer une sortie
+     * @param EntityManagerInterface $em
+     * @param Request $request
+     * @param EtatRepository $etatRepository
+     * @param SortieRepository $sortieRepository
+     * @param LieuRepository $lieuRepository
+     * @param VilleRepository $villeRepository
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     */
     #[Route('/create', name: '_create')]
     public function create(
         EntityManagerInterface $em,
@@ -264,6 +307,15 @@ class SortieController extends AbstractController
         );
     }
 
+    /**
+     * Modifier une sortie
+     * @param int $id
+     * @param EntityManagerInterface $em
+     * @param Request $request
+     * @param EtatRepository $etatRepository
+     * @param SortieRepository $sortieRepository
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     */
     #[Route('/modifier/{id}', name: '_modifier')]
     public function modifier(
         int                    $id,
@@ -314,6 +366,15 @@ class SortieController extends AbstractController
 
     }
 
+    /**
+     * Création d'un groupe privé sur une sortie
+     * @param EntityManagerInterface $em
+     * @param Request $request
+     * @param SortieRepository $sortieRepository
+     * @param GroupeRepository $groupeRepository
+     * @param int $id
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     */
     #[Route('/groupe/{id}', name: '_groupe')]
     public function groupe(
         EntityManagerInterface $em,
@@ -345,6 +406,15 @@ class SortieController extends AbstractController
             compact('groupeForm', 'sortie', 'groupeExist'));
     }
 
+    /**
+     * Afficher la page d'ajout des participants au groupe privé d'une sortie
+     * @param EntityManagerInterface $em
+     * @param GroupeRepository $groupeRepository
+     * @param SortieRepository $sortieRepository
+     * @param UserRepository $userRepository
+     * @param int $id
+     * @return Response
+     */
     #[Route('/ajouterParticipant/{id}', name: '_ajouterParticipant')]
     public function ajouterParticipant(
         EntityManagerInterface $em,
@@ -361,6 +431,17 @@ class SortieController extends AbstractController
             compact('groupe', 'sortie'));
     }
 
+    /**
+     * Ajouter des participants au groupe d'une sortie
+     * @param int $id
+     * @param int $idUser
+     * @param int $idSortie
+     * @param UserRepository $userRepository
+     * @param GroupeRepository $groupeRepository
+     * @param SortieRepository $sortieRepository
+     * @param EntityManagerInterface $entityManager
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
     #[Route('/ajouter/{id}/{idUser}/{idSortie}', name: '_ajouter')]
     public function ajouter(
         int                    $id,
@@ -385,6 +466,17 @@ class SortieController extends AbstractController
         return $this->redirectToRoute('sortie_ajouterParticipant', ['id' => $sortie->getId()]);
     }
 
+    /**
+     * Exclure un participant dans un groupe privé d'une sortie
+     * @param int $id
+     * @param int $idUser
+     * @param int $idSortie
+     * @param UserRepository $userRepository
+     * @param GroupeRepository $groupeRepository
+     * @param SortieRepository $sortieRepository
+     * @param EntityManagerInterface $entityManager
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
     #[Route('/exclure/{id}/{idUser}/{idSortie}', name: '_exclure')]
     public function exclure(
         int                    $id,
@@ -409,6 +501,12 @@ class SortieController extends AbstractController
         return $this->redirectToRoute('sortie_ajouterParticipant', ['id' => $sortie->getId()]);
     }
 
+    /**
+     * Ajouter un lieu
+     * @param EntityManagerInterface $entityManager
+     * @param Request $request
+     * @return Response
+     */
     #[Route('/ajouterlieu', name: '_ajouterlieu')]
     public function ajouterlieu(
         EntityManagerInterface $entityManager,
